@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<title>Tríade Conecta · App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#F4EEE3; --sand-deep:#EAE1D1; --ink:#231C1A; --ink-70:rgba(35,28,26,.68); --ink-45:rgba(35,28,26,.45);
+  --wine:#7C2A3D; --wine-deep:#511B29; --gold:#C79A55; --gold-soft:#EFDCB8; --plum:#4A2140; --blush:#E7B3A0;
+  --glass:rgba(255,255,255,.5); --glass-strong:rgba(255,255,255,.72); --glass-border:rgba(255,255,255,.75);
+  --glass-dark:rgba(25,19,18,.72); --glass-dark-border:rgba(255,255,255,.14);
+  --r-xl:28px; --r-lg:22px; --r-md:14px; --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; color:var(--ink); background:var(--sand); font-family:'Inter',sans-serif; line-height:1.55;
+  -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;letter-spacing:-.01em;}
+.script{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;}
+.icon{display:inline-block;vertical-align:middle;flex-shrink:0;}
+.eyebrow{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--wine);font-weight:700;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:"";width:18px;height:2px;background:var(--wine);border-radius:2px;}
+
+/* ---------- mesh bg ---------- */
+.mesh{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--sand);}
+.mesh span{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;}
+.mesh .b1{width:380px;height:380px;background:var(--blush);top:-110px;left:-70px;animation:float1 24s ease-in-out infinite;}
+.mesh .b2{width:420px;height:420px;background:var(--gold-soft);top:100px;right:-130px;animation:float2 28s ease-in-out infinite;}
+.mesh .b3{width:340px;height:340px;background:var(--wine);opacity:.25;bottom:-90px;left:8%;animation:float3 30s ease-in-out infinite;}
+.mesh .b4{width:280px;height:280px;background:var(--plum);opacity:.2;bottom:180px;right:6%;animation:float1 20s ease-in-out infinite reverse;}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(26px,34px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-34px,26px)}}
+@keyframes float3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-30px)}}
+
+/* ---------- glass ---------- */
+.glass{background:var(--glass);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 16px 34px -20px rgba(35,28,26,.28);position:relative;}
+.glass-strong{background:var(--glass-strong);}
+.glass-dark{background:var(--glass-dark);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-top:1px solid var(--glass-dark-border);color:var(--sand);}
+.sheen{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.5),rgba(255,255,255,0) 30%);opacity:.65;}
+
+.markwrap{width:var(--m,30px);height:var(--m,30px);display:inline-flex;color:var(--ink);}
+.markwrap svg{width:100%;height:100%;}
+.m-solid{fill:currentColor;} .m-outline{fill:none;stroke:currentColor;stroke-width:6;opacity:.5;}
+.markwrap.on-glass{color:var(--wine);} .markwrap.on-sand{color:var(--wine);}
+
+/* ---------- app shell ---------- */
+.app{position:fixed;inset:0;display:flex;flex-direction:column;}
+.app-top{flex:0 0 auto;padding:calc(10px + var(--safe-t)) 16px 10px;display:flex;align-items:center;justify-content:space-between;z-index:20;border-bottom:1px solid rgba(255,255,255,.5);}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand .name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+.brand .tag{font-family:'Instrument Serif',serif;font-style:italic;color:var(--wine);font-size:14px;margin-left:1px;}
+.top-actions{display:flex;gap:8px;}
+.icon-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink);border:1px solid var(--glass-border);background:var(--glass-strong);}
+
+.app-main{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;scroll-behavior:smooth;}
+.panel{display:none;padding:0 16px calc(28px);max-width:640px;margin:0 auto;animation:panelin .28s ease;}
+.panel.active{display:block;}
+@keyframes panelin{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------- stories ---------- */
+.stories{display:flex;gap:16px;padding:16px 2px 4px;overflow-x:auto;scrollbar-width:none;}
+.stories::-webkit-scrollbar{display:none;}
+.story{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;width:68px;}
+.story .ring{width:58px;height:58px;border-radius:50%;padding:3px;background:conic-gradient(from 210deg,var(--wine),var(--gold),var(--blush),var(--wine));}
+.story .ring .hole{width:100%;height:100%;border-radius:50%;background:var(--sand-deep);display:flex;align-items:center;justify-content:center;color:var(--wine);}
+.story span.lbl{font-size:10.5px;font-weight:600;text-align:center;color:var(--ink-70);line-height:1.2;}
+
+/* ---------- section headers ---------- */
+.sec-head{margin:22px 0 12px;}
+.sec-head h2{font-size:clamp(19px,4.4vw,24px);margin-top:6px;}
+.sec-head p{color:var(--ink-70);font-size:13.5px;margin-top:6px;}
+
+/* ---------- feed posts (estilo rede social) ---------- */
+.post{margin-bottom:16px;overflow:hidden;}
+.post-head{display:flex;align-items:center;gap:10px;padding:13px 14px;}
+.post-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(150deg,var(--gold-soft),var(--blush));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:14px;color:var(--wine-deep);flex-shrink:0;}
+.post-who{flex:1;min-width:0;}
+.post-who .n{font-weight:700;font-size:13.5px;}
+.post-who .t{font-size:11.5px;color:var(--ink-45);}
+.post-media{aspect-ratio:4/3;background:linear-gradient(135deg,var(--blush),var(--gold-soft));position:relative;display:flex;align-items:center;justify-content:center;}
+.post-media .heart-burst{position:absolute;color:#fff;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));opacity:0;transform:scale(.5);pointer-events:none;}
+.post-media .heart-burst.burst{animation:heartpop .8s ease forwards;}
+@keyframes heartpop{0%{opacity:0;transform:scale(.4);}18%{opacity:1;transform:scale(1.15);}32%{transform:scale(1);}80%{opacity:1;}100%{opacity:0;transform:scale(1.05);}}
+.post-actions{display:flex;align-items:center;gap:14px;padding:10px 14px 2px;}
+.post-actions .grow{flex:1;}
+.act-btn{background:none;border:0;padding:4px;color:var(--ink);cursor:pointer;display:flex;align-items:center;transition:transform .15s ease;}
+.act-btn:active{transform:scale(.85);}
+.act-btn.liked{color:var(--wine);}
+.act-btn.saved{color:var(--gold);}
+.post-likes{padding:2px 14px 0;font-size:13px;font-weight:700;}
+.post-caption{padding:6px 14px 14px;font-size:13.5px;color:var(--ink-70);}
+.post-caption b{color:var(--ink);font-weight:700;}
+.post-cta{margin:0 14px 14px;}
+
+/* ---------- profile-like header (Sobre) ---------- */
+.profile-card{padding:22px 20px;margin:14px 0;}
+.profile-top{display:flex;gap:16px;align-items:center;}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(150deg,var(--gold-soft),var(--blush));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.profile-stats{display:flex;gap:20px;margin-top:16px;}
+.profile-stats div{text-align:center;flex:1;}
+.profile-stats .num{font-family:'Fraunces',serif;font-size:18px;color:var(--wine);}
+.profile-stats .lbl{font-size:10.5px;color:var(--ink-45);margin-top:2px;}
+
+.founder-row{display:flex;gap:12px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none;}
+.founder-row::-webkit-scrollbar{display:none;}
+.founder-chip{flex-shrink:0;width:150px;padding:16px;text-align:center;}
+.founder-chip .av{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;background:linear-gradient(150deg,var(--gold-soft),var(--blush));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--wine-deep);}
+.founder-chip .n{font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;}
+.founder-chip .r{font-size:10px;color:var(--wine);font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+.founder-chip p{font-size:11.5px;color:var(--ink-70);margin-top:8px;}
+
+/* ---------- events ---------- */
+.segmented{display:inline-flex;gap:3px;padding:4px;border-radius:999px;}
+.segmented button{border:0;background:transparent;padding:8px 15px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--ink-70);cursor:pointer;}
+.segmented button.active{background:var(--ink);color:var(--sand);}
+.ev-card{padding:14px;display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+.ev-card .ph{width:64px;height:64px;border-radius:var(--r-md);background:linear-gradient(150deg,var(--gold-soft),var(--blush));flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ev-card .body{flex:1;min-width:0;}
+.status-pill{font-size:9.5px;text-transform:uppercase;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:999px;display:inline-block;}
+.status-pill.realizado{background:rgba(35,28,26,.08);color:var(--ink-70);}
+.status-pill.embreve{background:var(--gold-soft);color:var(--wine-deep);}
+.ev-card h3{font-size:14.5px;margin-top:6px;}
+.ev-card .meta{display:flex;gap:10px;margin-top:4px;font-size:11px;color:var(--ink-70);flex-wrap:wrap;}
+.ev-card .meta span{display:flex;align-items:center;gap:3px;}
+
+/* ---------- speakers grid ---------- */
+.pal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pal-cell{aspect-ratio:1/1;border-radius:var(--r-md);background:linear-gradient(150deg,var(--gold-soft),var(--blush));display:flex;align-items:flex-end;padding:8px;position:relative;overflow:hidden;cursor:pointer;}
+.pal-cell .nm{color:#4a2130;font-size:11px;font-weight:800;background:rgba(255,255,255,.55);padding:3px 7px;border-radius:8px;}
+.pal-detail{margin-top:10px;padding:14px;font-size:12.5px;color:var(--ink-70);display:none;}
+.pal-detail.show{display:block;}
+
+/* ---------- plans ---------- */
+.plan-card{padding:22px;margin-bottom:12px;position:relative;}
+.plan-card.featured{}
+.plan-card .badge{position:absolute;top:-10px;right:18px;background:linear-gradient(155deg,var(--wine),var(--wine-deep));color:var(--sand);font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:5px 12px;border-radius:999px;}
+.plan-card .name{font-family:'Fraunces',serif;font-size:19px;}
+.plan-card .price{font-family:'Fraunces',serif;font-size:30px;margin-top:10px;}
+.plan-card .price small{font-size:12px;font-weight:400;font-family:'Inter',sans-serif;color:var(--ink-70);}
+.plan-card ul{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;}
+.plan-card li{display:flex;gap:8px;font-size:12.5px;align-items:flex-start;}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer;border:1px solid transparent;transition:transform .15s ease;}
+.btn-primary{background:linear-gradient(155deg,var(--wine),var(--wine-deep));color:var(--sand);box-shadow:0 12px 24px -12px rgba(124,42,61,.65);}
+.btn-primary:active{transform:scale(.97);}
+.btn-glass{background:var(--glass-strong);border-color:var(--glass-border);color:var(--ink);}
+.btn.full{width:100%;justify-content:center;}
+.card-note{display:flex;gap:10px;padding:13px 16px;margin-bottom:14px;font-size:12px;color:var(--wine-deep);}
+
+/* ---------- bottom tab bar — estilo Instagram / Liquid Glass, borda a borda ---------- */
+.tabbar{
+  flex:0 0 auto; display:flex; align-items:stretch; justify-content:space-around;
+  padding:6px 4px calc(6px + var(--safe-b));
+  border-top:1px solid rgba(255,255,255,.12); z-index:30;
+}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:rgba(244,238,227,.55);position:relative;background:none;border:0;}
+.tab .icon{transition:transform .18s cubic-bezier(.3,1.4,.4,1);}
+.tab.active{color:var(--sand);}
+.tab.active .icon{transform:translateY(-1px) scale(1.08);}
+.tab .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);margin-top:2px;opacity:0;transition:opacity .2s ease;}
+.tab.active .dot{opacity:1;}
+.tab .center-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--glass-dark);}
+.tab.active .center-badge{background:linear-gradient(155deg,var(--wine),var(--gold));}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:86px;transform:translate(-50%,140%);padding:12px 18px;border-radius:999px;font-size:13px;font-weight:600;z-index:200;display:flex;align-items:center;gap:8px;transition:transform .4s cubic-bezier(.2,.9,.3,1);color:var(--ink);}
+.toast.show{transform:translate(-50%,0);}
+
+/* ---------- responsive ---------- */
+@media (min-width:720px){
+  .app-main{padding-top:2px;}
+  .panel{max-width:600px;}
+}
+@media (max-width:360px){
+  .founder-chip{width:130px;}
+  .post-actions{gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>
+<div class="app">
+  <header class="app-top glass">
+    <div class="sheen"></div>
+    <a class="brand" href="#" onclick="switchTab('inicio');return false;">
+      <span class="markwrap on-glass" style="--m:28px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span>
+      <span><span class="name">TRÍADE</span><span class="tag">conecta</span></span>
+    </a>
+    <div class="top-actions">
+      <span class="icon-btn"><svg class="icon " width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="10.6" cy="10.6" r="6.4"/><path d="M15.4 15.4 20 20" stroke-linecap="round"/></svg></span>
+      <span class="icon-btn"><svg class="icon " width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 10.2a6 6 0 0 1 12 0v4.1l1.6 2.6H4.4L6 14.3Z" stroke-linejoin="round"/><path d="M9.6 19.4a2.4 2.4 0 0 0 4.8 0" stroke-linecap="round"/></svg></span>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ===================== INÍCIO ===================== -->
+    <section class="panel active" id="panel-inicio">
+      <div class="stories">
+        <div class="story"><div class="ring"><div class="hole"><svg class="icon " width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><span class="lbl">Conexão</span></div>
+        <div class="story"><div class="ring"><div class="hole"><svg class="icon " width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.4 13.8 8.6 19 10.4l-5.2 1.8L12 17.4l-1.8-5.2L5 10.4l5.2-1.8Z" stroke-linejoin="round"/></svg></div></div><span class="lbl">Inspiração</span></div>
+        <div class="story"><div class="ring"><div class="hole"><svg class="icon " width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M5 12.5 9.5 17 19 6.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><span class="lbl">Ação</span></div>
+        <div class="story"><div class="ring"><div class="hole"><svg class="icon " width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.3" y="5.2" width="17.4" height="15.4" rx="4"/><path d="M3.3 9.8h17.4M8 3.2v4M16 3.2v4" stroke-linecap="round"/></svg></div></div><span class="lbl">Próx. edição</span></div>
+        <div class="story"><div class="ring"><div class="hole"><svg class="icon " width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.4 11a6.6 6.6 0 0 0 13.2 0" stroke-linecap="round"/><path d="M12 17.6v2.8M9.4 20.4h5.2" stroke-linecap="round"/></svg></div></div><span class="lbl">Palestras</span></div>
+      </div>
+
+      <article class="post glass">
+        <div class="post-head">
+          <div class="post-avatar">DG</div>
+          <div class="post-who"><div class="n">Tríade Conecta</div><div class="t">3ª Edição · em breve</div></div>
+          <button class="act-btn"><svg class="icon " width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="5.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></button>
+        </div>
+        <div class="post-media" ondblclick="doubleTapLike(this,'post-ed3','#like-ed3','#likecount-ed3')">
+          <span class="markwrap on-glass" style="--m:46px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span>
+          <span class="heart-burst"><svg class="icon " width="86" height="86" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" fill="currentColor" stroke="none"/></svg></span>
+        </div>
+        <div class="post-actions">
+          <button class="act-btn" id="like-ed3" onclick="toggleLike(this,'post-ed3',document.getElementById('likecount-ed3'))"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="act-btn" onclick="commentIt()"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4.6 6.3A2.3 2.3 0 0 1 6.9 4h10.2a2.3 2.3 0 0 1 2.3 2.3v7.6a2.3 2.3 0 0 1-2.3 2.3H10l-4 3.6v-3.6H6.9a2.3 2.3 0 0 1-2.3-2.3Z" stroke-linejoin="round"/></svg></button>
+          <button class="act-btn" onclick="shareIt()"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 3 3 10.3l6.8 2.4L11.9 21Z" stroke-linejoin="round"/><path d="M10 13 21 3" stroke-linecap="round"/></svg></button>
+          <span class="grow"></span>
+          <button class="act-btn" id="save-ed3" onclick="toggleSave(this,'post-ed3')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6.6 4h10.8a1 1 0 0 1 1 1v15l-6.4-4.1L5.6 20V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="post-likes" id="likecount-ed3" data-base="141">141 curtidas</div>
+        <div class="post-caption"><b>Tríade Conecta</b> Gestão financeira na prática, com Danielle Gouveia — 19 de setembro, Goiânia. Garante sua vaga em Eventos ✨</div>
+        <div class="post-cta"><button class="btn btn-primary full" onclick="switchTab('eventos')">Ver detalhes <svg class="icon " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 5.5 15.5 12 9 18.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      </article>
+
+      <div class="sec-head"><div class="eyebrow">Nosso propósito</div><h2>Três pilares, um só movimento</h2></div>
+      <article class="post glass" style="padding:18px;">
+        <div style="display:flex;gap:14px;">
+          <div style="flex:1;text-align:center;"><span class="markwrap on-glass" style="--m:24px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span><div style="font-weight:700;font-size:13px;margin-top:6px;">Conexão</div></div>
+          <div style="flex:1;text-align:center;"><span class="markwrap on-glass" style="--m:24px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span><div style="font-weight:700;font-size:13px;margin-top:6px;">Inspiração</div></div>
+          <div style="flex:1;text-align:center;"><span class="markwrap on-glass" style="--m:24px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span><div style="font-weight:700;font-size:13px;margin-top:6px;">Ação</div></div>
+        </div>
+      </article>
+
+      <article class="post glass-dark" style="padding:26px 20px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.4;">“Conexões verdadeiras não nascem do interesse, mas da presença, da escuta e de um propósito em comum.”</div>
+        <div class="script" style="margin-top:12px;color:var(--gold-soft);font-size:16px;">@triade.conecta</div>
+      </article>
+
+      <article class="post glass">
+        <div class="post-head">
+          <div class="post-avatar">LD</div>
+          <div class="post-who"><div class="n">Lívia Duarte</div><div class="t">idealizadora · 2ª edição</div></div>
+        </div>
+        <div class="post-media" style="background:linear-gradient(135deg,var(--gold-soft),var(--wine));" ondblclick="doubleTapLike(this,'post-recap','#like-recap','#likecount-recap')">
+          <span class="markwrap on-glass" style="--m:46px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span><span class="heart-burst"><svg class="icon " width="86" height="86" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" fill="currentColor" stroke="none"/></svg></span>
+        </div>
+        <div class="post-actions">
+          <button class="act-btn" id="like-recap" onclick="toggleLike(this,'post-recap',document.getElementById('likecount-recap'))"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="act-btn" onclick="commentIt()"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4.6 6.3A2.3 2.3 0 0 1 6.9 4h10.2a2.3 2.3 0 0 1 2.3 2.3v7.6a2.3 2.3 0 0 1-2.3 2.3H10l-4 3.6v-3.6H6.9a2.3 2.3 0 0 1-2.3-2.3Z" stroke-linejoin="round"/></svg></button>
+          <button class="act-btn" onclick="shareIt()"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 3 3 10.3l6.8 2.4L11.9 21Z" stroke-linejoin="round"/><path d="M10 13 21 3" stroke-linecap="round"/></svg></button>
+          <span class="grow"></span>
+          <button class="act-btn" id="save-recap" onclick="toggleSave(this,'post-recap')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6.6 4h10.8a1 1 0 0 1 1 1v15l-6.4-4.1L5.6 20V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="post-likes" id="likecount-recap" data-base="98">98 curtidas</div>
+        <div class="post-caption"><b>Lívia Duarte</b> Recordando a 2ª edição, com Marcela Zaidem falando sobre cultura e gestão de pessoas 🤍</div>
+      </article>
+    </section>
+
+    <!-- ===================== SOBRE ===================== -->
+    <section class="panel" id="panel-sobre">
+      <div class="profile-card glass" style="margin-top:14px;">
+        <div class="sheen"></div>
+        <div class="profile-top">
+          <div class="profile-avatar"><span class="markwrap on-glass" style="--m:34px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span></div>
+          <div>
+            <h1 style="font-size:19px;">Tríade Conecta</h1>
+            <div style="font-size:12.5px;color:var(--ink-70);margin-top:2px;">@triade.conecta</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--ink-70);margin-top:14px;">Um encontro para mulheres que desejam ir além do <b>networking superficial</b>: conexão, inspiração e ação.</p>
+        <div class="profile-stats">
+          <div><div class="num">3</div><div class="lbl">idealizadoras</div></div>
+          <div><div class="num">3</div><div class="lbl">edições</div></div>
+          <div><div class="num">85+</div><div class="lbl">próxima edição</div></div>
+        </div>
+      </div>
+
+      <div class="sec-head"><div class="eyebrow">Idealizadoras</div><h2>Quem está por trás</h2></div>
+      <div class="founder-row">
+        <div class="founder-chip glass"><div class="av">LD</div><div class="n">Lívia Duarte</div><div class="r">Gestora</div><p>Ex-Swarovski, hoje empreendedora.</p></div>
+        <div class="founder-chip glass"><div class="av">LC</div><div class="n">Lia Chaves</div><div class="r">Mentora</div><p>Advogada e consultora de imagem.</p></div>
+        <div class="founder-chip glass"><div class="av">CM</div><div class="n">Cris Miranda</div><div class="r">Estilo</div><p>Contadora e consultora de estilo.</p></div>
+      </div>
+
+      <div class="sec-head"><div class="eyebrow">Nossa trajetória</div><h2>Conexões genuínas</h2></div>
+      <article class="post glass" style="padding:16px;margin-bottom:10px;"><div class="eyebrow">2025 · 1ª edição</div><p style="font-size:13px;color:var(--ink-70);margin-top:8px;">O início do movimento — mulheres de diferentes trajetórias, a mesma vontade de crescer juntas.</p></article>
+      <article class="post glass" style="padding:16px;margin-bottom:10px;"><div class="eyebrow">2025 · 2ª edição</div><p style="font-size:13px;color:var(--ink-70);margin-top:8px;">Marcela Zaidem trouxe cultura e gestão de pessoas, com o olhar profundo sobre o feminino nos negócios.</p></article>
+      <article class="post glass" style="padding:16px;"><div class="eyebrow">2026 · 3ª edição</div><p style="font-size:13px;color:var(--ink-70);margin-top:8px;">Danielle Gouveia recebe a comunidade para falar de gestão financeira na prática.</p></article>
+    </section>
+
+    <!-- ===================== EVENTOS ===================== -->
+    <section class="panel" id="panel-eventos">
+      <div class="sec-head" style="margin-top:14px;"><div class="eyebrow">Agenda Tríade</div><h2>Eventos</h2><p>Encontros presenciais mensais de 5h, com especialista convidada.</p></div>
+      <div class="segmented glass-strong" style="display:inline-flex;margin-bottom:14px;">
+        <button class="active" onclick="filterEv(this,'todos')">Todos</button>
+        <button onclick="filterEv(this,'em breve')">Em breve</button>
+        <button onclick="filterEv(this,'realizado')">Realizados</button>
+      </div>
+      <div id="events-list"></div>
+    </section>
+
+    <!-- ===================== PALESTRANTES ===================== -->
+    <section class="panel" id="panel-palestrantes">
+      <div class="sec-head" style="margin-top:14px;"><div class="eyebrow">Conteúdo com intencionalidade</div><h2>Palestrantes</h2><p>Toque num quadro para ver a bio.</p></div>
+      <div class="pal-grid" id="pal-grid"></div>
+      <div class="pal-detail glass" id="pal-detail"></div>
+    </section>
+
+    <!-- ===================== PLANOS ===================== -->
+    <section class="panel" id="panel-planos">
+      <div class="sec-head" style="margin-top:14px;"><div class="eyebrow">Assinatura</div><h2>Planos Tríade</h2></div>
+      <div class="card-note glass-strong"><span class="markwrap on-glass" style="--m:16px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span><span>Valores sugeridos para validação — estrutura pronta para ligar ao banco de dados.</span></div>
+      <div id="plans-grid"></div>
+      <article class="post glass" style="padding:20px;margin-top:6px;">
+        <div class="eyebrow">Para marcas</div>
+        <h3 style="font-size:17px;margin-top:8px;">Seja patrocinadora</h3>
+        <p style="font-size:12.5px;color:var(--ink-70);margin-top:8px;">1 patrocinadora por segmento · logo nos materiais · ativação no evento.</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+          <div style="font-family:'Fraunces',serif;font-size:22px;color:var(--wine);">R$ 1.500</div>
+          <button class="btn btn-primary" onclick="showToast('Em breve: formulário de patrocínio')">Quero patrocinar</button>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <nav class="tabbar glass-dark">
+      <button class="tab active" data-tab="inicio" onclick="switchTab('inicio')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 11.6 12 4.3l8 7.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.2 10.3V19.6h4.6v-5.8h2.4v5.8h4.6V10.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dot"></span></button>
+      <button class="tab " data-tab="sobre" onclick="switchTab('sobre')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dot"></span></button>
+      <button class="tab " data-tab="eventos" onclick="switchTab('eventos')"><span class="center-badge"><svg class="icon " width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.3" y="5.2" width="17.4" height="15.4" rx="4"/><path d="M3.3 9.8h17.4M8 3.2v4M16 3.2v4" stroke-linecap="round"/></svg></span><span class="dot"></span></button>
+      <button class="tab " data-tab="palestrantes" onclick="switchTab('palestrantes')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.4 11a6.6 6.6 0 0 0 13.2 0" stroke-linecap="round"/><path d="M12 17.6v2.8M9.4 20.4h5.2" stroke-linecap="round"/></svg><span class="dot"></span></button>
+      <button class="tab " data-tab="planos" onclick="switchTab('planos')"><svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.4 13.8 8.6 19 10.4l-5.2 1.8L12 17.4l-1.8-5.2L5 10.4l5.2-1.8Z" stroke-linejoin="round"/></svg><span class="dot"></span></button>
+  </nav>
+</div>
+
+<script>
+
+const TriadeData = (() => {
+  const NS="triade_";
+  const seed = {
+    events:[
+      {id:"ed1",title:"1ª Edição — O início do movimento",date:"2025-04-12",status:"realizado",location:"Goiânia, GO",speaker:"Idealizadoras da Tríade",theme:"Conexões reais entre mulheres empreendedoras",spots:65},
+      {id:"ed2",title:"2ª Edição — Cultura e Gestão de Pessoas",date:"2025-08-23",status:"realizado",location:"Goiânia, GO",speaker:"Marcela Zaidem",theme:"Cultura, gestão e o olhar profundo sobre o feminino nos negócios",spots:65},
+      {id:"ed3",title:"3ª Edição — Gestão Financeira na prática",date:"2026-09-19",status:"em breve",location:"Goiânia, GO",speaker:"Danielle Gouveia",theme:"Finanças com clareza para quem empreende",spots:85}
+    ],
+    speakers:[
+      {id:"sp1",name:"Marcela Zaidem",topic:"Cultura e Gestão",bio:"Especialista de renome nacional em cultura e gestão de pessoas."},
+      {id:"sp2",name:"Danielle Gouveia",topic:"Gestão Financeira",bio:"Referência em finanças aplicadas ao dia a dia de quem empreende."},
+      {id:"sp3",name:"Dani Morais Flor",topic:"Relações Interpessoais",bio:"Trabalha a escuta, a conexão genuína e o fortalecimento mútuo entre mulheres."}
+    ],
+    plans:[
+      {id:"pl1",name:"Convidada",price:0,period:"grátis",featured:false,perks:["Acesso à comunidade digital","Conteúdo semanal sobre negócios e conexão","Desconto no 1º encontro presencial"]},
+      {id:"pl2",name:"Membra Tríade",price:97,period:"/mês",featured:true,perks:["Tudo do plano Convidada","Vaga garantida no encontro mensal","Grupo exclusivo de trocas e indicações","Descontos com marcas parceiras"]},
+      {id:"pl3",name:"Fundadora",price:970,period:"/ano",featured:false,perks:["Tudo do plano Membra Tríade","2 meses grátis no plano anual","Mentoria trimestral em grupo","Prioridade em vagas VIP e brindes"]}
+    ]
+  };
+  function read(key){ try{ const raw=localStorage.getItem(NS+key); if(raw===null){localStorage.setItem(NS+key,JSON.stringify(seed[key]));return seed[key];} return JSON.parse(raw);}catch(e){return seed[key]||[];} }
+  function write(key,v){ try{localStorage.setItem(NS+key,JSON.stringify(v));return true;}catch(e){return false;} }
+  function setPref(k,v){return write("pref_"+k,v);}
+  function getPref(k,f){try{const r=localStorage.getItem(NS+"pref_"+k);return r===null?f:JSON.parse(r);}catch(e){return f;}}
+  return {
+    getEvents:()=>read("events"), getSpeakers:()=>read("speakers"), getPlans:()=>read("plans"),
+    choosePlan:(id)=>setPref("selected_plan",id), getChosenPlan:()=>getPref("selected_plan",null),
+    rsvpEvent:(id)=>{const l=getPref("rsvps",[]);if(!l.includes(id))l.push(id);setPref("rsvps",l);return l;},
+    hasRsvp:(id)=>getPref("rsvps",[]).includes(id),
+    toggleLike:(id)=>{const l=getPref("likes",[]);const i=l.indexOf(id);if(i>-1)l.splice(i,1);else l.push(id);setPref("likes",l);return l.includes(id);},
+    isLiked:(id)=>getPref("likes",[]).includes(id),
+    toggleSave:(id)=>{const l=getPref("saves",[]);const i=l.indexOf(id);if(i>-1)l.splice(i,1);else l.push(id);setPref("saves",l);return l.includes(id);},
+    isSaved:(id)=>getPref("saves",[]).includes(id),
+  };
+})();
+
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.className='toast glass-strong';t.id='toast';
+    t.innerHTML='<span id="toast-msg"></span>'; document.body.appendChild(t);}
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function switchTab(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab[data-tab="'+name+'"]').forEach(t=>t.classList.add('active'));
+  document.querySelector('.app-main').scrollTo({top:0,behavior:'instant'});
+}
+
+function toggleLike(btn,id,countEl){
+  const liked = TriadeData.toggleLike(id);
+  btn.classList.toggle('liked', liked);
+  btn.innerHTML = liked ? ICON_HEART_FILL : ICON_HEART;
+  if(countEl){
+    let n = parseInt(countEl.dataset.base,10);
+    countEl.textContent = (liked? n+1 : n) + ' curtidas';
+  }
+}
+function toggleSave(btn,id){
+  const saved = TriadeData.toggleSave(id);
+  btn.classList.toggle('saved', saved);
+  btn.innerHTML = saved ? ICON_BOOKMARK_FILL : ICON_BOOKMARK;
+  showToast(saved? 'Salvo na sua coleção' : 'Removido dos salvos');
+}
+function doubleTapLike(el,id,btnSelector,countEl){
+  const liked = TriadeData.isLiked(id);
+  if(!liked){ toggleLike(document.querySelector(btnSelector), id, countEl); }
+  const burst = el.querySelector('.heart-burst');
+  burst.classList.remove('burst'); void burst.offsetWidth; burst.classList.add('burst');
+}
+function shareIt(){ showToast('Link copiado para compartilhar'); }
+function commentIt(){ showToast('Em breve: comentários da comunidade'); }
+
+
+    const ICON_HEART = `<svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const ICON_HEART_FILL = `<svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 19.6s-6.6-4.05-8.9-8.2C1.5 8.1 2.6 5 5.6 4.5c1.9-.3 3.6.65 4.4 2.25C10.8 5.1 12.5 4.2 14.4 4.5c3 .5 4.1 3.6 3.3 6.9C15.4 15.55 12 19.6 12 19.6Z" fill="currentColor" stroke="none"/></svg>`;
+    const ICON_BOOKMARK = `<svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6.6 4h10.8a1 1 0 0 1 1 1v15l-6.4-4.1L5.6 20V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/></svg>`;
+    const ICON_BOOKMARK_FILL = `<svg class="icon " width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6.6 4h10.8a1 1 0 0 1 1 1v15l-6.4-4.1L5.6 20V5a1 1 0 0 1 1-1Z" fill="currentColor" stroke="none"/></svg>`;
+
+    // restaura estado de like/save nos posts da home
+    (function(){
+      const posts = ['post-ed3','post-recap'];
+      posts.forEach(id=>{
+        const liked = TriadeData.isLiked(id);
+        const saved = TriadeData.isSaved(id);
+        const likeBtn = document.getElementById(id==='post-ed3'?'like-ed3':'like-recap');
+        const saveBtn = document.getElementById(id==='post-ed3'?'save-ed3':'save-recap');
+        if(liked && likeBtn){ likeBtn.classList.add('liked'); likeBtn.innerHTML = ICON_HEART_FILL; }
+        if(saved && saveBtn){ saveBtn.classList.add('saved'); saveBtn.innerHTML = ICON_BOOKMARK_FILL; }
+      });
+    })();
+
+    // ---- Eventos ----
+    let evFilter = 'todos';
+    function filterEv(btn, val){
+      document.querySelectorAll('#panel-eventos .segmented button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); evFilter = val; renderEvents();
+    }
+    function renderEvents(){
+      const list = document.getElementById('events-list');
+      const events = TriadeData.getEvents().filter(e => evFilter==='todos' ? true : e.status===evFilter);
+      list.innerHTML = events.map(e=>{
+        const dateStr = new Date(e.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+        const going = TriadeData.hasRsvp(e.id);
+        const cls = e.status==='em breve' ? 'embreve':'realizado';
+        return `
+        <div class="ev-card glass">
+          <div class="ph"><span class="markwrap on-glass" style="--m:30px;"><svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="6,10 6,110 66,60" class="m-solid"/><polygon points="34,14 34,106 88,60" class="m-outline"/><polygon points="62,18 62,102 116,60" class="m-outline"/>
+    </svg></span></div>
+          <div class="body">
+            <span class="status-pill ${cls}">${e.status}</span>
+            <h3>${e.title}</h3>
+            <div class="meta"><span><svg class="icon " width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.3" y="5.2" width="17.4" height="15.4" rx="4"/><path d="M3.3 9.8h17.4M8 3.2v4M16 3.2v4" stroke-linecap="round"/></svg> ${dateStr}</span><span><svg class="icon " width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 1 0 5.5 10c0 4.9 6.5 11 6.5 11Z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3"/></svg> ${e.location}</span></div>
+          </div>
+        </div>
+        ${e.status==='em breve' ? `<button class="btn ${going?'btn-glass':'btn-primary'} full" style="margin:-4px 0 12px;" onclick="rsvp('${e.id}',this)">${going?'Presença confirmada ✓':'Quero participar'}</button>` : ''}
+        `;
+      }).join('') || '<p style="color:var(--ink-70);font-size:13px;">Nenhum evento nesse filtro.</p>';
+    }
+    function rsvp(id,btn){ TriadeData.rsvpEvent(id); showToast('Presença confirmada! Nos vemos lá 🤍'); renderEvents(); }
+    renderEvents();
+
+    // ---- Palestrantes ----
+    (function(){
+      const grid = document.getElementById('pal-grid');
+      const detail = document.getElementById('pal-detail');
+      const speakers = TriadeData.getSpeakers();
+      grid.innerHTML = speakers.map((s,i)=>`<div class="pal-cell" onclick="showPal(${i})"><span class="nm">${s.name.split(' ')[0]}</span></div>`).join('');
+      window.showPal = function(i){
+        const s = speakers[i];
+        detail.classList.add('show');
+        detail.innerHTML = `<div class="eyebrow">${s.topic}</div><h3 style="font-size:16px;margin-top:8px;">${s.name}</h3><p style="margin-top:8px;">${s.bio}</p>`;
+      };
+    })();
+
+    // ---- Planos ----
+    function renderPlans(){
+      const grid = document.getElementById('plans-grid');
+      const plans = TriadeData.getPlans();
+      const chosen = TriadeData.getChosenPlan();
+      function money(v){ return v===0?'':v.toLocaleString('pt-BR'); }
+      grid.innerHTML = plans.map(p=>`
+        <div class="plan-card glass ${p.featured?'featured glass-dark':''}">
+          ${p.featured?'<span class="badge">Mais escolhido</span>':''}
+          <div class="name">${p.name}</div>
+          <div class="price">${p.price===0?'Grátis':'R$ '+money(p.price)} <small>${p.price===0?'':p.period}</small></div>
+          <ul>${p.perks.map(perk=>`<li><svg class="icon " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M5 12.5 9.5 17 19 6.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${perk}</span></li>`).join('')}</ul>
+          <button class="btn ${p.featured?'btn-glass':'btn-primary'} full" style="margin-top:16px;" onclick="choosePlan('${p.id}','${p.name}')">${chosen===p.id?'Selecionado':'Escolher '+p.name}</button>
+        </div>`).join('');
+    }
+    function choosePlan(id,name){ TriadeData.choosePlan(id); showToast('Plano '+name+' selecionado!'); renderPlans(); }
+    renderPlans();
+    
+</script>
+</body>
+</html>

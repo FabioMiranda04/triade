@@ -1,0 +1,44 @@
+/* =============================================================
+   Design tokens — "Liquid Glass" Tríade Conecta
+   Valores idênticos aos do protótipo original (legacy/).
+   Mudou cor/raio/tipografia? Mude AQUI, nunca dentro do componente.
+   ============================================================= */
+:root {
+  /* superfícies */
+  --sand: #f4eee3;
+  --sand-deep: #eae1d1;
+
+  /* texto */
+  --ink: #231c1a;
+  --ink-70: rgba(35, 28, 26, 0.68);
+  --ink-45: rgba(35, 28, 26, 0.45);
+
+  /* marca */
+  --wine: #7c2a3d;
+  --wine-deep: #511b29;
+  --gold: #c79a55;
+  --gold-soft: #efdcb8;
+  --plum: #4a2140;
+  --blush: #e7b3a0;
+
+  /* vidro */
+  --glass: rgba(255, 255, 255, 0.5);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-dark: rgba(25, 19, 18, 0.72);
+  --glass-dark-border: rgba(255, 255, 255, 0.14);
+
+  /* raios */
+  --r-xl: 28px;
+  --r-lg: 22px;
+  --r-md: 14px;
+
+  /* safe areas (iPhone) */
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+
+  /* tipografia */
+  --font-display: 'Fraunces', serif;
+  --font-script: 'Instrument Serif', serif;
+  --font-ui: 'Inter', sans-serif;
+}

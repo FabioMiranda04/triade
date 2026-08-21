@@ -1,0 +1,13 @@
+{
+  "name": "Tríade Conecta",
+  "short_name": "Tríade",
+  "description": "Mulheres, negócios e conexões.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4EEE3",
+  "theme_color": "#7C2A3D",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
