@@ -66,7 +66,7 @@ Nenhum componente fala com o banco direto: tudo passa pelo `db` de
 - [`docs/ESTADO-DO-PROJETO.md`](./docs/ESTADO-DO-PROJETO.md) — onde o projeto está agora
 - [`docs/CHANGELOG.md`](./docs/CHANGELOG.md) — histórico por sessão
 - [`docs/ARQUITETURA.md`](./docs/ARQUITETURA.md) — decisões técnicas
-- [`docs/DESIGN-SYSTEM.md`](./docs/DESIGN-SYSTEM.md) — cores, tipografia, componentes
+- [`docs/DESIGN-SYSTEM.md`](./docs/DESIGN-SYSTEM.md) — manual de UI/UX: cores, tipografia, pop-ups, ícones, animação, navegação
 - [`docs/SUPABASE.md`](./docs/SUPABASE.md) — configurar o banco, RLS, chaves
 - [`docs/DEPLOY.md`](./docs/DEPLOY.md) — publicar na Vercel
 

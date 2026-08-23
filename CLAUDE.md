@@ -2,7 +2,9 @@
 
 > Leia este arquivo antes de qualquer alteração. Ele é o contrato de trabalho
 > deste repositório. Estado atual detalhado: `docs/ESTADO-DO-PROJETO.md`.
-> Histórico: `docs/CHANGELOG.md`.
+> Histórico: `docs/CHANGELOG.md`. Manual de UI/UX (tokens, pop-ups, ícones,
+> animação, navegação): `docs/DESIGN-SYSTEM.md` — invoque a skill
+> `design-systems` antes de qualquer trabalho de interface.
 
 ## 1. O que é
 
@@ -50,15 +52,24 @@ src/
 ├── App.tsx               # app shell (header + conteúdo + tab bar) e rotas
 ├── screens/              # uma tela por aba — NÃO renomeie sem atualizar TabBar
 ├── components/           # peças reutilizáveis de UI
-├── hooks/                # useAsyncData, useEngagement, useDoubleTap
+│   ├── ModalOverlay.tsx  #   portal + efeitos compartilhados de TODO pop-up
+│   ├── EventModal.tsx    #   detalhes do evento + "Quero participar" (WhatsApp)
+│   ├── EditSheet.tsx     #   formulário genérico (usado por Event/Speaker/PostEditSheet)
+│   ├── SettingsSheet.tsx #   configurações do app (lista estilo iOS)
+│   └── Kebab.tsx         #   menu "..." estilo Instagram
+├── context/
+│   └── TabBarStyleContext.tsx  # estilo da tab bar (Padrão / Padrão 2), persistido
+├── hooks/                # useAsyncData, useEngagement, useDoubleTap, useModalEffects
 ├── lib/
 │   ├── db/               # camada de dados — ÚNICA fronteira de persistência
 │   │   ├── index.ts      #   exporta `db` (escolhe o provider)
 │   │   ├── types.ts      #   interface DataProvider
 │   │   ├── localProvider.ts
 │   │   ├── supabaseProvider.ts
-│   │   └── prefs.ts      #   preferências no localStorage
+│   │   ├── prefs.ts      #   preferências no localStorage
+│   │   └── localContent.ts  # overlay local de edição de conteúdo (nunca vai pro Supabase)
 │   ├── supabase.ts       # cliente (null se não houver credenciais)
+│   ├── whatsapp.ts       # link + mensagem pronta do wa.me
 │   └── format.ts         # datas, preços, classes de status (pt-BR)
 ├── data/seed.ts          # todo o conteúdo mock (textos, eventos, planos...)
 ├── types/index.ts        # tipos do domínio
@@ -68,13 +79,17 @@ src/
 └── styles/
     ├── tokens.css        # variáveis de cor/raio/tipografia — mude AQUI
     ├── base.css          # reset e elementos base
-    ├── layout.css        # mesh, vidro, app shell, tab bar
-    └── components.css    # feed, eventos, planos, botões, toast
+    ├── layout.css        # mesh, vidro, app shell, tab bar (2 estilos)
+    └── components.css    # feed, eventos, planos, botões, toast, pop-ups
 
 supabase/
-├── schema.sql            # tabelas + RLS + triggers (idempotente)
+├── schema.sql            # tabelas + RLS + triggers (idempotente) — já rodado no projeto real
 └── seed.sql              # conteúdo inicial (idempotente)
 ```
+
+`docs/DESIGN-SYSTEM.md` é o manual de UI/UX (tokens, pop-ups, ícones,
+animação, navegação) — leia antes de mexer em interface, via skill
+`design-systems`.
 
 ## 5. Regras do projeto (importantes)
 
@@ -109,6 +124,14 @@ supabase/
 13. **Ao terminar uma sessão de trabalho**, atualize `docs/CHANGELOG.md`
     (nova entrada no topo) e `docs/ESTADO-DO-PROJETO.md` (estado atual).
     Protocolo na seção 9 daquele arquivo.
+14. **Qualquer trabalho de UI/UX** (tela, componente visual, pop-up, ícone,
+    animação, navegação) invoca a skill `design-systems` antes de codar —
+    checklist e regras completas em `docs/DESIGN-SYSTEM.md`. Duas regras de
+    lá que já causaram bug real e valem repetir aqui: **todo pop-up passa
+    por `ModalOverlay`** (nunca um `<div className="modal-overlay">` cru —
+    quebra dentro de componentes com `backdrop-filter`), e **nunca anime
+    `scale`/resize num elemento com `backdrop-filter`** (só
+    `translate`/opacidade).
 
 ## 6. Como adicionar coisas
 
@@ -118,7 +141,18 @@ adicione a `<Route>` em `App.tsx` → adicione o item em
 itens; mais que isso aperta em telas de 360px.
 
 **Novo ícone:** acrescente uma chave em `PATHS` no `components/Icon.tsx`,
-`viewBox="0 0 24 24"`, `stroke-width` 1.9, estilo linha fina.
+`viewBox="0 0 24 24"`. Linha fina (padrão, herda `stroke-width` 1.9 do
+componente) para a maioria; preenchido (`fill="currentColor" stroke="none"`
+no `<path>`) só quando for um glifo de marca reconhecível (ex: WhatsApp).
+Detalhes em `docs/DESIGN-SYSTEM.md`, seção 5.
+
+**Novo pop-up:** sempre via `<ModalOverlay onClose={onClose}>` por dentro
+— nunca escreva `<div className="modal-overlay">` à mão (quebra
+`position: fixed` se o pop-up nascer dentro de um componente com
+`backdrop-filter`, como o `TopBar`). Sheet interno é sempre
+`glass-dark`, centralizado, cantos totalmente arredondados — não existe
+mais variante clara nem bottom-sheet. Detalhes em `docs/DESIGN-SYSTEM.md`,
+seção 4.
 
 **Novo campo de dado:** coluna em `supabase/schema.sql` → tipo em
 `src/types/database.ts` → tipo do domínio em `src/types/index.ts` → mapeamento
@@ -126,20 +160,35 @@ em `supabaseProvider.ts` → valor em `src/data/seed.ts` (para o modo local) →
 leitura via `db`. Os cinco passos, sempre — pular um deixa os dois providers
 fora de sincronia.
 
-**Mover engajamento para o servidor (Módulo 2):** as tabelas já existem em
-`schema.sql` com RLS. Requer autenticação primeiro; as assinaturas de
-`isLiked`/`toggleLike`/etc. em `DataProvider` vão precisar virar assíncronas.
+**Mover engajamento para o servidor (Módulo 2):** as tabelas
+(`profiles`/`rsvps`/`post_engagements`/`plan_selections`) **já existem no
+projeto Supabase real** com RLS, confirmado ao vivo em 23/08/2026 — não é
+só o `schema.sql` do repositório, já foi rodado. Autenticação por
+e-mail/senha **já está habilitada** no Supabase (confirmação de e-mail
+obrigatória, `mailer_autoconfirm: false`; nenhum login social ligado).
+Falta só o lado do app: `src/context/AuthContext.tsx` ligado a
+`onAuthStateChange`, telas de entrar/cadastrar, e tornar assíncronas as
+assinaturas de `isLiked`/`toggleLike`/`hasRsvp`/`rsvpEvent`/`cancelRsvp`/
+`getChosenPlan`/`choosePlan` em `DataProvider`.
 
 ## 7. O que ainda NÃO existe (não presuma)
 
-- Sem autenticação/login. Sem conta de usuária.
-- **Engajamento (curtir, salvar, RSVP, plano escolhido) NÃO vai para o
-  Supabase** — é localStorage, por navegador. Sem login não há a quem
-  atribuir. Só o conteúdo (eventos, palestrantes, planos) vem do banco.
+- Sem autenticação/login **no app** (o lado do Supabase já está pronto —
+  ver seção 6, "Mover engajamento para o servidor"). Sem conta de usuária.
+- **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) NÃO vai
+  para o Supabase** — é localStorage, por navegador. Sem login não há a
+  quem atribuir. Só o conteúdo (eventos, palestrantes, planos) vem do banco.
+- **Edição de conteúdo pelo app (menu "..." → Editar, criar evento/
+  palestrante) também é só local** — um overlay em cima do conteúdo lido,
+  não grava no Supabase de propósito (sem login, chave de escrita pública
+  seria risco de segurança). Não confunda com um painel administrativo real.
 - Sem fotos reais — todas as "imagens" são gradientes de cor da marca.
 - Sem pagamento. Escolher plano só grava a escolha localmente.
-- Sem painel administrativo.
+- Sem painel administrativo de verdade (a UI de edição acima não conta —
+  falta o backend com permissão real, ver Módulo 5).
 - Sem testes automatizados no repositório.
+- Sem atalho de instalação (Android/iOS) nem notificações de evento —
+  planejado como Módulo 7, depois da autenticação.
 
 ## 8. Roadmap
 
@@ -147,11 +196,13 @@ fora de sincronia.
 |---|---|---|
 | 1 | Landing / app shell — 5 telas | ✅ migrado para código |
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
-| 2 | Autenticação (Supabase Auth) e perfil | ⏭️ próximo |
+| — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
+| 2 | Autenticação (Supabase Auth) e perfil — tabelas e auth já ativos no Supabase, falta o app | ⏭️ próximo |
 | 3 | Área de membras logada (feed real, diretório) | ⏳ |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
-| 5 | Painel administrativo (CRUD) | ⏳ |
+| 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
 | 6 | Migração de dados localStorage → banco | ⏳ |
+| 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | ⏳ depende do Módulo 2 |
 
 ## 9. Deploy
 

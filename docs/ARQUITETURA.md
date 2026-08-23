@@ -93,10 +93,11 @@ reescrever tudo para `index.html` — feito no `vercel.json`.
 
 ## Estado
 
-Estado local por tela, com `useState` + `useAsyncData`. Não há store global
-porque ainda não há dado global de verdade. Quando entrar autenticação
-(Módulo 2), a usuária logada deve virar um Context em `src/context/`
-alimentado por `supabase.auth.onAuthStateChange` — não espalhe prop drilling.
+Estado local por tela, com `useState` + `useAsyncData`. `src/context/` já
+existe (`TabBarStyleContext`, uma preferência de UI persistida) — quando
+entrar autenticação (Módulo 2), a usuária logada segue o mesmo padrão: um
+Context novo em `src/context/` alimentado por
+`supabase.auth.onAuthStateChange`, não prop drilling.
 
 ## Estilos
 
@@ -113,11 +114,25 @@ Sem CSS Modules por enquanto: as classes são poucas, semânticas e vieram do
 protótipo. Se um componente novo precisar de estilo isolado, use
 `Componente.module.css` ao lado do `.tsx`.
 
+## Pop-ups
+
+Todo pop-up (`EventModal`, `EditSheet`, `SettingsSheet`) renderiza através
+de `ModalOverlay` (`src/components/ModalOverlay.tsx`), que usa
+`createPortal` para montar direto em `document.body` — nunca como filho
+normal da árvore. Decisão de arquitetura, não só estilo: um pop-up nascido
+dentro de um componente com `backdrop-filter` (ex: o `TopBar`, que usa
+`.glass`) tem `position: fixed` quebrado no Chrome, porque esse ancestral
+vira o "containing block". O portal remove essa dependência de onde na
+árvore o pop-up é montado. Detalhes visuais e a regra de performance
+associada (nunca `scale` num elemento com `backdrop-filter`) estão em
+`docs/DESIGN-SYSTEM.md`.
+
 ## Ícones
 
-SVG inline em `components/Icon.tsx`, `viewBox="0 0 24 24"`, traço 1.9,
-`stroke="currentColor"`. Nenhuma biblioteca de ícones — o peso e a diferença
-de estilo não compensam.
+SVG inline em `components/Icon.tsx`, `viewBox="0 0 24 24"`. Nenhuma
+biblioteca de ícones — o peso e a diferença de estilo não compensam. Dois
+estilos de path coexistem (traço fino padrão vs. preenchido para glifo de
+marca reconhecível, como o WhatsApp) — ver `docs/DESIGN-SYSTEM.md`, seção 5.
 
 ## Decisões deliberadamente adiadas
 

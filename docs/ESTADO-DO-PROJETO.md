@@ -3,15 +3,17 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.9.0`
+**Versão atual:** `v0.10.0`
 **Última atualização:** 23/08/2026
 **Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado —
 **confirmado ao vivo em 23/08/2026** que as 4 tabelas do Módulo 2
 (`profiles`/`rsvps`/`post_engagements`/`plan_selections`) já existem no
 projeto real, com RLS, e que a autenticação por e-mail/senha já está
 habilitada no Supabase (com confirmação de e-mail obrigatória, sem login
-social); próximo é o **Módulo 2 (autenticação)** propriamente — falta só o
-lado do app (AuthContext, telas, migrar engajamento para async). Módulo 7
+social); manual de UI/UX (`docs/DESIGN-SYSTEM.md`) reescrito por completo e
+skill `design-systems` criada para aplicá-lo em todo trabalho visual
+futuro. Próximo passo: **Módulo 2 (autenticação)** propriamente — falta só
+o lado do app (AuthContext, telas, migrar engajamento para async). Módulo 7
 (instalar como app + notificações) planejado para depois dele.
 
 ---
@@ -73,6 +75,11 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       destaque, incluindo criar novo evento/palestrante — tudo salvo só no
       navegador via `src/lib/db/localContent.ts` (nunca grava no Supabase,
       não há autenticação ainda).
+- [x] **Manual de UI/UX vivo** (`docs/DESIGN-SYSTEM.md`, reescrito por
+      completo em 23/08/2026) + skill `design-systems`
+      (`.claude/commands/design-systems.md`) que aplica o checklist do
+      manual — invocar antes de qualquer tela, componente, pop-up, ícone,
+      animação ou navegação nova.
 - [x] **Infra de repositório**: `CLAUDE.md`, docs, `.gitignore`,
       `vercel.json` (com rewrite de SPA), CI do GitHub Actions rodando
       typecheck + build, comandos do Claude Code em `.claude/commands/`.
@@ -100,10 +107,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 | `src/` | O app (telas, componentes, hooks, dados, estilos) |
 | `supabase/` | `schema.sql` (tabelas + RLS) e `seed.sql` (conteúdo inicial) |
 | `docs/` | Esta documentação |
+| `docs/DESIGN-SYSTEM.md` | **Manual de UI/UX** — tokens, pop-ups, ícones, animação, navegação. Ler antes de mexer em interface. |
 | `.env.example` | Modelo das variáveis; copiar para `.env.local` |
 | `legacy/` | HTML original do Bubble, só referência — **não editar** |
 | `vercel.json` | Configuração de deploy (inclui rewrite de SPA) |
-| `.claude/commands/` | Comandos prontos para o Claude Code |
+| `.claude/commands/` | Comandos/skills prontos para o Claude Code (inclui `design-systems`) |
 | `.github/workflows/ci.yml` | Typecheck + build em cada push/PR |
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)

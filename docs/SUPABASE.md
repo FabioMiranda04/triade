@@ -12,8 +12,15 @@ planos sem publicar código novo.
 | Curtidas, salvos, RSVP, plano escolhido | **localStorage** | sem login não há usuária a quem atribuir |
 
 As tabelas de engajamento por usuária (`profiles`, `rsvps`,
-`post_engagements`, `plan_selections`) **já existem** no `schema.sql`, com RLS
-restrita, esperando a autenticação do Módulo 2.
+`post_engagements`, `plan_selections`) **já existem no projeto real**
+(confirmado ao vivo em 23/08/2026, não é só o `schema.sql` do repositório),
+com RLS restrita, esperando o lado do app do Módulo 2. A **autenticação por
+e-mail/senha também já está habilitada** no projeto Supabase — confirmação
+de e-mail obrigatória (`mailer_autoconfirm: false`), nenhum login social
+ligado. Ou seja: o Módulo 2 não precisa de nenhuma configuração nova no
+painel do Supabase, só o código do app (`AuthContext`, telas de entrar/
+cadastrar, e as funções de engajamento do `DataProvider` virando
+assíncronas).
 
 ## Configurar (10 minutos)
 

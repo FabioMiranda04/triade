@@ -11,6 +11,37 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v0.10.0 — Manual de design vira documento vivo + skill `design-systems`
+**Sessão 10 — 23/08/2026**
+
+- **`docs/DESIGN-SYSTEM.md` reescrito por completo.** A versão anterior
+  cobria só a v0.1 (cores, vidro, tipografia, um punhado de componentes).
+  Agora documenta tudo construído nas sessões 6–9: o sistema de pop-up
+  (`ModalOverlay`, padrão único centralizado/escuro), os dois estilos de
+  ícone (linha fina vs. glifo de marca preenchido), navegação (tab bar
+  Padrão/Padrão 2, regra de "variação vira opção em Configurações"), o
+  catálogo de animações com a curva de easing padrão, e — em destaque,
+  seção própria — a regra de performance de `backdrop-filter` que já
+  causou um bug real (nunca `scale` num elemento com vidro; pausar o que
+  se mexe atrás dele). Passa a ser um documento que a própria seção 11 dele
+  pede para manter atualizado a cada sessão que mexer em UI.
+- **Nova skill `design-systems`** (`.claude/commands/design-systems.md`):
+  checklist obrigatório de UI/UX (cor só via token, vidro certo, pop-up via
+  `ModalOverlay`, animação com a curva padrão, alvo de toque, variação vs.
+  substituição, mobile 375px) para invocar antes de qualquer implementação
+  visual nova — e lembrete de atualizar o manual depois.
+- **`CLAUDE.md` atualizado** para refletir o estado real do repositório:
+  mapa de arquivos com todos os componentes/contexto/libs novos desde a
+  v0.5, regra nova apontando para a skill `design-systems`, a confirmação
+  ao vivo de que as tabelas do Módulo 2 e a autenticação por e-mail já
+  existem no Supabase (não é só o `schema.sql` do repo), e o roadmap com o
+  Módulo 7 (atalho de instalação + notificações, pedido em 23/08/2026).
+
+**Arquivos gerados/alterados:** `docs/DESIGN-SYSTEM.md`,
+`.claude/commands/design-systems.md`, `CLAUDE.md`
+
+---
+
 ## v0.9.0 — Configurações do app + tab bar flutuante (estilo Uber) como opção
 **Sessão 9 — 23/08/2026**
 
@@ -38,6 +69,8 @@ desenvolvimento dentro do mesmo módulo.
 - **Validado** com `tsc --noEmit`, `vite build`, e testes de ponta a ponta
   com Playwright (trocar de estilo, navegar por todas as abas, recarregar a
   página, voltar ao padrão — sem erros de console).
+- Ajuste fino de proporção da pílula "Padrão 2" (feedback do usuário após
+  ver a primeira versão): mais estreita e mais alta.
 
 **Arquivos gerados/alterados:** `src/components/{SettingsSheet,
 ModalOverlay,EventModal,EditSheet,TabBar,TopBar,Icon}.tsx`,
