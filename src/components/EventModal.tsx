@@ -42,7 +42,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
         </button>
 
         {step === 'details' ? (
-          <>
+          <div className="modal-step" key="details">
             <div className="modal-ph">
               <Mark size={30} />
             </div>
@@ -68,9 +68,9 @@ export function EventModal({ event, onClose }: EventModalProps) {
                 Quero participar
               </button>
             )}
-          </>
+          </div>
         ) : (
-          <>
+          <div className="modal-step" key="contact">
             <button className="modal-back" onClick={() => setStep('details')}>
               <Icon name="chevronLeft" size={14} /> Voltar
             </button>
@@ -98,7 +98,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
                 </a>
               ))}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

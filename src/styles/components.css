@@ -398,11 +398,19 @@
   padding: 24px 20px calc(24px + var(--safe-b));
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   position: relative;
-  animation: modalup 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  animation: modalup 0.36s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes modalup {
-  from { transform: translateY(16px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { transform: translateY(28px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+/* troca de etapa dentro do mesmo pop-up (ex: detalhes -> contatos) */
+.modal-step {
+  animation: stepin 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@keyframes stepin {
+  from { opacity: 0; transform: translateY(10px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .modal-close {
   position: absolute;
@@ -418,7 +426,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
+.modal-close:active { transform: scale(0.86); background: rgba(255, 255, 255, 0.16); }
 .modal-ph {
   width: 52px;
   height: 52px;
@@ -452,7 +462,9 @@
   padding: 0;
   margin-bottom: 12px;
   cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
+.modal-back:active { opacity: 0.6; transform: translateX(-2px); }
 .modal-contacts {
   display: flex;
   flex-direction: column;
@@ -469,8 +481,17 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: var(--sand);
   text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease;
+  animation: contactin 0.32s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 .wa-btn:active { transform: scale(0.98); }
+.wa-btn:nth-child(1) { animation-delay: 0.04s; }
+.wa-btn:nth-child(2) { animation-delay: 0.1s; }
+.wa-btn:nth-child(3) { animation-delay: 0.16s; }
+@keyframes contactin {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .wa-btn .av {
   width: 40px;
   height: 40px;
@@ -512,6 +533,12 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  transform-origin: top right;
+  animation: kebabpop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes kebabpop {
+  from { opacity: 0; transform: scale(0.9) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .kebab-item {
   display: flex;
@@ -526,8 +553,9 @@
   text-align: left;
   color: var(--ink);
   cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
 }
-.kebab-item:active { background: rgba(35, 28, 26, 0.08); }
+.kebab-item:active { background: rgba(35, 28, 26, 0.08); transform: scale(0.97); }
 
 /* ---------- formulários de edição ---------- */
 .edit-sheet { color: var(--ink); }
@@ -550,11 +578,16 @@
   border: 1px solid var(--glass-border);
   background: rgba(255, 255, 255, 0.65);
   color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease, outline-offset 0.15s ease;
 }
 .field textarea { resize: vertical; min-height: 76px; }
 .field input:focus,
 .field select:focus,
-.field textarea:focus { outline: 2px solid var(--wine); outline-offset: 1px; }
+.field textarea:focus {
+  outline: 2px solid var(--wine);
+  outline-offset: 1px;
+  background: rgba(255, 255, 255, 0.85);
+}
 
 /* ---------- botão "adicionar" ---------- */
 .add-tile {
@@ -572,7 +605,9 @@
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
+.add-tile:active { transform: scale(0.98); background: rgba(124, 42, 61, 0.06); }
 .pal-add {
   aspect-ratio: 1 / 1;
   border-radius: var(--r-md);
@@ -583,11 +618,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
   gap: 4px;
   font-size: 10.5px;
   font-weight: 700;
   cursor: pointer;
 }
+.pal-add:active { transform: scale(0.96); background: rgba(124, 42, 61, 0.06); }
 
 /* ---------- toast ---------- */
 .toast {
