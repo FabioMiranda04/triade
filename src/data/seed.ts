@@ -18,6 +18,12 @@ export const events: TriadeEvent[] = [
     speaker: 'Idealizadoras da Tríade',
     theme: 'Conexões reais entre mulheres empreendedoras',
     spots: 65,
+    recapText:
+      'A primeira edição marcou o início do movimento: mulheres de trajetórias diferentes, reunidas por uma tarde inteira, trocando experiência em vez de cartão de visita. Lívia, Lia e Cris abriram o encontro contando por que a Tríade nasceu — e a resposta do público confirmou que fazia falta um espaço assim em Goiânia.',
+    recapMedia: [
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--gold-soft), var(--blush))', legenda: 'Abertura do encontro' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--blush), var(--wine))', legenda: 'Roda de conversa' },
+    ],
   },
   {
     id: 'ed2',
@@ -28,6 +34,12 @@ export const events: TriadeEvent[] = [
     speaker: 'Marcela Zaidem',
     theme: 'Cultura, gestão e o olhar profundo sobre o feminino nos negócios',
     spots: 65,
+    recapText:
+      'Marcela Zaidem trouxe um olhar prático sobre cultura organizacional para quem lidera pequenos times — e sobre como o jeito feminino de gerir pessoas é, na maioria das vezes, o maior ativo escondido de um negócio. A conversa continuou muito depois do horário previsto de encerramento.',
+    recapMedia: [
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--wine), var(--plum))', legenda: 'Marcela Zaidem no palco' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--gold-soft), var(--gold))', legenda: 'Networking depois da palestra' },
+    ],
   },
   {
     id: 'ed3',

@@ -9,6 +9,16 @@ export function formatEventDate(isoDate: string): string {
   });
 }
 
+const SHORT_MONTHS = [
+  'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez',
+];
+
+/** "2025-08-23" -> "23 ago" (rótulo compacto da célula na grade de edições) */
+export function formatEventShortDate(isoDate: string): string {
+  const date = new Date(isoDate + 'T00:00:00');
+  return `${date.getDate()} ${SHORT_MONTHS[date.getMonth()]}`;
+}
+
 /** 970 -> "R$ 970" · 0 -> "Grátis" */
 export function formatPrice(value: number): string {
   return value === 0 ? 'Grátis' : 'R$ ' + value.toLocaleString('pt-BR');

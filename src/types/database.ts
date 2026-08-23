@@ -19,6 +19,8 @@
  * `Property 'x' does not exist on type 'never'`).
  */
 
+import type { EventRecapMedia } from '@/types';
+
 export type EventRow = {
   id: string;
   title: string;
@@ -28,6 +30,8 @@ export type EventRow = {
   speaker: string;
   theme: string;
   spots: number;
+  recap_text: string | null;
+  recap_media: EventRecapMedia[] | null;
   sort_order: number;
   published: boolean;
 }

@@ -25,6 +25,21 @@ há sessão ativa — sem sessão, cai no mesmo comportamento local de sempre.
 Nenhuma configuração nova foi necessária no painel do Supabase, só código
 do app.
 
+## Pendente: rodar o `schema.sql`/`seed.sql` de novo (colunas de retrospectiva)
+
+O Módulo 9 (23/08/2026) acrescentou `recap_text` e `recap_media` à tabela
+`events` (retrospectiva em artigo das edições realizadas — texto + galeria).
+As duas colunas **só existem no `schema.sql`/`seed.sql` do repositório até
+agora** — o banco real do projeto ainda não tem essas colunas, porque essa é
+uma ação em sistema externo que não roda sozinha (é o SQL Editor do
+Supabase, não código do app). Até rodar, o app continua funcionando
+normalmente: o pop-up de retrospectiva só mostra "Em breve, o registro
+completo dessa edição" em vez do conteúdo (degradação graciosa, não é bug).
+Para ativar: **SQL Editor → cole o `schema.sql` inteiro → Run** (é
+idempotente, `alter table ... add column if not exists`, não afeta as
+colunas existentes) e, se quiser o texto/galeria de exemplo das duas
+primeiras edições, rode o `seed.sql` de novo também.
+
 ## Login com Google (OAuth) — ✅ configurado e funcionando
 
 **Confirmado ao vivo em 23/08/2026**: o botão "Continuar com o Google"

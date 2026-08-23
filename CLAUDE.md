@@ -235,6 +235,13 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
 | 6 | Migração de dados localStorage → banco | ⏳ |
 | 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | ⏳ depende do Módulo 2 |
+| 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
+| 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
+| 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |
+
+Detalhamento completo dos módulos 8, 9 e 10 (escopo, campos de dado novos,
+componentes a criar, perguntas em aberto) está em
+`docs/ESTADO-DO-PROJETO.md`, seção 6.
 
 ## 9. Deploy
 

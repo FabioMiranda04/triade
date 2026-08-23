@@ -11,22 +11,26 @@ interface EventCardProps {
   onRsvp: (id: string) => void;
   onCancelRsvp: (id: string) => void;
   onEdit: (event: TriadeEvent) => void;
+  /** 'featured' = card grande do próximo evento (tela Eventos, modo Lista) */
+  variant?: 'default' | 'featured';
 }
 
 /**
  * Card de uma edição do evento + botão de presença (só "em breve").
  * O mesmo botão confirma e, se tocado de novo, desconfirma a presença.
  */
-export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit }: EventCardProps) {
+export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit, variant = 'default' }: EventCardProps) {
+  const featured = variant === 'featured';
   return (
     <>
-      <div className="ev-card glass">
+      <div className={`ev-card glass${featured ? ' featured' : ''}`}>
         <div className="ph">
-          <Mark size={30} />
+          <Mark size={featured ? 40 : 30} />
         </div>
         <div className="body">
           <span className={`status-pill ${statusClass(event.status)}`}>{event.status}</span>
           <h3>{event.title}</h3>
+          {featured && <p className="theme">{event.theme}</p>}
           <div className="meta">
             <span>
               <Icon name="calendar" size={12} /> {formatEventDate(event.date)}
@@ -34,12 +38,22 @@ export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit }: EventC
             <span>
               <Icon name="pin" size={12} /> {event.location}
             </span>
+            {featured && (
+              <span>
+                <Icon name="mic" size={12} /> {event.speaker}
+              </span>
+            )}
+            {featured && (
+              <span>
+                <Icon name="users" size={12} /> {event.spots} vagas
+              </span>
+            )}
           </div>
+          <Kebab
+            label="Opções do evento"
+            actions={[{ label: 'Editar', icon: 'edit', onClick: () => onEdit(event) }]}
+          />
         </div>
-        <Kebab
-          label="Opções do evento"
-          actions={[{ label: 'Editar', icon: 'edit', onClick: () => onEdit(event) }]}
-        />
       </div>
 
       {event.status === 'em breve' && (

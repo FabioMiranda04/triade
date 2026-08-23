@@ -131,6 +131,7 @@ qualquer pop-up:
 | Componente | O que é | Passos internos |
 |---|---|---|
 | `EventModal.tsx` | Detalhes do evento em destaque | 1) detalhes 2) "Quero participar" → 3 sócias no WhatsApp |
+| `EventRecapModal.tsx` | Retrospectiva de uma edição já realizada | texto + galeria de fotos (`.recap-photo`, fundo gradiente/URL) e vídeos (`.recap-video`, iframe) — sem passo, é uma tela só |
 | `EditSheet.tsx` | Formulário genérico de criar/editar | usado por `EventEditSheet`, `SpeakerEditSheet`, `PostEditSheet` |
 | `SettingsSheet.tsx` | Configurações do app | lista agrupada estilo iOS |
 | `AccountSheet.tsx` | Conta da usuária | deslogada: entrar/cadastrar (alterna, com botão "Continuar com o Google") → cadastro pode levar a "confira seu e-mail"; logada: avatar/nome/e-mail + "Editar perfil" + sair |
@@ -306,10 +307,13 @@ instantaneamente).
 |---|---|
 | `.post` + `<PostCard>` | card de feed: avatar, imagem, ações, legenda, kebab opcional |
 | `.stories` + `<Stories>` | fileira circular no topo do Início |
-| `.ev-card` + `<EventCard>` | card de edição do evento, RSVP (alterna confirmar/cancelar) e kebab |
+| `.ev-card` + `<EventCard>` | card de edição do evento, RSVP (alterna confirmar/cancelar) e kebab; `variant="featured"` (tela Eventos, próximo evento) é bem maior — imagem cheia no topo, tema e mais itens de meta |
 | `.plan-card` + `<PlanCard>` | card de plano; `featured` usa vidro escuro |
 | `.pal-grid` / `.pal-cell` / `.pal-add` | grade 3 colunas de palestrantes + célula de adicionar |
-| `.segmented` | filtro de eventos (Todos / Em breve / Realizados) |
+| `.event-grid` / `.event-cell` | mesma ideia da grade de palestrantes, para as edições anteriores (tela Eventos) — célula quadrada com data curta + palestrante, abre `EventRecapModal` |
+| `<EventCalendar>` (`.cal` / `.cal-grid` / `.cal-cell`) | mês corrente com marcador (`.dot`) nos dias com evento; só dias com evento são `<button>`, o resto é `<span>` — não interativo. Superfície `.glass-strong` (sem blur) de propósito, pra poder usar `scale` no `:active` dos dias sem entrar na regra de `backdrop-filter` (seção 9) |
+| `.ev-search` | busca com ícone inline, escopada a uma tela (ex: buscar edição anterior) — não é a busca global, que saiu do cabeçalho (seção 6.1) |
+| `.segmented` | alternância dentro de uma tela — hoje é o controle Lista/Calendário da tela Eventos (era o filtro Todos/Em breve/Realizados até o redesenho de 23/08/2026) |
 | `.sec-head` + `<SectionHead>` | eyebrow + título + descrição |
 | `.btn` `.btn-primary` `.btn-glass` `.full` | botões |
 | `.toast` + `useToast()` | mensagem curta no rodapé (~2,2s) |

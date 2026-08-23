@@ -211,3 +211,17 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+
+-- =============================================================
+--  5. MÓDULO 9 — retrospectiva das edições (calendário + histórico)
+--
+--  Cada evento "realizado" pode ganhar um texto de retrospectiva e uma
+--  galeria de fotos/vídeos, mostrados no pop-up de histórico em artigo.
+--  `recap_media` é um array de { tipo: 'foto' | 'vídeo', url, legenda? } —
+--  `url` de foto ainda é um gradiente CSS (placeholder, sem fotos reais,
+--  ver seção 7 do CLAUDE.md) até entrar material de verdade.
+-- =============================================================
+
+alter table public.events add column if not exists recap_text text;
+alter table public.events add column if not exists recap_media jsonb not null default '[]'::jsonb;

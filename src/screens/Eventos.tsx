@@ -1,29 +1,41 @@
-import { useEffect, useState } from 'react';
-import { Icon } from '@/components/Icon';
-import { SectionHead } from '@/components/SectionHead';
+import { useEffect, useMemo, useState } from 'react';
+import { EventCalendar } from '@/components/EventCalendar';
 import { EventCard } from '@/components/EventCard';
 import { EventEditSheet } from '@/components/EventEditSheet';
+import { EventRecapModal } from '@/components/EventRecapModal';
+import { Icon } from '@/components/Icon';
+import { SectionHead } from '@/components/SectionHead';
 import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
+import { useInfiniteReveal } from '@/hooks/useInfiniteReveal';
 import { db } from '@/lib/db';
 import { applyEventEdits } from '@/lib/db/localContent';
-import type { EventFilter, TriadeEvent } from '@/types';
+import { firstName, formatEventDate, formatEventShortDate } from '@/lib/format';
+import type { TriadeEvent } from '@/types';
 
-const FILTERS: { value: EventFilter; label: string }[] = [
-  { value: 'todos', label: 'Todos' },
-  { value: 'em breve', label: 'Em breve' },
-  { value: 'realizado', label: 'Realizados' },
+type Mode = 'lista' | 'calendario';
+
+const MODES: { value: Mode; label: string }[] = [
+  { value: 'lista', label: 'Lista' },
+  { value: 'calendario', label: 'Calendário' },
 ];
 
-/** Tela Eventos — agenda das edições com filtro e confirmação de presença. */
+/** Normaliza texto pra busca sem sensibilidade a acento/caixa (ex: "café" e "cafe" combinam). */
+function normalize(value: string): string {
+  return value.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/** Tela Eventos — próximo evento em destaque, retrospectiva das edições anteriores e calendário. */
 export default function Eventos() {
   const { showToast } = useToast();
   const { requireAuth } = useAuth();
-  const [filter, setFilter] = useState<EventFilter>('todos');
+  const [mode, setMode] = useState<Mode>('lista');
   const [rsvps, setRsvps] = useState<string[]>([]);
   const [editing, setEditing] = useState<TriadeEvent | 'new' | null>(null);
+  const [recapEvent, setRecapEvent] = useState<TriadeEvent | null>(null);
+  const [query, setQuery] = useState('');
   const [version, setVersion] = useState(0);
 
   const { data: events, loading } = useAsyncData<TriadeEvent[]>(
@@ -31,7 +43,6 @@ export default function Eventos() {
     [],
     version,
   );
-  const visible = events.filter((e) => (filter === 'todos' ? true : e.status === filter));
 
   useEffect(() => {
     let alive = true;
@@ -44,6 +55,33 @@ export default function Eventos() {
       alive = false;
     };
   }, [events]);
+
+  const nextEvent = useMemo(
+    () =>
+      [...events]
+        .filter((e) => e.status === 'em breve')
+        .sort((a, b) => a.date.localeCompare(b.date))[0],
+    [events],
+  );
+
+  const pastEvents = useMemo(
+    () =>
+      [...events]
+        .filter((e) => e.status === 'realizado')
+        .sort((a, b) => b.date.localeCompare(a.date)),
+    [events],
+  );
+
+  const filteredPast = useMemo(() => {
+    const q = normalize(query.trim());
+    if (!q) return pastEvents;
+    return pastEvents.filter((e) =>
+      normalize(`${e.title} ${e.theme} ${e.speaker} ${formatEventDate(e.date)}`).includes(q),
+    );
+  }, [pastEvents, query]);
+
+  const { visibleCount, sentinelRef } = useInfiniteReveal(filteredPast.length, 9);
+  const visiblePast = filteredPast.slice(0, visibleCount);
 
   function handleSaved() {
     setEditing(null);
@@ -67,6 +105,11 @@ export default function Eventos() {
     showToast('Presença cancelada');
   }
 
+  function handleCalendarSelect(event: TriadeEvent) {
+    setMode('lista');
+    if (event.status === 'realizado') setRecapEvent(event);
+  }
+
   return (
     <section className="panel">
       <SectionHead
@@ -77,38 +120,90 @@ export default function Eventos() {
       />
 
       <div className="segmented glass-strong" role="tablist">
-        {FILTERS.map((f) => (
+        {MODES.map((m) => (
           <button
-            key={f.value}
+            key={m.value}
             role="tab"
-            aria-selected={filter === f.value}
-            className={filter === f.value ? 'active' : undefined}
-            onClick={() => setFilter(f.value)}
+            aria-selected={mode === m.value}
+            className={mode === m.value ? 'active' : undefined}
+            onClick={() => setMode(m.value)}
           >
-            {f.label}
+            {m.label}
           </button>
         ))}
       </div>
 
-      <button className="add-tile" onClick={() => setEditing('new')}>
-        <Icon name="plus" size={16} /> Novo evento
-      </button>
-
-      {loading ? (
-        <Skeleton rows={3} height={92} />
-      ) : visible.length === 0 ? (
-        <p className="empty-state">Nenhum evento nesse filtro.</p>
+      {mode === 'calendario' ? (
+        loading ? (
+          <Skeleton rows={1} height={280} />
+        ) : (
+          <EventCalendar events={events} onSelectEvent={handleCalendarSelect} />
+        )
       ) : (
-        visible.map((event) => (
-          <EventCard
-            key={event.id}
-            event={event}
-            going={isGoing(event.id)}
-            onRsvp={handleRsvp}
-            onCancelRsvp={handleCancelRsvp}
-            onEdit={setEditing}
-          />
-        ))
+        <>
+          <button className="add-tile" onClick={() => setEditing('new')}>
+            <Icon name="plus" size={16} /> Novo evento
+          </button>
+
+          {loading ? (
+            <Skeleton rows={3} height={92} />
+          ) : (
+            <>
+              {nextEvent ? (
+                <EventCard
+                  event={nextEvent}
+                  variant="featured"
+                  going={isGoing(nextEvent.id)}
+                  onRsvp={handleRsvp}
+                  onCancelRsvp={handleCancelRsvp}
+                  onEdit={setEditing}
+                />
+              ) : (
+                <p className="empty-state">Nenhuma edição agendada no momento.</p>
+              )}
+
+              <SectionHead eyebrow="Retrospectiva" title="Edições anteriores" />
+
+              {pastEvents.length === 0 ? (
+                <p className="empty-state">Ainda não há edições anteriores.</p>
+              ) : (
+                <>
+                  <div className="event-grid">
+                    {visiblePast.map((event) => (
+                      <button
+                        key={event.id}
+                        className="event-cell"
+                        onClick={() => setRecapEvent(event)}
+                        aria-label={`Ver retrospectiva de ${event.title}`}
+                      >
+                        <span className="date">{formatEventShortDate(event.date)}</span>
+                        <span className="nm">{firstName(event.speaker)}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {visibleCount < filteredPast.length && <div ref={sentinelRef} className="scroll-sentinel" />}
+
+                  {filteredPast.length === 0 && (
+                    <p className="empty-state" style={{ marginTop: 10 }}>
+                      Nenhuma edição encontrada para "{query}".
+                    </p>
+                  )}
+
+                  <label className="ev-search glass-strong">
+                    <Icon name="search" size={16} />
+                    <input
+                      type="search"
+                      placeholder="Buscar edição por tema, palestrante ou mês…"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                    />
+                  </label>
+                </>
+              )}
+            </>
+          )}
+        </>
       )}
 
       {editing && (
@@ -118,6 +213,8 @@ export default function Eventos() {
           onSaved={handleSaved}
         />
       )}
+
+      {recapEvent && <EventRecapModal event={recapEvent} onClose={() => setRecapEvent(null)} />}
     </section>
   );
 }

@@ -6,6 +6,13 @@
 
 export type EventStatus = 'realizado' | 'em breve';
 
+export interface EventRecapMedia {
+  tipo: 'foto' | 'vídeo';
+  /** URL real (vídeo, ou foto quando já houver material real) ou gradiente CSS (placeholder de foto) */
+  url: string;
+  legenda?: string;
+}
+
 export interface TriadeEvent {
   id: string;
   title: string;
@@ -16,6 +23,10 @@ export interface TriadeEvent {
   speaker: string;
   theme: string;
   spots: number;
+  /** retrospectiva em texto — só eventos "realizado" costumam ter */
+  recapText?: string;
+  /** galeria de fotos/vídeos da retrospectiva — só eventos "realizado" costumam ter */
+  recapMedia?: EventRecapMedia[];
 }
 
 export interface Speaker {

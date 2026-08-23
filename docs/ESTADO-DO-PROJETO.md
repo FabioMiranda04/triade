@@ -3,21 +3,24 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v1.2.0`
+**Versão atual:** `v2.0.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído** —
-entrar/cadastrar/sair com Supabase Auth, **login com Google já habilitado
-e confirmado funcionando de ponta a ponta** (testado até a tela real do
-Google), e uma **área de perfil** (nome, bio, Instagram, negócio; foto
-preenchida automaticamente ao entrar com Google). Curtir/salvar/RSVP/plano
-gravam nas tabelas reais quando há usuária logada; sem login, ou sem
-Supabase configurado, continua exatamente local como sempre foi.
-**Navegação reestruturada** (23/08/2026): "Planos" saiu da tab bar e virou
-o CTA "Quero ser membro!" sempre visível no cabeçalho; "Perfil" (com foto
-de quem estiver logada) entrou no lugar, como último item da tab bar —
-estratégia pensada pra vendas, pesquisada e decidida junto com o usuário.
-Próximo passo: **Módulo 3** (feed real, diretório de membras). **Domínio
-próprio** também está no roadmap (seção 7) — depende só de ter/comprar um.
+**Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
+retrospectiva) concluído no código** — controle Lista/Calendário, card
+grande do próximo evento, grade 3 colunas das edições anteriores com
+scroll infinito e busca, `EventCalendar.tsx` novo, `EventRecapModal.tsx`
+novo (retrospectiva em artigo). **Pendente**: rodar o `schema.sql`/
+`seed.sql` atualizados contra o Supabase real (colunas `recap_text`/
+`recap_media`) — ver `docs/SUPABASE.md`. Módulos 8 e 10 (Sobre e
+Palestrantes) continuam só planejados, ver seção 6.
+Módulo 2 (autenticação) segue concluído — entrar/cadastrar/sair com
+Supabase Auth, **login com Google confirmado funcionando de ponta a
+ponta**, área de perfil editável. Curtir/salvar/RSVP/plano gravam nas
+tabelas reais quando há usuária logada; sem login, ou sem Supabase
+configurado, continua local. Navegação reestruturada em 23/08/2026: CTA
+"Quero ser membro!" no cabeçalho + "Perfil" na tab bar. Próximo passo:
+**Módulo 3** (feed real, diretório de membras) ou completar os Módulos 8/10
+já detalhados. **Domínio próprio** também no roadmap (seção 7).
 
 ---
 
@@ -46,8 +49,17 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       compartilhar e comentar (os dois últimos ainda como toast "em breve").
 - [x] **Sobre** com perfil da comunidade, estatísticas, as 3 idealizadoras e
       a trajetória das edições.
-- [x] **Eventos** com filtro (Todos / Em breve / Realizados) e RSVP
-      persistido — confirmar e **cancelar presença** (mesmo botão, alterna).
+- [x] **Eventos redesenhado (Módulo 9, 23/08/2026)**: controle Lista/
+      Calendário (no lugar do antigo filtro Todos/Em breve/Realizados);
+      modo Lista com o próximo evento em card grande
+      (`EventCard variant="featured"`) + grade 3 colunas das edições
+      anteriores com scroll infinito e busca; modo Calendário
+      (`EventCalendar.tsx`, mês corrente, marcador nos dias com evento);
+      retrospectiva em artigo (`EventRecapModal.tsx`, texto + galeria de
+      fotos/vídeos) ao tocar numa edição já realizada. RSVP continua
+      persistido — confirmar e **cancelar presença** (mesmo botão,
+      alterna). Colunas `recap_text`/`recap_media` pendentes de rodar no
+      Supabase real (ver seção 0 abaixo e `docs/SUPABASE.md`).
 - [x] **Palestrantes** em grade, com bio ao tocar.
 - [x] **Planos** com seleção persistida e bloco de patrocínio.
 - [x] **Camada de dados com dois providers** (`src/lib/db/`), tipada e
@@ -173,6 +185,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    - ~~Bolha de notificação (badge do sino) presa no final da tela~~ —
      deixou de existir: o sino saiu do cabeçalho em 23/08/2026 (ver seção 2,
      navegação reestruturada).
+   - ~~Calendário na tela Eventos~~ — **resolvido em 23/08/2026**:
+     `EventCalendar.tsx` novo, desenhado do zero (não foi encontrada
+     nenhuma versão anterior no código, no `git log` nem no `legacy/` — o
+     usuário lembrava de algo que não existia neste repositório). Ver
+     Módulo 9 na seção 6.
 1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
    cadastrar/sair com Supabase Auth; curtir/RSVP/plano gravam nas tabelas
    reais quando logada. Ver seção 2.
@@ -209,6 +226,78 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    - O pré-requisito que faltava (login, pra saber "essa usuária quer ser
      avisada desse evento") **já está pronto** desde o Módulo 2 — este
      módulo pode começar quando fizer sentido de prioridade.
+7. **Módulo 8 — Sobre: mídias e relatos** (pedido em 23/08/2026): a tela
+   `Sobre` (`src/screens/Sobre.tsx`) hoje só tem o card de perfil, as 3
+   idealizadoras e a timeline em texto (`founders`/`timeline` de
+   `data/seed.ts`) — sem fotos, sem vídeo, sem depoimento de participante.
+   Escopo:
+   - **Galeria de mídia** (fotos/vídeos de edições passadas): grade de
+     miniaturas (gradiente da marca por padrão — ver prioridade 1 da seção
+     7, ainda sem fotos reais) que abre em pop-up **via `ModalOverlay`**
+     (lightbox) ao tocar; vídeo entra como link do YouTube/Instagram, iframe
+     simples, sem dependência nova.
+   - **Relatos** (depoimentos de participantes): novo tipo de conteúdo — card
+     com citação + nome + negócio da depoente, alimentado do mesmo jeito que
+     o resto (`data/seed.ts` no modo local, tabela própria no Supabase).
+   - Dados novos, seguindo a receita de 5 passos da seção 6 do `CLAUDE.md`
+     (schema → `database.ts` → `types/index.ts` → `supabaseProvider.ts` →
+     `data/seed.ts`):
+     - Tabela `about_media`: id, tipo (`foto`/`vídeo`), url/gradiente,
+       legenda, evento relacionado (opcional).
+     - Tabela `testimonials`: id, nome, negócio/cargo, citação, evento
+       relacionado (opcional).
+   - Edição pelo app: mesmo padrão do menu "..." → Editar (overlay local em
+     `localContent.ts`) até existir o Módulo 5 (painel administrativo).
+   - Em aberto para a próxima sessão: perguntar se já existe material real
+     (fotos/vídeos/depoimentos) para entrar agora, ou se a tela nasce com
+     placeholders esperando o material depois.
+8. ~~Módulo 9 — Eventos: calendário + nova visualização + histórico em
+   artigo~~ **✅ concluído no código em 23/08/2026** (planejado e
+   implementado na mesma sessão — decisões de layout tomadas com o usuário
+   antes de codar). Redesenho completo de `src/screens/Eventos.tsx`:
+   controle **Lista/Calendário** no topo (no lugar do antigo filtro Todos/
+   Em breve/Realizados); modo Lista com o **próximo evento em card grande**
+   (`EventCard variant="featured"`) + `SectionHead` "Edições anteriores" +
+   **grade 3 colunas** (`.event-grid`/`.event-cell`, mesmo padrão da grade
+   de Palestrantes) com **scroll infinito** (`useInfiniteReveal`,
+   `IntersectionObserver`, +9 por vez, sem paginação real — dataset ainda
+   pequeno) + **busca** (`.ev-search`, abaixo da grade, filtra por texto
+   client-side); modo Calendário com `EventCalendar.tsx` novo (mês
+   corrente, marcador nos dias com evento, tocar num dia volta pro modo
+   Lista e abre o card certo). Retrospectiva em artigo
+   (`EventRecapModal.tsx`, via `ModalOverlay`, texto + galeria de fotos/
+   vídeos) ao tocar numa edição já realizada — `TriadeEvent` ganhou
+   `recapText?`/`recapMedia?`. Múltiplos eventos futuros ao mesmo tempo:
+   decisão do usuário foi não tratar por ora (ritmo é mensal). O calendário
+   que o usuário lembrava de uma versão anterior **não foi encontrado**
+   nem no código, nem no `git log`, nem no `legacy/` — este é desenhado do
+   zero. Validado com `tsc -b` + `vite build` + Playwright em 375px.
+   **Pendente**: `recap_text`/`recap_media` só existem em
+   `supabase/schema.sql`/`seed.sql` — rodar contra o projeto Supabase real
+   (ver `docs/SUPABASE.md`). Detalhes completos no `docs/CHANGELOG.md`,
+   entrada `v2.0.0`.
+9. **Módulo 10 — Palestrantes: pop-up completo por palestrante** (pedido
+   em 23/08/2026): hoje tocar num quadro da grade
+   (`src/screens/Palestrantes.tsx`) abre um card **inline**
+   (`.pal-detail`) só com tópico + bio — não é um pop-up de verdade, o que
+   já é uma violação da regra 14 do `CLAUDE.md` (todo pop-up passa por
+   `ModalOverlay`). Plano: virar `SpeakerModal.tsx` de verdade, via
+   `ModalOverlay`, com:
+   - Redes sociais (Instagram, LinkedIn, site) — precisa de ícones novos em
+     `Icon.tsx` (hoje só existe `whatsapp` entre ícones de rede/contato).
+   - Presenças na Tríade: lista das edições em que a palestrante já
+     participou. Hoje `TriadeEvent.speaker` é texto livre — avaliar nessa
+     sessão se vale trocar por um `speakerId` (mais confiável pra cruzar os
+     dados) ou cruzar por nome mesmo.
+   - Informações de contato (e-mail e/ou WhatsApp) e cursos oferecidos
+     (lista de nome + link + descrição curta).
+   - `Speaker` (`types/index.ts`) ganha campos novos: `instagram?`,
+     `linkedin?`, `website?`, `email?`, `whatsapp?`, `courses?: { name,
+     url?, description }[]` — mesma receita de 5 passos da seção 6 do
+     `CLAUDE.md` (schema → `database.ts` → `types/index.ts` →
+     `supabaseProvider.ts` → `data/seed.ts`).
+   - O menu "..." → Editar (`Kebab`/`SpeakerEditSheet`) continua dentro do
+     modal, só que o formulário precisa ganhar os campos novos também.
 
 ## 7. Prioridades para uma versão apresentável a clientes
 

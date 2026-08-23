@@ -31,6 +31,8 @@ function mapEvent(row: EventRow): TriadeEvent {
     speaker: row.speaker,
     theme: row.theme,
     spots: row.spots,
+    recapText: row.recap_text ?? undefined,
+    recapMedia: row.recap_media && row.recap_media.length > 0 ? row.recap_media : undefined,
   };
 }
 

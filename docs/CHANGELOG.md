@@ -11,6 +11,60 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.0.0 — Eventos redesenhado: calendário + retrospectiva (Módulo 9)
+**Sessão 14 — 23/08/2026**
+
+Redesenho completo da tela Eventos (`src/screens/Eventos.tsx`), planejado e
+detalhado com o usuário na mesma sessão antes de codar (ver
+`docs/ESTADO-DO-PROJETO.md`, Módulo 9):
+
+- **Controle Lista / Calendário** no topo (`.segmented`), no lugar do
+  antigo filtro Todos/Em breve/Realizados — o novo layout já separa
+  "próximo" de "anteriores" visualmente, então o filtro ficou redundante.
+- **Modo Lista**: próximo evento em **card grande** (`EventCard`, novo
+  `variant="featured"`) → **grade 3 colunas** das edições anteriores
+  (`.event-grid`/`.event-cell`, mesmo padrão visual da grade de
+  Palestrantes) com **scroll infinito** (`useInfiniteReveal`,
+  `IntersectionObserver`, sem paginação real — dataset ainda pequeno) →
+  **busca** (`.ev-search`) filtrando por tema/palestrante/mês, escopada a
+  esta tela.
+- **Modo Calendário**: `EventCalendar.tsx` novo — mês corrente, navegação
+  ‹ ›, marcador nos dias com evento; tocar num dia com evento volta pro
+  modo Lista e abre o card certo direto.
+- **Retrospectiva em artigo**: `EventRecapModal.tsx` novo (sempre via
+  `ModalOverlay`) — texto longo + galeria de fotos/vídeos para edições já
+  realizadas, abre ao tocar numa célula da grade. `TriadeEvent` ganhou
+  `recapText?`/`recapMedia?`, populados nas duas primeiras edições em
+  `data/seed.ts` (fotos ainda em gradiente placeholder, sem material real).
+- **Pendente no banco real**: `recap_text`/`recap_media` foram
+  acrescentados a `supabase/schema.sql` (`alter table ... add column if
+  not exists`, idempotente) e `supabase/seed.sql`, mas ainda **não foram
+  rodados contra o projeto Supabase real** — isso é uma ação em sistema
+  externo, fora do escopo do que o Claude Code roda sozinho. Até rodar, o
+  pop-up de retrospectiva mostra "Em breve, o registro completo dessa
+  edição" em vez do conteúdo (degradação graciosa, comportamento
+  esperado). Instruções em `docs/SUPABASE.md`.
+- **Nota sobre o calendário "que sumiu"**: o usuário lembrava de uma
+  visualização em calendário que existia antes — não foi encontrada nem no
+  código atual, nem no `git log`, nem no `legacy/`. O `EventCalendar.tsx`
+  novo foi desenhado do zero, não restaurado.
+- **Validado** com `tsc -b` + `vite build` e Playwright em 375px: modo
+  Lista, modo Calendário, abrir a retrospectiva a partir da grade e do
+  calendário, busca filtrando e mostrando estado vazio — inclusive um teste
+  isolado forçando o provider local (sem credenciais do Supabase) pra
+  confirmar o render de texto/galeria da retrospectiva, já que o projeto
+  real ainda não tem as colunas novas.
+
+**Arquivos gerados/alterados:** `src/screens/Eventos.tsx`,
+`src/components/{EventCalendar,EventRecapModal,EventCard}.tsx`,
+`src/hooks/useInfiniteReveal.ts`, `src/lib/format.ts`,
+`src/lib/db/supabaseProvider.ts`, `src/types/{index,database}.ts`,
+`src/data/seed.ts`, `src/styles/components.css`,
+`supabase/{schema,seed}.sql`,
+`docs/{DESIGN-SYSTEM,ESTADO-DO-PROJETO,SUPABASE}.md`
+
+---
+
 ## v1.2.0 — Google confirmado + navegação reestruturada para vender melhor
 **Sessão 13 — 23/08/2026**
 
