@@ -4,7 +4,9 @@
 > deste repositório. Estado atual detalhado: `docs/ESTADO-DO-PROJETO.md`.
 > Histórico: `docs/CHANGELOG.md`. Manual de UI/UX (tokens, pop-ups, ícones,
 > animação, navegação): `docs/DESIGN-SYSTEM.md` — invoque a skill
-> `design-systems` antes de qualquer trabalho de interface.
+> `design-systems` antes de qualquer trabalho de interface. Sessão
+> interrompida no meio do trabalho? Confira `docs/LAST-SESSION.md` antes de
+> perguntar o que estava pendente (regra 15).
 
 ## 1. O que é
 
@@ -135,13 +137,29 @@ animação, navegação) — leia antes de mexer em interface, via skill
     quebra dentro de componentes com `backdrop-filter`), e **nunca anime
     `scale`/resize num elemento com `backdrop-filter`** (só
     `translate`/opacidade).
+15. **Quando a sessão estiver perto do limite de contexto/créditos**
+    (ex: acima de ~95%, ou qualquer sinal de que a conversa pode ser cortada
+    ou compactada antes de chegar num ponto de parada natural), grave o
+    estado do trabalho em andamento em `docs/LAST-SESSION.md` **antes** de
+    continuar — não espere terminar a tarefa para registrar. Inclua: o que
+    estava sendo feito e por quê, arquivos já alterados (salvos ou não),
+    decisões tomadas na conversa que ainda não viraram código/doc, e os
+    próximos passos exatos para retomar sem precisar perguntar de novo.
+    Isso é diferente do protocolo de fim de sessão (regra 13): aquele é para
+    quando a tarefa termina; este é para quando ela **não** termina.
+    Assim que uma sessão futura retomar esse trabalho e ele for concluído,
+    esvazie `docs/LAST-SESSION.md` de volta pro estado "nada pendente" — ele
+    registra trabalho **interrompido**, não é mais um changelog.
 
 ## 6. Como adicionar coisas
 
 **Nova tela/aba:** crie `src/screens/NomeDaTela.tsx` exportando default →
 adicione a `<Route>` em `App.tsx` → adicione o item em
-`src/components/TabBar.tsx` (com um `IconName` válido). A tab bar hoje tem 5
-itens; mais que isso aperta em telas de 360px.
+`src/components/TabBar.tsx` (com um `IconName` válido), antes do "Perfil"
+(que fica sempre por último — não é rota, ver `docs/DESIGN-SYSTEM.md`
+seção 6.2). A tab bar hoje tem 5 itens; mais que isso aperta em telas de
+360px — nem toda tela nova precisa virar aba: "Planos" hoje só é alcançada
+pelo CTA "Quero ser membro!" do cabeçalho e por link direto.
 
 **Novo ícone:** acrescente uma chave em `PATHS` no `components/Icon.tsx`,
 `viewBox="0 0 24 24"`. Linha fina (padrão, herda `stroke-width` 1.9 do
@@ -183,12 +201,11 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 ## 7. O que ainda NÃO existe (não presuma)
 
 - **Autenticação existe** (Supabase Auth, e-mail/senha com confirmação por
-  e-mail, + Google via `signInWithGoogle` — `AuthContext`/`AccountSheet`) e
-  um **perfil editável básico** (nome/bio/Instagram/negócio,
-  `ProfileEditSheet`; foto só a do Google, automática). **Login com Google
-  não funciona de ponta a ponta ainda** — falta habilitar o provedor no
-  painel do Supabase (não é código, ver `docs/SUPABASE.md`). Sem
-  onboarding, sem recuperação de senha, sem upload de foto própria.
+  e-mail, **+ Google já configurado e funcionando** via `signInWithGoogle`
+  — `AuthContext`/`AccountSheet`) e um **perfil editável básico**
+  (nome/bio/Instagram/negócio, `ProfileEditSheet`; foto só a do Google,
+  automática). Sem onboarding, sem recuperação de senha, sem upload de
+  foto própria, sem outro login social (Apple, Facebook...).
 - **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) vai para o
   Supabase só com usuária logada.** Deslogada (ou sem Supabase configurado)
   continua exatamente como antes: localStorage, por navegador, livre.
@@ -212,7 +229,7 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 1 | Landing / app shell — 5 telas | ✅ migrado para código |
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
-| 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google, perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 (Google pendente de habilitar no painel — ver `SUPABASE.md`) |
+| 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
 | 3 | Área de membras logada (feed real, diretório) | ⏭️ próximo |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |

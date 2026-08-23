@@ -199,14 +199,31 @@ ali dentro, não fazia sentido virar token reaproveitável).
 
 ## 6. Navegação
 
-### 6.1 Header (`TopBar.tsx`)
+### 6.1 Header (`TopBar.tsx`) — logo + CTA de venda sempre visível + config
 
-Logo (volta pro Início) + `.top-actions` com botões `.icon-btn` (38×38px,
-círculo). Hoje: buscar, notificações, configurações (engrenagem). Um pop-up
-aberto a partir daqui **precisa** de `ModalOverlay` (ver 4.1) por causa do
-`backdrop-filter` do próprio header.
+Logo (volta pro Início) + `.top-actions` com dois elementos:
 
-### 6.2 Tab bar (`TabBar.tsx`) — dois estilos, escolha do usuário
+1. **`.btn-cta-member`** — pílula "Quero ser membro!" (gradiente
+   `--gold`→`--wine`, a única cor "chamativa de propósito" no cabeçalho),
+   sempre visível em toda tela do app, leva direto para `/planos`. Decisão
+   de 23/08/2026: **"Planos" saiu da tab bar e virou este CTA** — a lógica é
+   que uma aba você só vê se lembrar de visitar; um CTA permanente no
+   cabeçalho aparece pra usuária o tempo todo, o que vale mais numa
+   estratégia de vendas do que ser "só mais uma opção" entre 5 abas iguais.
+   **Responsivo por necessidade real, não estética**: `"Quero ser membro!"`
+   por extenso estoura o cabeçalho em telas ≤389px de largura (medido, não
+   estimado — ver `.cta-full`/`.cta-short` em `layout.css`); abaixo disso
+   vira `"Seja membro!"`. Se mudar o texto do CTA, meça de novo em 360/375px
+   antes de finalizar — não assuma que cabe.
+2. **`.icon-btn`** de configurações (engrenagem), único ícone que sobrou
+   aqui. Busca e notificações saíram do cabeçalho (eram só placeholders
+   "em breve", sem função) e a conta virou o último item da tab bar (6.2)
+   — o cabeçalho de 4 ícones + CTA não caberia em 360px.
+
+Um pop-up aberto a partir daqui **precisa** de `ModalOverlay` (ver 4.1) por
+causa do `backdrop-filter` do próprio header.
+
+### 6.2 Tab bar (`TabBar.tsx`) — dois estilos, escolha do usuário; último item é sempre Perfil
 
 A tab bar tem duas aparências, trocáveis em **Configurações → Navegação**
 (`TabBarStyleContext`, persistida no aparelho):
@@ -216,6 +233,15 @@ A tab bar tem duas aparências, trocáveis em **Configurações → Navegação*
 - **"Padrão 2"** — pílula flutuante e compacta, estilo Uber
   (`.tab-pill`, todos os itens uniformes, o item ativo ganha um fundo
   translúcido em vez do badge circular).
+
+Em ambos os estilos, os 5 itens são **Início, Sobre, Eventos, Palestrantes,
+Perfil** — nessa ordem, sempre 5 (o limite de espaço em telas de 360px
+continua valendo). **"Perfil" não é uma rota** — é um `<button>` (não
+`NavLink`) que chama `useAuth().openAccount()`, mesmo padrão
+Instagram/TikTok de avatar como último item da tab bar. Mostra a foto da
+usuária (`profile.avatar_url`, `.tab-avatar`, circular) quando logada, ou o
+ícone `user` genérico quando não. Não recebe `.active` (não é uma tela
+persistente, é um pop-up transitório).
 
 **Importante para manutenção**: o `<nav className="tabbar">` reserva
 *sempre* a mesma altura no layout flex de `.app`, independente do estilo

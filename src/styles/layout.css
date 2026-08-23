@@ -162,7 +162,8 @@ body.modal-open .mesh span {
 }
 .top-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 .icon-btn {
   width: 38px;
@@ -175,6 +176,40 @@ body.modal-open .mesh span {
   border: 1px solid var(--glass-border);
   background: var(--glass-strong);
   cursor: pointer;
+}
+.btn-cta-member {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  height: 38px;
+  border-radius: 999px;
+  border: 0;
+  background: linear-gradient(135deg, var(--gold), var(--wine));
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -10px rgba(124, 42, 61, 0.6);
+  transition: transform 0.15s ease;
+}
+.btn-cta-member:active {
+  transform: scale(0.96);
+}
+.btn-cta-member .cta-short {
+  display: none;
+}
+/* Até iPhone 12/13/14 "normal" (390px), "Quero ser membro!" não cabe com o
+   resto do cabeçalho sem estourar o padding — troca por um texto mais
+   curto. Medido, não estimado: ver docs/DESIGN-SYSTEM.md seção 6. */
+@media (max-width: 389px) {
+  .btn-cta-member .cta-full {
+    display: none;
+  }
+  .btn-cta-member .cta-short {
+    display: inline;
+  }
 }
 
 .app-main {
@@ -221,6 +256,11 @@ body.modal-open .mesh span {
 }
 .tab .icon {
   transition: transform 0.18s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
+.tab-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(244, 238, 227, 0.55);
 }
 .tab.active {
   color: var(--sand);

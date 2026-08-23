@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Icon } from '@/components/Icon';
 import type { IconName } from '@/components/Icon';
+import { useAuth } from '@/context/AuthContext';
 import { useTabBarStyle } from '@/context/TabBarStyleContext';
 
 interface TabDef {
@@ -16,7 +17,6 @@ const TABS: TabDef[] = [
   { to: '/sobre', label: 'Sobre', icon: 'heart' },
   { to: '/eventos', label: 'Eventos', icon: 'calendar', center: true },
   { to: '/palestrantes', label: 'Palestrantes', icon: 'mic' },
-  { to: '/planos', label: 'Planos', icon: 'sparkle' },
 ];
 
 /**
@@ -25,10 +25,17 @@ const TABS: TabDef[] = [
  * "Padrão" — fixa, borda a borda, estilo Instagram/iOS (o original do app);
  * "Padrão 2" — pílula flutuante e compacta, estilo Uber. Em ambos, o `<nav>`
  * reserva sempre o mesmo espaço no rodapé — só a aparência interna muda.
+ *
+ * O último item é sempre "Perfil" — não é uma rota, abre o pop-up de conta
+ * (`AccountSheet`, via `openAccount`), com a foto de quem estiver logada no
+ * lugar do ícone genérico. "Planos" saiu daqui — virou o CTA "Quero ser
+ * membro!" sempre visível no cabeçalho (ver `TopBar`).
  */
 export function TabBar() {
   const { style } = useTabBarStyle();
+  const { profile, openAccount } = useAuth();
   const floating = style === 'padrao2';
+  const iconSize = floating ? 20 : 22;
 
   const links = TABS.map((tab) => (
     <NavLink
@@ -43,11 +50,22 @@ export function TabBar() {
           <Icon name={tab.icon} size={18} />
         </span>
       ) : (
-        <Icon name={tab.icon} size={floating ? 20 : 22} />
+        <Icon name={tab.icon} size={iconSize} />
       )}
       <span className="dot" />
     </NavLink>
   ));
+
+  links.push(
+    <button key="perfil" type="button" className="tab" aria-label="Perfil" onClick={openAccount}>
+      {profile?.avatar_url ? (
+        <img className="tab-avatar" src={profile.avatar_url} alt="" style={{ width: iconSize, height: iconSize }} />
+      ) : (
+        <Icon name="user" size={iconSize} />
+      )}
+      <span className="dot" />
+    </button>,
+  );
 
   if (floating) {
     return (

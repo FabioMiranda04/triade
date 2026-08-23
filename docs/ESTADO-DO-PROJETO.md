@@ -3,17 +3,21 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v1.1.0`
+**Versão atual:** `v1.2.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído e
-estendido** — entrar/cadastrar/sair com Supabase Auth, login com **Google**
-(código pronto, falta só habilitar no painel — ver `docs/SUPABASE.md`), e
-uma **área de perfil** (nome, bio, Instagram, negócio; foto preenchida
-automaticamente ao entrar com Google). Curtir/salvar/RSVP/plano gravam nas
-tabelas reais quando há usuária logada; sem login, ou sem Supabase
-configurado, continua exatamente local como sempre foi. Próximo passo:
-**Módulo 3** (feed real, diretório de membras). **Domínio próprio** também
-entrou no roadmap (seção 7) — depende só de você ter/comprar um.
+**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído** —
+entrar/cadastrar/sair com Supabase Auth, **login com Google já habilitado
+e confirmado funcionando de ponta a ponta** (testado até a tela real do
+Google), e uma **área de perfil** (nome, bio, Instagram, negócio; foto
+preenchida automaticamente ao entrar com Google). Curtir/salvar/RSVP/plano
+gravam nas tabelas reais quando há usuária logada; sem login, ou sem
+Supabase configurado, continua exatamente local como sempre foi.
+**Navegação reestruturada** (23/08/2026): "Planos" saiu da tab bar e virou
+o CTA "Quero ser membro!" sempre visível no cabeçalho; "Perfil" (com foto
+de quem estiver logada) entrou no lugar, como último item da tab bar —
+estratégia pensada pra vendas, pesquisada e decidida junto com o usuário.
+Próximo passo: **Módulo 3** (feed real, diretório de membras). **Domínio
+próprio** também está no roadmap (seção 7) — depende só de ter/comprar um.
 
 ---
 
@@ -88,12 +92,21 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       `hasRsvp`/`rsvpEvent`/`cancelRsvp`/`getChosenPlan`/`choosePlan`) agora
       assíncrono de propósito, gravando no Supabase quando há sessão.
 - [x] **Login com Google + área de perfil**: botão "Continuar com o Google"
-      no `AccountSheet` (`signInWithGoogle`, testado — redireciona certo até
-      o Supabase, só falta habilitar o provedor lá, ver `docs/SUPABASE.md`).
-      Foto de perfil do Google preenche `profiles.avatar_url` sozinha no
-      primeiro login (nunca sobrescreve uma foto já definida). Nova tela
-      **"Editar perfil"** (`ProfileEditSheet.tsx`) — nome, bio, Instagram,
-      negócio, gravando em `profiles` via `useAuth().updateProfile()`.
+      no `AccountSheet` (`signInWithGoogle`) — **confirmado funcionando de
+      ponta a ponta** em 23/08/2026 (Google Cloud + painel do Supabase
+      configurados; redireciona até a tela real do Google). Foto de perfil
+      do Google preenche `profiles.avatar_url` sozinha no primeiro login
+      (nunca sobrescreve uma foto já definida). Nova tela **"Editar
+      perfil"** (`ProfileEditSheet.tsx`) — nome, bio, Instagram, negócio,
+      gravando em `profiles` via `useAuth().updateProfile()`.
+- [x] **Navegação reestruturada para vender melhor** (23/08/2026, pesquisado
+      e decidido junto com o usuário): "Planos" saiu da tab bar e virou o
+      CTA **"Quero ser membro!"** (`.btn-cta-member`), sempre visível no
+      cabeçalho de toda tela — não só numa aba que a pessoa precisa lembrar
+      de visitar. "Perfil" entrou na tab bar como último item (padrão
+      Instagram/TikTok: foto de quem estiver logada, ou ícone genérico),
+      no lugar de Planos — a tab bar continua com 5 itens. Busca e
+      notificações saíram do cabeçalho (eram só placeholders "em breve").
 - [x] **Infra de repositório**: `CLAUDE.md`, docs, `.gitignore`,
       `vercel.json` (com rewrite de SPA), CI do GitHub Actions rodando
       typecheck + build, comandos do Claude Code em `.claude/commands/`.
@@ -130,11 +143,9 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)
 
-- **Login com Google não funciona ainda de ponta a ponta** — o código está
-  pronto e testado, mas o provedor precisa ser habilitado no painel do
-  Supabase (mais criar credenciais no Google Cloud). Passo a passo em
-  `docs/SUPABASE.md`, seção "Login com Google". Nenhum outro login social
-  (Apple, Facebook...) foi implementado.
+- **Login com Google já funciona de ponta a ponta** (confirmado em
+  23/08/2026 — Google Cloud + painel do Supabase configurados). Nenhum
+  outro login social (Apple, Facebook...) foi implementado.
 - **Perfil editável existe, mas é o básico**: nome, bio, Instagram, negócio.
   Sem upload de foto própria (só a do Google, automática), sem onboarding,
   sem "esqueci minha senha".
@@ -154,17 +165,14 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 ## 6. Roadmap — próximos módulos
 
 0. **Bugs/pendências reportados:**
-   - Bolha de notificação (badge do sino) não some e fica presa no final da
-     tela — bug de interface a corrigir.
    - Criar **tema escuro** para o app (paleta "Liquid Glass" ainda só tem
      versão clara).
    - `AccountSheet` ainda não tem "esqueci minha senha" — falta uma tela de
      recuperação (`supabase.auth.resetPasswordForEmail`), deixado de fora
      do Módulo 2 de propósito para não inflar o escopo.
-   - **Login com Google pendente de configuração** (não é tarefa de código):
-     habilitar o provedor no painel do Supabase + criar credenciais no
-     Google Cloud Console. Passo a passo com os valores exatos do projeto
-     em `docs/SUPABASE.md`.
+   - ~~Bolha de notificação (badge do sino) presa no final da tela~~ —
+     deixou de existir: o sino saiu do cabeçalho em 23/08/2026 (ver seção 2,
+     navegação reestruturada).
 1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
    cadastrar/sair com Supabase Auth; curtir/RSVP/plano gravam nas tabelas
    reais quando logada. Ver seção 2.

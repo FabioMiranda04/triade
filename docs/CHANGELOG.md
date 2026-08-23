@@ -11,6 +11,52 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v1.2.0 — Google confirmado + navegação reestruturada para vender melhor
+**Sessão 13 — 23/08/2026**
+
+- **Login com Google confirmado funcionando de ponta a ponta**: o usuário
+  concluiu a configuração no Google Cloud e no painel do Supabase; o botão
+  agora redireciona até a tela real de login do Google (antes retornava
+  "provider is not enabled"). `docs/SUPABASE.md` atualizado de "pendente"
+  para "configurado".
+- **Navegação reestruturada** (pedido do usuário, pesquisado antes de
+  implementar — precedente Instagram/TikTok para avatar na tab bar +
+  Duolingo para upsell sempre visível):
+  - **"Planos" saiu da tab bar** e virou o CTA `.btn-cta-member` — pílula
+    gradiente `--gold`→`--wine`, texto "Quero ser membro!", sempre visível
+    no cabeçalho, leva direto para `/planos`. A rota continua existindo
+    normalmente, só não tem mais aba própria.
+  - **"Perfil" entrou na tab bar** como último item (`TabBar.tsx`), no
+    lugar de Planos — continua com 5 itens. Não é rota: é um botão que
+    chama `useAuth().openAccount()`, mostrando a foto de quem estiver
+    logada (`.tab-avatar`) ou o ícone genérico.
+  - **Busca e notificações saíram do cabeçalho** — eram só placeholders
+    "em breve", sem função real, e não cabiam mais junto do CTA. O bug já
+    reportado do badge do sino preso na tela deixou de existir junto.
+  - **Bug real encontrado por medição, não por olho**: o texto completo
+    "Quero ser membro!" estourava o padding do cabeçalho em telas ≤389px
+    (inclusive 375px, a referência do projeto) — só apareceu medindo
+    `getBoundingClientRect()` via Playwright, visualmente parecia OK.
+    Corrigido com um texto mais curto ("Seja membro!") abaixo de 390px via
+    media query, medido de volta para confirmar (ver `docs/DESIGN-SYSTEM.md`
+    seção 6.1 — não assuma que um CTA de texto cabe, meça).
+- **Validado** com `tsc --noEmit`, `vite build`, Playwright em 360/375/390px
+  nos dois estilos de tab bar (Padrão e Padrão 2) — 5 itens, sem
+  sobreposição, sem erros de console, CTA navegando certo, Perfil abrindo
+  o pop-up de conta nos dois estilos.
+
+- **Nova regra operacional** (pedido do usuário, `CLAUDE.md` regra 15):
+  se a sessão chegar perto do limite de contexto/créditos no meio de uma
+  tarefa, gravar o estado em `docs/LAST-SESSION.md` antes de continuar —
+  diferente do protocolo de fim de sessão (regra 13), que é só para tarefa
+  concluída. Arquivo criado com um modelo, hoje "nada pendente".
+
+**Arquivos gerados/alterados:** `src/components/{TopBar,TabBar}.tsx`,
+`src/styles/layout.css`, `CLAUDE.md`, `docs/LAST-SESSION.md`,
+`docs/{DESIGN-SYSTEM,ESTADO-DO-PROJETO,SUPABASE}.md`
+
+---
+
 ## v1.1.0 — Login com Google + área de perfil
 **Sessão 12 — 23/08/2026**
 

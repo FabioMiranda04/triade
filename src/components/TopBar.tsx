@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { SettingsSheet } from '@/components/SettingsSheet';
-import { useToast } from '@/components/Toast';
-import { useAuth } from '@/context/AuthContext';
 
-/** Header fixo: logo (volta para o Início) + busca + conta + configurações. */
+/**
+ * Header fixo: logo (volta para o Início) + CTA "Quero ser membro!" (sempre
+ * visível, leva para `/planos`) + configurações. Busca e notificações saíram
+ * daqui por enquanto — eram só placeholders "em breve", sem função real; e a
+ * conta virou o último item da tab bar (ver `TabBar`).
+ */
 export function TopBar() {
   const navigate = useNavigate();
-  const { showToast } = useToast();
-  const { openAccount } = useAuth();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
@@ -24,25 +25,13 @@ export function TopBar() {
         </span>
       </button>
       <div className="top-actions">
-        <button
-          className="icon-btn"
-          aria-label="Buscar"
-          onClick={() => showToast('Em breve: busca na comunidade')}
-        >
-          <Icon name="search" size={17} />
-        </button>
-        <button
-          className="icon-btn"
-          aria-label="Notificações"
-          onClick={() => showToast('Em breve: notificações')}
-        >
-          <Icon name="bell" size={17} />
+        <button className="btn-cta-member" onClick={() => navigate('/planos')}>
+          <Icon name="sparkle" size={13} />
+          <span className="cta-full">Quero ser membro!</span>
+          <span className="cta-short">Seja membro!</span>
         </button>
         <button className="icon-btn" aria-label="Configurações" onClick={() => setSettingsOpen(true)}>
           <Icon name="settings" size={17} />
-        </button>
-        <button className="icon-btn" aria-label="Sua conta" onClick={openAccount}>
-          <Icon name="user" size={17} />
         </button>
       </div>
       {settingsOpen && <SettingsSheet onClose={() => setSettingsOpen(false)} />}

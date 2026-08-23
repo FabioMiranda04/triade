@@ -25,15 +25,14 @@ há sessão ativa — sem sessão, cai no mesmo comportamento local de sempre.
 Nenhuma configuração nova foi necessária no painel do Supabase, só código
 do app.
 
-## Login com Google (OAuth) — pendente de configuração
+## Login com Google (OAuth) — ✅ configurado e funcionando
 
-**O código já está pronto** (`AccountSheet.tsx` tem o botão "Continuar com o
-Google", `AuthContext.tsx` tem `signInWithGoogle`) e testado: hoje ele
-redireciona certinho até o Supabase e volta com
-`{"error_code":"validation_failed","msg":"Unsupported provider: provider is
-not enabled"}` — ou seja, só falta **habilitar o provedor Google no painel
-do Supabase**, e isso exige duas contas às quais o Claude Code não tem
-acesso (Google Cloud e o painel do Supabase). Passo a passo:
+**Confirmado ao vivo em 23/08/2026**: o botão "Continuar com o Google"
+(`AccountSheet.tsx` + `AuthContext.signInWithGoogle`) redireciona até a
+tela real de login do Google, com o `client_id` e o `redirect_uri`
+corretos — a configuração abaixo já foi feita tanto no Google Cloud quanto
+no painel do Supabase. Documentado aqui como referência, caso precise
+recriar as credenciais ou configurar um segundo ambiente:
 
 1. **Google Cloud Console** ([console.cloud.google.com](https://console.cloud.google.com)):
    - Crie um projeto (ou use um existente).
