@@ -22,7 +22,13 @@ export type IconName =
   | 'sparkle'
   | 'check'
   | 'pin'
-  | 'chevronRight';
+  | 'chevronRight'
+  | 'chevronLeft'
+  | 'close'
+  | 'users'
+  | 'whatsapp'
+  | 'edit'
+  | 'plus';
 
 const PATHS: Record<IconName, JSX.Element> = {
   heart: (
@@ -108,6 +114,33 @@ const PATHS: Record<IconName, JSX.Element> = {
     </>
   ),
   chevronRight: <path d="M9 5.5 15.5 12 9 18.5" strokeLinecap="round" strokeLinejoin="round" />,
+  chevronLeft: <path d="M15 5.5 8.5 12 15 18.5" strokeLinecap="round" strokeLinejoin="round" />,
+  close: <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />,
+  users: (
+    <>
+      <circle cx="8.5" cy="8.5" r="3" />
+      <circle cx="16" cy="9.5" r="2.4" />
+      <path d="M3.5 19.5c.6-3.2 2.6-5 5-5s4.4 1.8 5 5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14.5 14.8c2 .2 3.6 1.7 4.1 4.2" strokeLinecap="round" />
+    </>
+  ),
+  whatsapp: (
+    <>
+      <path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.2A8.5 8.5 0 1 0 12 3.5Z" strokeLinejoin="round" />
+      <path
+        d="M8.7 8.6c.2-.5.5-.5.7-.5h.5c.2 0 .4 0 .5.4.2.5.6 1.5.6 1.6.1.1.1.3 0 .4-.1.2-.2.3-.3.4-.1.1-.3.3-.4.4-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2 1.2 1 2.1 1.3 2.5 1.4.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3 0 .2 0 .9-.3 1.3-.3.5-1.4 1-2 1-.6 0-1.6-.2-3.1-.9-2.5-1.1-4.1-3.5-4.3-3.7-.1-.2-1-1.3-1-2.5 0-1.2.6-1.7.8-2Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </>
+  ),
+  edit: (
+    <path
+      d="M4 20l.9-4 10.5-10.5a1.4 1.4 0 0 1 2 0l1.1 1.1a1.4 1.4 0 0 1 0 2L8 19l-4 1Z"
+      strokeLinejoin="round"
+    />
+  ),
+  plus: <path d="M12 5v14M5 12h14" strokeLinecap="round" />,
 };
 
 interface IconProps {

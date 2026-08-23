@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { Icon } from '@/components/Icon';
 import { SectionHead } from '@/components/SectionHead';
 import { EventCard } from '@/components/EventCard';
+import { EventEditSheet } from '@/components/EventEditSheet';
 import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { db } from '@/lib/db';
+import { applyEventEdits } from '@/lib/db/localContent';
 import type { EventFilter, TriadeEvent } from '@/types';
 
 const FILTERS: { value: EventFilter; label: string }[] = [
@@ -18,9 +21,21 @@ export default function Eventos() {
   const { showToast } = useToast();
   const [filter, setFilter] = useState<EventFilter>('todos');
   const [rsvps, setRsvps] = useState<string[]>([]);
+  const [editing, setEditing] = useState<TriadeEvent | 'new' | null>(null);
+  const [version, setVersion] = useState(0);
 
-  const { data: events, loading } = useAsyncData<TriadeEvent[]>(() => db.getEvents(), []);
+  const { data: events, loading } = useAsyncData<TriadeEvent[]>(
+    () => db.getEvents().then(applyEventEdits),
+    [],
+    version,
+  );
   const visible = events.filter((e) => (filter === 'todos' ? true : e.status === filter));
+
+  function handleSaved() {
+    setEditing(null);
+    setVersion((v) => v + 1);
+    showToast('Evento salvo neste aparelho ✓');
+  }
 
   function isGoing(id: string) {
     return rsvps.includes(id) || db.hasRsvp(id);
@@ -54,14 +69,32 @@ export default function Eventos() {
         ))}
       </div>
 
+      <button className="add-tile" onClick={() => setEditing('new')}>
+        <Icon name="plus" size={16} /> Novo evento
+      </button>
+
       {loading ? (
         <Skeleton rows={3} height={92} />
       ) : visible.length === 0 ? (
         <p className="empty-state">Nenhum evento nesse filtro.</p>
       ) : (
         visible.map((event) => (
-          <EventCard key={event.id} event={event} going={isGoing(event.id)} onRsvp={handleRsvp} />
+          <EventCard
+            key={event.id}
+            event={event}
+            going={isGoing(event.id)}
+            onRsvp={handleRsvp}
+            onEdit={setEditing}
+          />
         ))
+      )}
+
+      {editing && (
+        <EventEditSheet
+          event={editing === 'new' ? null : editing}
+          onClose={() => setEditing(null)}
+          onSaved={handleSaved}
+        />
       )}
     </section>
   );

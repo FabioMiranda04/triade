@@ -11,6 +11,53 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v0.6.0 — Pop-up de evento com compra via WhatsApp + edição inline de conteúdo
+**Sessão 6 — 23/08/2026**
+
+- **Pop-up "Detalhes do evento"** (`EventModal.tsx`): tocar no post em
+  destaque da Início abre um pop-up com tema, data, local, palestrante e
+  vagas. Botão **"Quero participar"** leva a um segundo passo do mesmo
+  pop-up com as **3 sócias** (Lívia, Lia, Cris) — cada uma abre o WhatsApp
+  (`wa.me`) com uma mensagem pronta citando o evento e a data. Números
+  ficam em `founders[].whatsapp` (`src/data/seed.ts`); a montagem do link e
+  da mensagem está em `src/lib/whatsapp.ts`.
+- **Edição de conteúdo estilo Instagram, só no aparelho** (sem autenticação,
+  não grava no Supabase — decisão explícita para não expor escrita pública
+  no banco antes do Módulo 2):
+  - Novo componente `Kebab.tsx` — botão "..." com menu flutuante de cantos
+    arredondados, igual ao padrão Instagram (usado no post em destaque, nos
+    cards de evento e na bio da palestrante).
+  - Novo componente `EditSheet.tsx` — bottom sheet genérico para
+    formulários, com `EventEditSheet`, `SpeakerEditSheet` e `PostEditSheet`
+    por cima dele.
+  - Novo `src/lib/db/localContent.ts` — overlay de edições/criações em
+    localStorage, aplicado sobre o resultado de `db.getEvents()` /
+    `db.getSpeakers()` (funciona com os dois providers, local ou Supabase,
+    já que a edição nunca sai do navegador).
+  - Eventos e Palestrantes ganharam botão de criar novo item
+    (`+ Novo evento` / célula `+ Nova`); o post em destaque da Início ganhou
+    edição de legenda, texto do botão e evento vinculado.
+- **Correção de bug pré-existente**: o toast (`Toast.tsx`) ficava com uma
+  pequena pastilha residual visível perto do rodapé mesmo sem mensagem —
+  o deslocamento para escondê-lo era proporcional ao tamanho da própria
+  caixa, que encolhe a quase nada quando o texto está vazio. Corrigido
+  adicionando `opacity: 0` (além do `transform`) no estado escondido.
+- 6 ícones novos em `Icon.tsx`: `chevronLeft`, `close`, `users`, `whatsapp`,
+  `edit`, `plus`.
+- **Testado de ponta a ponta com Playwright** (headless, viewport 375px):
+  fluxo completo do pop-up até os 3 links `wa.me` corretos, edição e criação
+  de evento/palestrante com persistência após reload, sem erros de console.
+- **Validado** com `tsc --noEmit` (strict) e `vite build`.
+
+**Arquivos gerados/alterados:** `src/components/EventModal.tsx`,
+`Kebab.tsx`, `EditSheet.tsx`, `EventEditSheet.tsx`, `SpeakerEditSheet.tsx`,
+`PostEditSheet.tsx`, `src/lib/whatsapp.ts`, `src/lib/db/localContent.ts`,
+`src/components/{EventCard,PostCard,Icon}.tsx`,
+`src/screens/{Home,Eventos,Palestrantes}.tsx`, `src/data/seed.ts`,
+`src/types/index.ts`, `src/styles/components.css`
+
+---
+
 ## v0.5.0 — Supabase como banco de dados
 **Sessão 5**
 

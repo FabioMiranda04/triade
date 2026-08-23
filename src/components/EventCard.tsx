@@ -1,4 +1,5 @@
 import { Icon } from '@/components/Icon';
+import { Kebab } from '@/components/Kebab';
 import { Mark } from '@/components/Brand';
 import { formatEventDate, statusClass } from '@/lib/format';
 import type { TriadeEvent } from '@/types';
@@ -8,10 +9,11 @@ interface EventCardProps {
   /** já confirmou presença? */
   going: boolean;
   onRsvp: (id: string) => void;
+  onEdit: (event: TriadeEvent) => void;
 }
 
 /** Card de uma edição do evento + botão de confirmar presença (só "em breve"). */
-export function EventCard({ event, going, onRsvp }: EventCardProps) {
+export function EventCard({ event, going, onRsvp, onEdit }: EventCardProps) {
   return (
     <>
       <div className="ev-card glass">
@@ -30,6 +32,10 @@ export function EventCard({ event, going, onRsvp }: EventCardProps) {
             </span>
           </div>
         </div>
+        <Kebab
+          label="Opções do evento"
+          actions={[{ label: 'Editar', icon: 'edit', onClick: () => onEdit(event) }]}
+        />
       </div>
 
       {event.status === 'em breve' && (

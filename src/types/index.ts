@@ -42,6 +42,8 @@ export interface Founder {
   name: string;
   role: string;
   blurb: string;
+  /** WhatsApp com DDI/DDD, em qualquer formatação (ex: "+55 62 8165-1103") */
+  whatsapp: string;
 }
 
 export interface Post {
@@ -54,8 +56,10 @@ export interface Post {
   baseLikes: number;
   /** gradiente CSS opcional para a área de imagem */
   mediaGradient?: string;
-  /** aba para onde o CTA leva, se houver */
+  /** aba para onde o CTA leva, se houver (ignorado quando `eventId` existe) */
   ctaTab?: TabId;
+  /** id do evento em `data/seed.ts` — quando presente, o CTA abre o pop-up de detalhes do evento em vez de navegar */
+  eventId?: string;
   ctaLabel?: string;
   showActions: boolean;
 }

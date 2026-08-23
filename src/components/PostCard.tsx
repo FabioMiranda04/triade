@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/Icon';
+import { Kebab } from '@/components/Kebab';
 import { Mark } from '@/components/Brand';
 import { useToast } from '@/components/Toast';
 import { useEngagement } from '@/hooks/useEngagement';
@@ -20,7 +21,15 @@ const TAB_PATH: Record<TabId, string> = {
  * (curtir / comentar / compartilhar / salvar) e legenda.
  * Curtir também funciona com duplo toque na imagem.
  */
-export function PostCard({ post }: { post: Post }) {
+interface PostCardProps {
+  post: Post;
+  /** chamado no lugar da navegação quando o post tem `eventId` */
+  onOpenEvent?: (eventId: string) => void;
+  /** presente só no post de evento em destaque — abre o formulário de edição */
+  onEdit?: () => void;
+}
+
+export function PostCard({ post, onOpenEvent, onEdit }: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { liked, saved, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
@@ -48,13 +57,17 @@ export function PostCard({ post }: { post: Post }) {
           <div className="n">{post.author}</div>
           <div className="t">{post.subtitle}</div>
         </div>
-        <button
-          className="act-btn"
-          aria-label="Mais opções"
-          onClick={() => showToast('Em breve: mais opções do post')}
-        >
-          <Icon name="more" size={18} />
-        </button>
+        {post.eventId && onEdit ? (
+          <Kebab label="Opções do post" actions={[{ label: 'Editar', icon: 'edit', onClick: onEdit }]} />
+        ) : (
+          <button
+            className="act-btn"
+            aria-label="Mais opções"
+            onClick={() => showToast('Em breve: mais opções do post')}
+          >
+            <Icon name="more" size={18} />
+          </button>
+        )}
       </div>
 
       <div
@@ -114,9 +127,14 @@ export function PostCard({ post }: { post: Post }) {
         <b>{post.author}</b> {post.caption}
       </div>
 
-      {post.ctaTab && (
+      {(post.eventId || post.ctaTab) && (
         <div className="post-cta">
-          <button className="btn btn-primary full" onClick={() => navigate(TAB_PATH[post.ctaTab!])}>
+          <button
+            className="btn btn-primary full"
+            onClick={() =>
+              post.eventId ? onOpenEvent?.(post.eventId) : navigate(TAB_PATH[post.ctaTab!])
+            }
+          >
             {post.ctaLabel ?? 'Ver mais'} <Icon name="chevronRight" size={15} />
           </button>
         </div>

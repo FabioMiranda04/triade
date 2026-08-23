@@ -110,6 +110,7 @@ export const founders: Founder[] = [
     name: 'Lívia Duarte',
     role: 'Gestora',
     blurb: 'Ex-Swarovski, hoje empreendedora.',
+    whatsapp: '+55 62 8287-0136',
   },
   {
     id: 'f2',
@@ -117,6 +118,7 @@ export const founders: Founder[] = [
     name: 'Lia Chaves',
     role: 'Mentora',
     blurb: 'Advogada e consultora de imagem.',
+    whatsapp: '+55 62 8131-7399',
   },
   {
     id: 'f3',
@@ -124,6 +126,7 @@ export const founders: Founder[] = [
     name: 'Cris Miranda',
     role: 'Estilo',
     blurb: 'Contadora e consultora de estilo.',
+    whatsapp: '+55 62 8165-1103',
   },
 ];
 
@@ -136,7 +139,7 @@ export const posts: Post[] = [
     caption:
       'Gestão financeira na prática, com Danielle Gouveia — 19 de setembro, Goiânia. Garante sua vaga em Eventos ✨',
     baseLikes: 141,
-    ctaTab: 'eventos',
+    eventId: 'ed3',
     ctaLabel: 'Ver detalhes',
     showActions: true,
   },

@@ -3,9 +3,9 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.5.0`
-**Última atualização:** 21/08/2026
-**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; próximo é o Módulo 2 (autenticação)
+**Versão atual:** `v0.6.0`
+**Última atualização:** 23/08/2026
+**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; pop-up de evento com compra via WhatsApp e edição inline de conteúdo (só no aparelho) prontos; próximo é o Módulo 2 (autenticação)
 
 ---
 
@@ -50,6 +50,15 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
 - [x] **Degradação graciosa**: se o Supabase falhar, o app cai no conteúdo
       local e avisa no console em vez de mostrar tela branca.
 - [x] **Estados de carregamento** (`<Skeleton>`) nas telas que buscam dados.
+- [x] **Pop-up "Detalhes do evento"** a partir do post em destaque da
+      Início, com botão "Quero participar" → 3 sócias no WhatsApp
+      (`EventModal.tsx`, `src/lib/whatsapp.ts`, números em
+      `founders[].whatsapp`).
+- [x] **Edição de conteúdo estilo Instagram** (menu "..." com "Editar",
+      `Kebab.tsx`/`EditSheet.tsx`) para eventos, palestrantes e o post em
+      destaque, incluindo criar novo evento/palestrante — tudo salvo só no
+      navegador via `src/lib/db/localContent.ts` (nunca grava no Supabase,
+      não há autenticação ainda).
 - [x] **Infra de repositório**: `CLAUDE.md`, docs, `.gitignore`,
       `vercel.json` (com rewrite de SPA), CI do GitHub Actions rodando
       typecheck + build, comandos do Claude Code em `.claude/commands/`.
@@ -89,16 +98,26 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 - **Engajamento não vai para o banco**: curtidas, salvos, RSVP e plano
   escolhido ficam no localStorage, por navegador. Sem login não há a quem
   atribuir. As tabelas existem no schema, esperando o Módulo 2.
-- **Sem painel para editar conteúdo dentro do app** — hoje a edição é pelo
-  Table Editor do Supabase (o que já resolve o dia a dia, sem deploy).
+- **Edição de conteúdo dentro do app é só local** (menu "..." → Editar, ver
+  seção 2) — não existe gravação real no Supabase por trás dela, de
+  propósito: sem autenticação, qualquer chave que grave no banco no
+  front-end seria pública. Para editar de verdade hoje ainda é o Table
+  Editor do Supabase. O Módulo 5 troca esse overlay local pela gravação
+  real, já com login exigindo uma conta de administradora.
 - Sem fotos reais — todos os "espaços de imagem" são gradientes da marca.
 - Sem pagamento integrado — escolher plano só grava a escolha localmente.
-- Sem painel administrativo.
+- Sem painel administrativo (a edição inline atual não substitui isso —
+  ver item acima).
 - Sem testes automatizados.
 - Sem service worker (o manifest existe, mas não há modo offline).
 
 ## 6. Roadmap — próximos módulos
 
+0. **Bugs/pendências reportados (antes ou junto do Módulo 2):**
+   - Bolha de notificação (badge do sino) não some e fica presa no final da
+     tela — bug de interface a corrigir.
+   - Criar **tema escuro** para o app (paleta "Liquid Glass" ainda só tem
+     versão clara).
 1. **Módulo 2 — Autenticação e perfil**: cadastro/login com **Supabase Auth**,
    foto e dados da usuária, onboarding curto. Criar
    `src/context/AuthContext.tsx` ligado a `onAuthStateChange`. Neste módulo,
@@ -109,7 +128,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 3. **Módulo 4 — Assinaturas e pagamento**: cobrança recorrente
    (Stripe/Pagar.me), provavelmente via Edge Function do Supabase para o
    webhook. A tabela `plan_selections` já prevê o campo `status`.
-4. **Módulo 5 — Painel administrativo**: CRUD de eventos/palestrantes/planos.
+4. **Módulo 5 — Painel administrativo**: trocar o overlay local de
+   `src/lib/db/localContent.ts` (edição "..." → Editar, ver seção 2) por
+   gravação real no Supabase, com RLS restrita a uma conta de
+   administradora — a UI de edição já existe, falta o backend com
+   permissão.
 5. **Módulo 6 — Migração de dados**: localStorage → banco, conforme entrarem
    usuárias reais.
 
