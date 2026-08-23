@@ -1,6 +1,6 @@
 import type { FormEvent, ReactNode } from 'react';
 import { Icon } from '@/components/Icon';
-import { useModalEffects } from '@/hooks/useModalEffects';
+import { ModalOverlay } from '@/components/ModalOverlay';
 
 interface EditSheetProps {
   title: string;
@@ -12,10 +12,8 @@ interface EditSheetProps {
 
 /** Pop-up reutilizável para formulários de edição/criação de conteúdo — mesmo padrão visual do `EventModal`. */
 export function EditSheet({ title, onClose, onSubmit, submitLabel = 'Salvar', children }: EditSheetProps) {
-  useModalEffects(onClose);
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <ModalOverlay onClose={onClose}>
       <form
         className="modal-sheet glass-dark"
         role="dialog"
@@ -33,6 +31,6 @@ export function EditSheet({ title, onClose, onSubmit, submitLabel = 'Salvar', ch
           {submitLabel}
         </button>
       </form>
-    </div>
+    </ModalOverlay>
   );
 }

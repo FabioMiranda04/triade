@@ -467,6 +467,47 @@
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .modal-back:active { opacity: 0.6; transform: translateX(-2px); }
+
+/* ---------- lista agrupada estilo iOS (usada em Configurações) ---------- */
+.ios-section-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(244, 238, 227, 0.55);
+  margin: 18px 4px 8px;
+}
+.ios-group {
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+.ios-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 14px;
+  background: none;
+  border: 0;
+  color: var(--sand);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.ios-row + .ios-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ios-row:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+.ios-hint {
+  font-size: 11.5px;
+  color: rgba(244, 238, 227, 0.55);
+  margin: 8px 6px 0;
+}
 .modal-contacts {
   display: flex;
   flex-direction: column;

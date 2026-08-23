@@ -253,6 +253,38 @@ body.modal-open .mesh span {
   background: linear-gradient(155deg, var(--wine), var(--gold));
 }
 
+/* ---------- tab bar "Padrão 2" — pílula flutuante, estilo Uber ---------- */
+/* Trocável em Configurações → Navegação (ver TabBarStyleContext).
+   O <nav> continua um item de flex normal (reserva o mesmo espaço de
+   sempre, sem sair do fluxo) — só o `.tab-pill` de dentro é que fica
+   arredondado e "flutuante". Assim `.app-main` nunca precisa de padding
+   extra nem recalcular tamanho: a régua de espaço embaixo é sempre a
+   mesma, troque o estilo que trocar. */
+.tabbar.padrao2-wrap {
+  border-top: none;
+  padding: 8px 16px calc(12px + var(--safe-b));
+  justify-content: center;
+}
+.tab-pill {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 420px;
+  padding: 4px;
+  border-radius: 999px;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.55);
+}
+.tab-pill .tab {
+  border-radius: 999px;
+}
+.tab-pill .tab.active {
+  background: rgba(255, 255, 255, 0.12);
+}
+.tab-pill .tab .dot {
+  display: none;
+}
+
 /* ---------- responsivo ---------- */
 @media (min-width: 720px) {
   .app-main { padding-top: 2px; }

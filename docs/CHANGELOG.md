@@ -11,6 +11,41 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v0.9.0 — Configurações do app + tab bar flutuante (estilo Uber) como opção
+**Sessão 9 — 23/08/2026**
+
+- **Tela de Configurações** (`SettingsSheet.tsx`), acessível por um ícone de
+  engrenagem novo no cabeçalho, com lista agrupada estilo iOS (seção em
+  caixa alta, linhas com checkmark — `.ios-group`/`.ios-row` em
+  `components.css`).
+- **Tab bar com dois estilos, trocáveis nas Configurações** (pedido
+  explícito do usuário: "salve como opção de dev", não substituir a atual):
+  - **Padrão** — o estilo original, fixo e borda a borda.
+  - **Padrão 2** — pílula flutuante e compacta, estilo Uber.
+  A escolha persiste no aparelho via `TabBarStyleContext` (novo, em
+  `src/context/`) e não muda o espaço reservado no rodapé entre um estilo e
+  outro — só a aparência interna do `<nav>` muda, então nenhuma tela
+  precisou de ajuste.
+- **Bug de verdade encontrado e corrigido**: o pop-up de Configurações,
+  por nascer dentro do `<header>` (que tem `backdrop-filter` via `.glass`),
+  renderizava espremido dentro da caixinha do cabeçalho em vez de cobrir a
+  tela — no Chrome, um ancestral com `backdrop-filter` vira o "containing
+  block" de `position: fixed`. Corrigido de forma definitiva com
+  `ModalOverlay.tsx` (novo): todo pop-up agora renderiza via
+  `createPortal` direto em `document.body`, então a posição dele na árvore
+  de componentes nunca mais pode causar esse problema. `EventModal` e
+  `EditSheet` foram migrados para o mesmo componente.
+- **Validado** com `tsc --noEmit`, `vite build`, e testes de ponta a ponta
+  com Playwright (trocar de estilo, navegar por todas as abas, recarregar a
+  página, voltar ao padrão — sem erros de console).
+
+**Arquivos gerados/alterados:** `src/components/{SettingsSheet,
+ModalOverlay,EventModal,EditSheet,TabBar,TopBar,Icon}.tsx`,
+`src/context/TabBarStyleContext.tsx`, `src/App.tsx`,
+`src/styles/{components,layout}.css`
+
+---
+
 ## v0.8.0 — Desconfirmar presença em eventos
 **Sessão 8 — 23/08/2026**
 

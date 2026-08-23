@@ -3,9 +3,16 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.8.0`
+**Versão atual:** `v0.9.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; pop-up de evento com compra via WhatsApp e edição inline de conteúdo (só no aparelho) prontos, com todos os pop-ups unificados num único padrão visual (centralizado, fundo escuro) e otimizados; próximo é o Módulo 2 (autenticação) — Módulo 7 (instalar como app + notificações) planejado para depois dele
+**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado —
+**confirmado ao vivo em 23/08/2026** que as 4 tabelas do Módulo 2
+(`profiles`/`rsvps`/`post_engagements`/`plan_selections`) já existem no
+projeto real, com RLS, e que a autenticação por e-mail/senha já está
+habilitada no Supabase (com confirmação de e-mail obrigatória, sem login
+social); próximo é o **Módulo 2 (autenticação)** propriamente — falta só o
+lado do app (AuthContext, telas, migrar engajamento para async). Módulo 7
+(instalar como app + notificações) planejado para depois dele.
 
 ---
 
@@ -54,6 +61,13 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       Início, com botão "Quero participar" → 3 sócias no WhatsApp
       (`EventModal.tsx`, `src/lib/whatsapp.ts`, números em
       `founders[].whatsapp`).
+- [x] **Configurações do app** (ícone de engrenagem no cabeçalho,
+      `SettingsSheet.tsx`, lista estilo iOS) — hoje só a opção de estilo da
+      tab bar (Padrão / Padrão 2 flutuante estilo Uber), persistida via
+      `TabBarStyleContext`. Todo pop-up do app passa por
+      `ModalOverlay.tsx` (portal para `document.body` — evita o bug de
+      `backdrop-filter` quebrando `position: fixed` de pop-ups nascidos
+      dentro de componentes com vidro, como o cabeçalho).
 - [x] **Edição de conteúdo estilo Instagram** (menu "..." com "Editar",
       `Kebab.tsx`/`EditSheet.tsx`) para eventos, palestrantes e o post em
       destaque, incluindo criar novo evento/palestrante — tudo salvo só no

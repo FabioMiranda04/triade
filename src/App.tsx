@@ -4,6 +4,7 @@ import { MeshBackground } from '@/components/Brand';
 import { TopBar } from '@/components/TopBar';
 import { TabBar } from '@/components/TabBar';
 import { ToastProvider } from '@/components/Toast';
+import { TabBarStyleProvider } from '@/context/TabBarStyleContext';
 import Home from '@/screens/Home';
 import Sobre from '@/screens/Sobre';
 import Eventos from '@/screens/Eventos';
@@ -16,6 +17,16 @@ import Planos from '@/screens/Planos';
  * rola, só a `.app-main`, como num app nativo.
  */
 export default function App() {
+  return (
+    <ToastProvider>
+      <TabBarStyleProvider>
+        <AppShell />
+      </TabBarStyleProvider>
+    </ToastProvider>
+  );
+}
+
+function AppShell() {
   const mainRef = useRef<HTMLElement>(null);
   const location = useLocation();
 
@@ -25,7 +36,7 @@ export default function App() {
   }, [location.pathname]);
 
   return (
-    <ToastProvider>
+    <>
       <MeshBackground />
       <div className="app">
         <TopBar />
@@ -41,6 +52,6 @@ export default function App() {
         </main>
         <TabBar />
       </div>
-    </ToastProvider>
+    </>
   );
 }

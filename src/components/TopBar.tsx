@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
+import { SettingsSheet } from '@/components/SettingsSheet';
 import { useToast } from '@/components/Toast';
 
-/** Header fixo: logo (volta para o Início) + busca + notificações. */
+/** Header fixo: logo (volta para o Início) + busca + notificações + configurações. */
 export function TopBar() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <header className="app-top glass">
@@ -33,7 +36,11 @@ export function TopBar() {
         >
           <Icon name="bell" size={17} />
         </button>
+        <button className="icon-btn" aria-label="Configurações" onClick={() => setSettingsOpen(true)}>
+          <Icon name="settings" size={17} />
+        </button>
       </div>
+      {settingsOpen && <SettingsSheet onClose={() => setSettingsOpen(false)} />}
     </header>
   );
 }

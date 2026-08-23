@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
+import { ModalOverlay } from '@/components/ModalOverlay';
 import { founders } from '@/data/seed';
-import { useModalEffects } from '@/hooks/useModalEffects';
 import { firstName, formatEventDate, statusClass } from '@/lib/format';
 import { buildTicketMessage, buildWhatsAppLink } from '@/lib/whatsapp';
 import type { TriadeEvent } from '@/types';
@@ -20,10 +20,9 @@ const sortedFounders = [...founders].sort((a, b) => a.name.localeCompare(b.name,
  */
 export function EventModal({ event, onClose }: EventModalProps) {
   const [step, setStep] = useState<'details' | 'contact'>('details');
-  useModalEffects(onClose);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <ModalOverlay onClose={onClose}>
       <div
         className="modal-sheet glass-dark"
         role="dialog"
@@ -95,6 +94,6 @@ export function EventModal({ event, onClose }: EventModalProps) {
           </div>
         )}
       </div>
-    </div>
+    </ModalOverlay>
   );
 }
