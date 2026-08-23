@@ -238,10 +238,12 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |
+| 11 | Infraestrutura de mídia real (Supabase Storage) — fotos/vídeos de verdade a partir do export oficial do Instagram | ⏳ planejado 23/08/2026 |
 
-Detalhamento completo dos módulos 8, 9 e 10 (escopo, campos de dado novos,
+Detalhamento completo dos módulos 8 a 11 (escopo, campos de dado novos,
 componentes a criar, perguntas em aberto) está em
-`docs/ESTADO-DO-PROJETO.md`, seção 6.
+`docs/ESTADO-DO-PROJETO.md`, seção 6. O caminho pra pedir o export do
+Instagram (não é scraping, decisão justificada lá) está na seção 7, item 1.
 
 ## 9. Deploy
 

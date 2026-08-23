@@ -11,6 +11,81 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.2.0 — Estratégia de mídia real (Módulo 11) + código pronto pra fotos
+**Sessão 15 — 23/08/2026**
+
+- **Decisão de origem do material real** (fotos/vídeos de mais de 7
+  edições e outros eventos): **não** fazer scraping do Instagram — violaria
+  os Termos de Uso e arriscaria a conta ser bloqueada por atividade
+  automatizada. Em vez disso, usar a ferramenta **oficial** de exportação
+  de dados do próprio Instagram (Configurações → Central de Privacidade →
+  Baixar suas informações), que traz posts + stories (destaques inclusos,
+  já que são só stories arquivados fixados) com legendas, datas e os
+  arquivos de mídia originais. Documentado em `docs/ESTADO-DO-PROJETO.md`,
+  seção 7, item 1.
+- **`content-raw/instagram-export/`** criada na raiz do projeto — pasta de
+  trabalho local pro usuário extrair o export ali, **ignorada pelo Git**
+  (`.gitignore`, com `content-raw/README.md` como exceção documentando o
+  formato esperado) — nunca é commitada, é só matéria-prima.
+- **Módulo 11 planejado** (`docs/ESTADO-DO-PROJETO.md`, seção 6): curadoria
+  assistida do material → bucket público no Supabase Storage (leitura
+  pública via toggle "Public bucket", escrita restrita por padrão — sem
+  política de `insert`, a chave `anon` não grava) → plugar no app.
+- **Código do Passo 3 já pronto, antes mesmo do bucket existir**:
+  `EventRecapModal.tsx` agora detecta se `recapMedia[].url` é o gradiente
+  placeholder (`começa com "linear-gradient"`) ou uma URL real — no
+  segundo caso já renderiza `<img>` mantendo o `aspect-ratio` quadrado
+  (`.recap-photo img` em `components.css`). Assim que uma URL real do
+  Storage entrar no dado, a foto aparece sem precisar tocar em código de
+  novo. Mesma lógica ainda falta portar pro Módulo 8 (Sobre) quando ele for
+  implementado.
+- **Pendente pro usuário**: criar o bucket `media` no painel do Supabase
+  (Storage → New bucket → marcar "Public bucket") — não fazível por código,
+  precisa do painel. Passo a passo em `docs/ESTADO-DO-PROJETO.md`, Módulo
+  11, Passo 2. Sem o bucket, nada quebra — a retrospectiva continua com os
+  gradientes placeholder normalmente.
+
+**Arquivos gerados/alterados:** `.gitignore`, `content-raw/README.md`,
+`src/components/EventRecapModal.tsx`, `src/styles/components.css`,
+`docs/{CHANGELOG,ESTADO-DO-PROJETO,SUPABASE}.md`, `CLAUDE.md`
+
+---
+
+## v2.1.0 — Login com Google corrigido de verdade + guia de domínio próprio
+**Sessão 15 — 23/08/2026**
+
+- **Bug real encontrado e corrigido: login com Google não completava.**
+  Documentado como "confirmado" numa sessão anterior no mesmo dia, mas a
+  verificação tinha parado na tela de login do Google, sem completar o
+  fluxo de volta pro app — o login na prática falhava (não redirecionava,
+  tab bar não trocava o ícone pela foto). Rastreei a rede real com
+  Playwright (app → `supabase.auth.signInWithOAuth` → `.../authorize` →
+  tela real do Google, tudo certo até ali) e cheguei à causa: faltava
+  `https://triade-sand.vercel.app` em **Authentication → URL Configuration
+  → Redirect URLs** no painel do Supabase — sem essa entrada, o Supabase
+  recebe a resposta do Google mas não sabe pra onde te devolver, e falha
+  essa última perna em silêncio. Corrigido pelo usuário no painel; validado
+  em produção depois — login completo, tab bar já mostra a foto.
+- **Problema secundário corrigido**: 4 instâncias de `npm run dev`
+  esquecidas de sessões anteriores (portas 5173–5180) — isso faria o
+  servidor local cair sempre numa porta diferente, quebrando o mesmo tipo
+  de lista de URLs permitidas em ambiente local. Encerradas.
+- **Foto de perfil maior na tab bar** (`TabBar.tsx`): 22px→28px (Padrão) e
+  20px→26px (Padrão 2) — um pouco maior que os outros ícones, pra se
+  destacar como "você" (padrão Instagram/TikTok).
+- **Guia de domínio próprio** (`docs/DEPLOY.md`): onde registrar (`.com.br`
+  no Registro.br, ~R$40/ano, recomendado; `.com` via Cloudflare
+  Registrar/Namecheap, ~US$9–15/ano), passo a passo completo (Vercel →
+  Supabase → Google Cloud), e nota importante: **o domínio próprio sozinho
+  não troca** o texto "zirrdajydxbydnyaebza.supabase.co" pela marca na tela
+  de login do Google — isso exigiria o Custom Domain do Supabase Auth
+  (plano Pro, custo recorrente), registrado como decisão separada.
+
+**Arquivos gerados/alterados:** `src/components/TabBar.tsx`,
+`docs/{DEPLOY,SUPABASE,ESTADO-DO-PROJETO}.md`
+
+---
+
 ## v2.0.0 — Eventos redesenhado: calendário + retrospectiva (Módulo 9)
 **Sessão 14 — 23/08/2026**
 

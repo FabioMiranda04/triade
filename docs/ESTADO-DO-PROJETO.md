@@ -3,7 +3,7 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v2.0.0`
+**Versão atual:** `v2.2.0`
 **Última atualização:** 23/08/2026
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
@@ -11,16 +11,40 @@ grande do próximo evento, grade 3 colunas das edições anteriores com
 scroll infinito e busca, `EventCalendar.tsx` novo, `EventRecapModal.tsx`
 novo (retrospectiva em artigo). **Pendente**: rodar o `schema.sql`/
 `seed.sql` atualizados contra o Supabase real (colunas `recap_text`/
-`recap_media`) — ver `docs/SUPABASE.md`. Módulos 8 e 10 (Sobre e
-Palestrantes) continuam só planejados, ver seção 6.
+`recap_media`) — ver `docs/SUPABASE.md`. **Módulo 11 (mídia real)
+planejado** — estratégia definida (export oficial do Instagram, não
+scraping), `content-raw/instagram-export/` pronta pra receber o material,
+código do `EventRecapModal.tsx` já pronto pra fotos reais; falta o usuário
+criar o bucket `media` no Storage do Supabase (não é algo que dá pra fazer
+por código) e trazer o export. Módulos 8 e 10 (Sobre e Palestrantes)
+continuam só planejados, ver seção 6.
 Módulo 2 (autenticação) segue concluído — entrar/cadastrar/sair com
-Supabase Auth, **login com Google confirmado funcionando de ponta a
-ponta**, área de perfil editável. Curtir/salvar/RSVP/plano gravam nas
-tabelas reais quando há usuária logada; sem login, ou sem Supabase
-configurado, continua local. Navegação reestruturada em 23/08/2026: CTA
-"Quero ser membro!" no cabeçalho + "Perfil" na tab bar. Próximo passo:
-**Módulo 3** (feed real, diretório de membras) ou completar os Módulos 8/10
-já detalhados. **Domínio próprio** também no roadmap (seção 7).
+Supabase Auth (e-mail/senha) **e login com Google, os dois confirmados
+funcionando de ponta a ponta em produção** (`triade-sand.vercel.app`,
+23/08/2026). O Google especificamente só passou a funcionar depois de um
+bug real corrigido nesta data — ver "Login com Google" logo abaixo. Área
+de perfil editável (foto do Google entra automática, agora um pouco maior
+na tab bar pra se destacar). Curtir/salvar/RSVP/plano gravam nas tabelas
+reais quando há usuária logada; sem login, ou sem Supabase configurado,
+continua local. Navegação reestruturada em 23/08/2026: CTA "Quero ser
+membro!" no cabeçalho + "Perfil" na tab bar. Próximo passo: **Módulo 3**
+(feed real, diretório de membras) ou completar os Módulos 8/10 já
+detalhados. **Domínio próprio**: passo a passo completo já documentado
+(`docs/DEPLOY.md`), só falta comprar.
+
+**Login com Google — bug real corrigido em 23/08/2026**: apesar de
+documentado como "confirmado" numa sessão anterior, o login parava sem
+completar (não redirecionava de volta pro app, tab bar não trocava o
+ícone pela foto). Causa raiz: a URL do site publicado
+(`https://triade-sand.vercel.app`) **não estava na lista "Redirect URLs"**
+de Authentication → URL Configuration do painel do Supabase — sem isso, o
+Supabase recebe a resposta do Google mas não sabe pra onde te devolver, e
+falha essa última perna do fluxo em silêncio. Corrigido pelo usuário no
+painel do Supabase, com o app já testado em produção depois disso. Um
+segundo problema secundário também corrigido nesta sessão: instâncias do
+`npm run dev` esquecidas rodando (portas 5173–5180) faziam o servidor
+local cair sempre numa porta diferente, o que quebraria esse mesmo tipo de
+lista de URLs permitidas em ambiente local — encerradas.
 
 ---
 
@@ -105,12 +129,15 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       assíncrono de propósito, gravando no Supabase quando há sessão.
 - [x] **Login com Google + área de perfil**: botão "Continuar com o Google"
       no `AccountSheet` (`signInWithGoogle`) — **confirmado funcionando de
-      ponta a ponta** em 23/08/2026 (Google Cloud + painel do Supabase
-      configurados; redireciona até a tela real do Google). Foto de perfil
-      do Google preenche `profiles.avatar_url` sozinha no primeiro login
-      (nunca sobrescreve uma foto já definida). Nova tela **"Editar
-      perfil"** (`ProfileEditSheet.tsx`) — nome, bio, Instagram, negócio,
-      gravando em `profiles` via `useAuth().updateProfile()`.
+      ponta a ponta em produção** (`triade-sand.vercel.app`), testado de
+      verdade em 23/08/2026 depois de corrigir a URL de retorno ausente em
+      "Redirect URLs" no painel do Supabase (ver nota no topo deste
+      arquivo). Foto de perfil do Google preenche `profiles.avatar_url`
+      sozinha no primeiro login (nunca sobrescreve uma foto já definida) e
+      aparece na tab bar (`.tab-avatar`, um pouco maior que os outros
+      ícones desde 23/08/2026). Nova tela **"Editar perfil"**
+      (`ProfileEditSheet.tsx`) — nome, bio, Instagram, negócio, gravando em
+      `profiles` via `useAuth().updateProfile()`.
 - [x] **Navegação reestruturada para vender melhor** (23/08/2026, pesquisado
       e decidido junto com o usuário): "Planos" saiu da tab bar e virou o
       CTA **"Quero ser membro!"** (`.btn-cta-member`), sempre visível no
@@ -298,11 +325,79 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
      `supabaseProvider.ts` → `data/seed.ts`).
    - O menu "..." → Editar (`Kebab`/`SpeakerEditSheet`) continua dentro do
      modal, só que o formulário precisa ganhar os campos novos também.
+10. **Módulo 11 — Infraestrutura de mídia real (Supabase Storage)**
+    (planejado em 23/08/2026): hoje o app só tem gradientes CSS como
+    "imagem" — este módulo é o que permite entrar fotos/vídeos de verdade
+    pras galerias dos Módulos 8 (Sobre) e 9 (retrospectiva de Eventos), com
+    volume grande esperado (mais de 7 edições + outros eventos, conforme o
+    usuário). Origem do material: export oficial do Instagram (seção 7,
+    item 1) — **não** scraping, decisão já tomada e justificada lá.
+    - **Passo 0 (usuário)**: pedir o export (seção 7, item 1), extrair o(s)
+      `.zip` e colocar o conteúdo em
+      `content-raw/instagram-export/` na raiz do projeto — pasta já criada
+      (`content-raw/README.md` explica a estrutura esperada), **ignorada
+      pelo Git de propósito** (`.gitignore`): é material de trabalho local,
+      nunca deve ser commitado (pode ter volume grande e não é conteúdo do
+      app, é matéria-prima). Pode jogar a estrutura exata que o Instagram
+      gera, sem reorganizar nada.
+    - **Passo 1 — curadoria** (Claude Code, quando o usuário avisar que o
+      material chegou): localizar os JSON relevantes dentro do export
+      (`posts_1.json`, `stories.json` — nome varia por versão do
+      exportador), cruzar as datas das publicações com `TriadeEvent.date`
+      em `data/seed.ts` pra saber de qual edição é cada foto, e propor ao
+      usuário quais fotos usar por edição (curadoria assistida — confirma/
+      exclui, não é automático demais pra não escolher mal).
+    - **Passo 2 — bucket no Supabase Storage**: criar um bucket público
+      (ex: `media`) pelo painel do Supabase (Storage → New bucket →
+      público). RLS de Storage: leitura pública (`select` liberado pra
+      `anon`), escrita restrita — mesma lógica das tabelas de conteúdo hoje
+      (sem escrita pública pela chave `anon`, regra 11 do `CLAUDE.md`).
+      Upload em lote: pelo painel manualmente no início (mais simples,
+      controlado) ou um script local rodado pelo usuário na própria
+      máquina com a chave `service_role` (**nunca** num script que vai pro
+      front-end/repositório — só uso local, pontual, pra popular o bucket).
+    - ~~**Passo 3 — plugar no app**~~ **✅ código já pronto** (23/08/2026):
+      `EventRecapModal.tsx` agora detecta sozinho se `media.url` é o
+      gradiente placeholder (`começa com "linear-gradient"`) ou uma URL
+      real — no segundo caso já renderiza `<img src={media.url}>` mantendo
+      o `aspect-ratio` quadrado (`.recap-photo img`, regra 5 do
+      `docs/DESIGN-SYSTEM.md`). Ou seja: assim que `TriadeEvent.recapMedia[].url`
+      passar a ser uma URL real do Storage
+      (`https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/...`)
+      em vez do gradiente, a foto real já aparece sem precisar tocar em
+      código de novo. Mesma lógica de detecção **ainda falta portar** pra
+      galeria do Módulo 8 (Sobre) quando ele for implementado.
+    - Imagens de câmera/celular costumam vir pesadas (vários MB) —
+      redimensionar/otimizar antes do upload pra não pesar o carregamento
+      no app (mobile-first, regra 1 do `CLAUDE.md`).
 
 ## 7. Prioridades para uma versão apresentável a clientes
 
 1. **Fotos reais no lugar dos gradientes** — maior salto de "protótipo" para
    "produto"; depende só do material. Onde trocar está no `DESIGN-SYSTEM.md`.
+   **Estratégia de origem do material** (definida em 23/08/2026): em vez de
+   scraping do Instagram (violaria os Termos de Uso da Meta e arrisca a
+   conta ser bloqueada por atividade automatizada — descartado), usar a
+   ferramenta **oficial** do próprio Instagram de exportar dados:
+   1. Quem administra @triade.conecta acessa **Configurações → Central de
+      Privacidade → Baixar suas informações**
+      (ou direto em [accountscenter.instagram.com](https://accountscenter.instagram.com)
+      → Suas informações e permissões → Exportar suas informações).
+   2. Seleciona as categorias — dá pra escolher **Publicações, Stories e
+      Reels** separadamente; **Destaques** não é uma categoria própria no
+      export porque tecnicamente são só uma seleção de Stories arquivados
+      fixada no perfil — vêm inclusos dentro de "Stories" (o Instagram
+      arquiva toda story automaticamente por padrão). Formato **JSON**
+      (mais fácil de processar) e o período (recomendado: desde o início da
+      Tríade, pra pegar as 3 edições).
+   3. O Instagram gera um arquivo pra baixar (pode levar minutos a horas,
+      eles avisam por notificação/e-mail) — vem com as legendas, datas e as
+      fotos/vídeos originais em boa qualidade.
+   4. O usuário manda o arquivo (ou só a pasta relevante) nesta conversa —
+      a partir daí, virar conteúdo real é: **Sobre** (Módulo 8 — galeria de
+      mídia e relatos) e **Eventos** (Módulo 9 — `recapMedia` das edições
+      já realizadas) puxam desse material; feed (`data/seed.ts` → `posts`)
+      também pode ganhar 2–3 posts reais dali (ver item 3 abaixo).
 2. **Validar os 3 planos** (Convidada / Membra / Fundadora) — nomes e preços
    ainda são rascunho, marcados como "sugeridos" na própria tela.
 3. **Mais 2–3 posts reais no feed** — bastidores, depoimento de participante.

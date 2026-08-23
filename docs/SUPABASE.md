@@ -42,12 +42,23 @@ primeiras edições, rode o `seed.sql` de novo também.
 
 ## Login com Google (OAuth) — ✅ configurado e funcionando
 
-**Confirmado ao vivo em 23/08/2026**: o botão "Continuar com o Google"
-(`AccountSheet.tsx` + `AuthContext.signInWithGoogle`) redireciona até a
-tela real de login do Google, com o `client_id` e o `redirect_uri`
-corretos — a configuração abaixo já foi feita tanto no Google Cloud quanto
-no painel do Supabase. Documentado aqui como referência, caso precise
-recriar as credenciais ou configurar um segundo ambiente:
+**Confirmado de ponta a ponta em produção em 23/08/2026**
+(`triade-sand.vercel.app`). Uma confirmação anterior no mesmo dia tinha
+verificado só até a tela de login do Google, sem completar o fluxo de
+volta — o login na verdade **não funcionava**: faltava a URL do site em
+**Authentication → URL Configuration → Redirect URLs** no painel do
+Supabase. Sem essa entrada, o Supabase recebe a resposta do Google mas não
+sabe pra onde te devolver, e falha essa última perna do fluxo em silêncio
+(sintomas: não redireciona de volta, tab bar não troca o ícone pela foto).
+Corrigido adicionando `https://triade-sand.vercel.app` (com e sem barra no
+final, pra não depender de normalização) à lista — **essa lista precisa
+ganhar uma entrada nova toda vez que um domínio novo apontar pro app**
+(inclusive quando o domínio próprio do projeto existir, ver
+`docs/DEPLOY.md`).
+
+O restante da configuração abaixo (Google Cloud + painel do Supabase)
+segue documentado como referência, caso precise recriar as credenciais ou
+configurar um segundo ambiente:
 
 1. **Google Cloud Console** ([console.cloud.google.com](https://console.cloud.google.com)):
    - Crie um projeto (ou use um existente).

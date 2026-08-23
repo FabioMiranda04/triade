@@ -13,3 +13,7 @@ npm-debug.log*
 !.vscode/extensions.json
 !.vscode/settings.json
 coverage
+
+# material bruto exportado (Instagram etc.) — pasta de trabalho local, nunca versionar
+content-raw/*
+!content-raw/README.md

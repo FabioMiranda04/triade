@@ -397,6 +397,12 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   position: relative;
   overflow: hidden;
 }
+.recap-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .recap-video {
   grid-column: 1 / -1;
   aspect-ratio: 16 / 9;

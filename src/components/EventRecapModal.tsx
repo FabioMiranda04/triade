@@ -9,6 +9,11 @@ interface EventRecapModalProps {
   onClose: () => void;
 }
 
+/** Placeholder de foto (sem material real ainda, ver Módulo 11) é sempre um gradiente CSS. */
+function isPlaceholderGradient(url: string): boolean {
+  return url.startsWith('linear-gradient');
+}
+
 /** Pop-up de retrospectiva de uma edição já realizada — texto + galeria de fotos/vídeos. */
 export function EventRecapModal({ event, onClose }: EventRecapModalProps) {
   const hasRecap = Boolean(event.recapText) || Boolean(event.recapMedia?.length);
@@ -54,8 +59,13 @@ export function EventRecapModal({ event, onClose }: EventRecapModalProps) {
                   <iframe src={media.url} title={media.legenda ?? event.title} loading="lazy" allowFullScreen />
                   {media.legenda && <span className="cap">{media.legenda}</span>}
                 </div>
-              ) : (
+              ) : isPlaceholderGradient(media.url) ? (
                 <div className="recap-photo" key={i} style={{ background: media.url }}>
+                  {media.legenda && <span className="cap">{media.legenda}</span>}
+                </div>
+              ) : (
+                <div className="recap-photo" key={i}>
+                  <img src={media.url} alt={media.legenda ?? ''} loading="lazy" />
                   {media.legenda && <span className="cap">{media.legenda}</span>}
                 </div>
               ),
