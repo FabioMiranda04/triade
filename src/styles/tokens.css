@@ -21,6 +21,9 @@
   --plum: #4a2140;
   --blush: #e7b3a0;
 
+  /* marca de terceiros (uso pontual, ex: botão do WhatsApp) */
+  --whatsapp: #25d366;
+
   /* vidro */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);

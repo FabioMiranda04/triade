@@ -11,6 +11,8 @@ interface EventModalProps {
   onClose: () => void;
 }
 
+const sortedFounders = [...founders].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
 /**
  * Pop-up de detalhes do evento. "Quero participar" leva a um segundo passo
  * com as 3 sócias — cada botão abre o WhatsApp com uma mensagem pronta.
@@ -27,7 +29,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
   }, [onClose]);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay center" onClick={onClose}>
       <div
         className="modal-sheet glass-dark"
         role="dialog"
@@ -72,15 +74,15 @@ export function EventModal({ event, onClose }: EventModalProps) {
             <button className="modal-back" onClick={() => setStep('details')}>
               <Icon name="chevronLeft" size={14} /> Voltar
             </button>
-            <h2 className="modal-title">Fale com uma das sócias</h2>
+            <h2 className="modal-title">Fale com a gente!</h2>
             <p className="modal-theme">
               Escolha quem vai te ajudar a garantir sua vaga na {event.title}.
             </p>
             <div className="modal-contacts">
-              {founders.map((f) => (
+              {sortedFounders.map((f) => (
                 <a
                   key={f.id}
-                  className="wa-btn glass"
+                  className="wa-btn"
                   href={buildWhatsAppLink(f.whatsapp, buildTicketMessage(event, firstName(f.name)))}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -88,9 +90,11 @@ export function EventModal({ event, onClose }: EventModalProps) {
                   <span className="av">{f.initials}</span>
                   <span className="who">
                     <span className="n">{f.name}</span>
-                    <span className="r">{f.role}</span>
+                    <span className="r">{f.whatsapp}</span>
                   </span>
-                  <Icon name="whatsapp" size={20} />
+                  <span className="wa-badge">
+                    <Icon name="whatsapp" size={17} />
+                  </span>
                 </a>
               ))}
             </div>
