@@ -3,9 +3,9 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.6.0`
+**Versão atual:** `v0.7.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; pop-up de evento com compra via WhatsApp e edição inline de conteúdo (só no aparelho) prontos; próximo é o Módulo 2 (autenticação)
+**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; pop-up de evento com compra via WhatsApp e edição inline de conteúdo (só no aparelho) prontos, com todos os pop-ups unificados num único padrão visual (centralizado, fundo escuro) e otimizados; próximo é o Módulo 2 (autenticação) — Módulo 7 (instalar como app + notificações) planejado para depois dele
 
 ---
 
@@ -135,6 +135,27 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    permissão.
 5. **Módulo 6 — Migração de dados**: localStorage → banco, conforme entrarem
    usuárias reais.
+6. **Módulo 7 — Instalar como app + notificações de evento** (pedido em
+   23/08/2026): atalho na tela de início do celular (Android e iOS) e avisos
+   de quando é o próximo evento / quando abrem os ingressos.
+   - **Atalho na tela de início** é a parte simples: o projeto já tem um
+     `manifest.json` (falta confirmar se `display: standalone`, ícones
+     192/512px e `apple-touch-icon` estão corretos); com isso o Android
+     mostra o prompt de instalar sozinho, e no iOS a usuária instala via
+     Safari → Compartilhar → "Adicionar à Tela de Início". Não depende de
+     nenhum outro módulo.
+   - **Notificações depende de decisão de arquitetura, não é só front-end**:
+     push de verdade (o app avisa mesmo fechado) exige Service Worker +
+     Web Push (chave VAPID) + um backend que dispare o envio na hora certa
+     (Supabase Edge Function agendada, provavelmente), e no iOS só funciona
+     se o app já estiver instalado como atalho (regra do próprio iOS/Safari,
+     não do projeto). Alternativa mais simples, sem backend novo: lembrete
+     só enquanto o app está aberto (Notification API local), que cobre menos
+     casos mas não exige infraestrutura de envio.
+   - Faz mais sentido vir **depois do Módulo 2** (autenticação): sem login
+     não há onde guardar "essa usuária quer ser avisada desse evento", e
+     notificação para todo mundo indiscriminadamente tende a ser ignorada/
+     desinstalada.
 
 ## 7. Prioridades para uma versão apresentável a clientes
 

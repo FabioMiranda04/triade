@@ -11,6 +11,53 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v0.7.0 — Pop-ups unificados, animação corrigida (jank de backdrop-filter) e planejamento do Módulo 7
+**Sessão 7 — 23/08/2026**
+
+- **Feedback visual do pop-up de WhatsApp aplicado**: centralizado na tela
+  (em vez de bottom sheet), ícone oficial do WhatsApp (glifo real, selo
+  verde `--whatsapp: #25d366`, em vez do desenho aproximado da sessão
+  anterior), cargo trocado pelo telefone de cada sócia, sócias em ordem
+  alfabética (sem hierarquia visual entre elas), cor de fundo dos cards
+  trocada para um gradiente vinho/dourado translúcido, e título mais
+  convidativo ("Fale com a gente!"). Removido também o emoji 🤍 do fim da
+  mensagem do WhatsApp, que não renderizava (aparecia como `�`).
+- **Diagnóstico de animação travada, com medição real** (Playwright + CDP
+  `Emulation.setCPUThrottlingRate`, contagem de frames via
+  `requestAnimationFrame`): a causa era **`backdrop-filter: blur()` tendo
+  que recalcular a cada quadro** — tanto por causa do `scale()` na animação
+  de entrada do pop-up quanto, de forma contínua, por causa do fundo
+  animado (`.mesh`) se mexendo atrás dele o tempo todo enquanto o pop-up
+  ficava aberto. Medido antes/depois: pior quadro caiu de ~117ms para
+  ~50ms na entrada, e o pop-up aberto e parado foi de instável para
+  **16.7ms constante (60fps)** depois da correção.
+  - `useModalEffects` (novo hook, `src/hooks/`): pausa a animação do
+    `.mesh` (`body.modal-open .mesh span { animation-play-state: paused }`)
+    enquanto qualquer pop-up estiver aberto, e centraliza o fechar-no-Esc
+    que antes estava duplicado em `EventModal` e `EditSheet`.
+  - Animação de entrada (`modalup`) e de troca de etapa (`stepin`) passam a
+    usar só `translateY` + opacidade — nunca `scale` — em elementos com
+    `backdrop-filter`.
+- **Todos os pop-ups do app unificados num único padrão visual**: `EditSheet`
+  (formulários de evento/palestrante/post) deixa de ser um bottom sheet
+  claro e passa a ser centralizado e escuro (`glass-dark`), igual ao
+  `EventModal` — mesmo comportamento, mesma cor de fundo, mesma animação.
+- **Planejamento do Módulo 7** (pedido em 23/08/2026, ainda não
+  implementado): atalho na tela de início (Android/iOS) + notificações de
+  evento/abertura de ingressos — documentado em
+  `docs/ESTADO-DO-PROJETO.md`, seção 6, com a dependência real (login antes
+  de notificação por usuária) e as duas rotas possíveis (push de verdade
+  via Service Worker/Web Push + backend, ou lembrete só com o app aberto).
+- **Validado** com `tsc --noEmit` (strict), `vite build`, e testes visuais/
+  de performance com Playwright (mobile 375px e desktop 1440px, com e sem
+  CPU throttling).
+
+**Arquivos gerados/alterados:** `src/hooks/useModalEffects.ts`,
+`src/components/{EventModal,EditSheet,Icon}.tsx`, `src/lib/whatsapp.ts`,
+`src/styles/{components,layout,tokens}.css`, `docs/ESTADO-DO-PROJETO.md`
+
+---
+
 ## v0.6.0 — Pop-up de evento com compra via WhatsApp + edição inline de conteúdo
 **Sessão 6 — 23/08/2026**
 

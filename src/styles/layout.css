@@ -12,6 +12,13 @@
   filter: blur(60px);
   opacity: 0.55;
 }
+/* pop-up aberto usa `backdrop-filter` — se o fundo continuar se mexendo,
+   o navegador recalcula o blur a cada quadro enquanto ele estiver visível,
+   não só durante a animação de entrada. Pausar aqui custa zero visualmente
+   (o fundo já fica encoberto pelo pop-up) e evita esse custo contínuo. */
+body.modal-open .mesh span {
+  animation-play-state: paused;
+}
 .mesh .b1 {
   width: 380px;
   height: 380px;

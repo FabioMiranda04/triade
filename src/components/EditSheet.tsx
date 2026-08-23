@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { Icon } from '@/components/Icon';
+import { useModalEffects } from '@/hooks/useModalEffects';
 
 interface EditSheetProps {
   title: string;
@@ -10,20 +10,14 @@ interface EditSheetProps {
   children: ReactNode;
 }
 
-/** Bottom sheet reutilizável para formulários de edição/criação de conteúdo. */
+/** Pop-up reutilizável para formulários de edição/criação de conteúdo — mesmo padrão visual do `EventModal`. */
 export function EditSheet({ title, onClose, onSubmit, submitLabel = 'Salvar', children }: EditSheetProps) {
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
+  useModalEffects(onClose);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <form
-        className="modal-sheet edit-sheet glass-strong"
+        className="modal-sheet glass-dark"
         role="dialog"
         aria-modal="true"
         aria-label={title}

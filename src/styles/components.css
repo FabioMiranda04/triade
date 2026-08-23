@@ -366,25 +366,25 @@
 .quote-card .q { font-family: var(--font-display); font-size: 17px; line-height: 1.4; }
 .quote-card .handle { margin-top: 12px; color: var(--gold-soft); font-size: 16px; }
 
-/* ---------- pop-up de evento ---------- */
+/* ---------- pop-up (evento, formulários) ---------- */
+/* Todo pop-up do app segue o mesmo padrão: centralizado, fundo escuro
+   (glass-dark). Ver `useModalEffects` — enquanto um estiver aberto, o
+   `.mesh` do fundo para de animar de propósito: um `backdrop-filter` que
+   precisa recalcular a cada quadro por causa de algo se mexendo atrás dele
+   é a causa mais comum de animação travada em telas maiores. Pelo mesmo
+   motivo, a animação de entrada usa só posição/opacidade — nunca `scale` —
+   num elemento com `backdrop-filter` (medido: um `scale` nesse contexto
+   quase triplicou o pior quadro sob CPU throttled). */
 .modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
   background: rgba(20, 14, 13, 0.55);
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0;
-  animation: modalfade 0.2s ease;
-}
-.modal-overlay.center {
   align-items: center;
+  justify-content: center;
   padding: 20px;
-}
-.modal-overlay.center .modal-sheet {
-  border-radius: var(--r-xl);
-  width: 100%;
+  animation: modalfade 0.2s ease;
 }
 @keyframes modalfade {
   from { opacity: 0; }
@@ -396,21 +396,22 @@
   max-height: min(88vh, 720px);
   overflow-y: auto;
   padding: 24px 20px calc(24px + var(--safe-b));
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  border-radius: var(--r-xl);
   position: relative;
-  animation: modalup 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: modalup 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
 @keyframes modalup {
-  from { transform: translateY(28px) scale(0.96); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 /* troca de etapa dentro do mesmo pop-up (ex: detalhes -> contatos) */
 .modal-step {
-  animation: stepin 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: stepin 0.26s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 @keyframes stepin {
-  from { opacity: 0; transform: translateY(10px) scale(0.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .modal-close {
   position: absolute;
@@ -558,7 +559,6 @@
 .kebab-item:active { background: rgba(35, 28, 26, 0.08); transform: scale(0.97); }
 
 /* ---------- formulários de edição ---------- */
-.edit-sheet { color: var(--ink); }
 .edit-fields { display: flex; flex-direction: column; gap: 14px; margin: 16px 0 20px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field span {
@@ -566,7 +566,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--ink-70);
+  color: rgba(244, 238, 227, 0.7);
 }
 .field input,
 .field select,
