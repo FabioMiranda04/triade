@@ -3,15 +3,17 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v1.0.0`
+**Versão atual:** `v1.1.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído** —
-entrar/cadastrar/sair com Supabase Auth, e curtir/salvar/RSVP/plano
-gravando nas tabelas reais quando há usuária logada (sem login, ou sem
-Supabase configurado, continua exatamente local como sempre foi). Próximo
-passo: **Módulo 3** (área de membras — feed real, diretório, perfil
-editável). Módulo 7 (instalar como app + notificações) segue planejado,
-agora sem o bloqueio de autenticação que tinha antes.
+**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído e
+estendido** — entrar/cadastrar/sair com Supabase Auth, login com **Google**
+(código pronto, falta só habilitar no painel — ver `docs/SUPABASE.md`), e
+uma **área de perfil** (nome, bio, Instagram, negócio; foto preenchida
+automaticamente ao entrar com Google). Curtir/salvar/RSVP/plano gravam nas
+tabelas reais quando há usuária logada; sem login, ou sem Supabase
+configurado, continua exatamente local como sempre foi. Próximo passo:
+**Módulo 3** (feed real, diretório de membras). **Domínio próprio** também
+entrou no roadmap (seção 7) — depende só de você ter/comprar um.
 
 ---
 
@@ -85,6 +87,13 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       sempre. Engajamento (`isLiked`/`toggleLike`/`isSaved`/`toggleSave`/
       `hasRsvp`/`rsvpEvent`/`cancelRsvp`/`getChosenPlan`/`choosePlan`) agora
       assíncrono de propósito, gravando no Supabase quando há sessão.
+- [x] **Login com Google + área de perfil**: botão "Continuar com o Google"
+      no `AccountSheet` (`signInWithGoogle`, testado — redireciona certo até
+      o Supabase, só falta habilitar o provedor lá, ver `docs/SUPABASE.md`).
+      Foto de perfil do Google preenche `profiles.avatar_url` sozinha no
+      primeiro login (nunca sobrescreve uma foto já definida). Nova tela
+      **"Editar perfil"** (`ProfileEditSheet.tsx`) — nome, bio, Instagram,
+      negócio, gravando em `profiles` via `useAuth().updateProfile()`.
 - [x] **Infra de repositório**: `CLAUDE.md`, docs, `.gitignore`,
       `vercel.json` (com rewrite de SPA), CI do GitHub Actions rodando
       typecheck + build, comandos do Claude Code em `.claude/commands/`.
@@ -121,9 +130,14 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)
 
-- **Autenticação existe, mas é só o básico**: entrar, cadastrar, sair. Sem
-  tela de perfil editável (foto, bio, Instagram — colunas já existem em
-  `profiles`), sem onboarding, sem "esqueci minha senha", sem login social.
+- **Login com Google não funciona ainda de ponta a ponta** — o código está
+  pronto e testado, mas o provedor precisa ser habilitado no painel do
+  Supabase (mais criar credenciais no Google Cloud). Passo a passo em
+  `docs/SUPABASE.md`, seção "Login com Google". Nenhum outro login social
+  (Apple, Facebook...) foi implementado.
+- **Perfil editável existe, mas é o básico**: nome, bio, Instagram, negócio.
+  Sem upload de foto própria (só a do Google, automática), sem onboarding,
+  sem "esqueci minha senha".
 - **Edição de conteúdo dentro do app é só local** (menu "..." → Editar, ver
   seção 2) — não existe gravação real no Supabase por trás dela, de
   propósito: sem autenticação, qualquer chave que grave no banco no
@@ -147,12 +161,16 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    - `AccountSheet` ainda não tem "esqueci minha senha" — falta uma tela de
      recuperação (`supabase.auth.resetPasswordForEmail`), deixado de fora
      do Módulo 2 de propósito para não inflar o escopo.
+   - **Login com Google pendente de configuração** (não é tarefa de código):
+     habilitar o provedor no painel do Supabase + criar credenciais no
+     Google Cloud Console. Passo a passo com os valores exatos do projeto
+     em `docs/SUPABASE.md`.
 1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
    cadastrar/sair com Supabase Auth; curtir/RSVP/plano gravam nas tabelas
    reais quando logada. Ver seção 2.
-2. **Módulo 3 — Área de membras**: feed real, diretório de membras, "minhas
-   inscrições", e a tela de **perfil editável** (foto, bio, Instagram,
-   negócio — colunas já existem em `profiles`) que o Módulo 2 não cobriu.
+2. **Módulo 3 — Área de membras**: feed real e diretório de membras
+   (`profiles` já tem RLS pública para leitura entre logadas, pensada pra
+   isso), "minhas inscrições". O perfil editável em si já saiu do Módulo 2.
 3. **Módulo 4 — Assinaturas e pagamento**: cobrança recorrente
    (Stripe/Pagar.me), provavelmente via Edge Function do Supabase para o
    webhook. A tabela `plan_selections` já prevê o campo `status`.
@@ -198,6 +216,16 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 6. **Rodar o `schema.sql` + `seed.sql` no Supabase** e configurar as variáveis
    na Vercel — a partir daí, ajustar datas e textos de evento vira edição de
    linha no painel, sem depender de deploy.
+7. **Domínio próprio** (pedido em 23/08/2026, depende de você ter/comprar
+   um): a Vercel já resolve isso em **Settings → Domains** — adiciona o
+   domínio, aponta o DNS que ela indicar, e o HTTPS sai automático (detalhes
+   em `docs/DEPLOY.md`, seção "Domínio próprio"). Duas coisas para lembrar
+   quando isso acontecer: (1) trocar `VITE_SUPABASE_URL`/`ANON_KEY` não muda
+   — o domínio novo não afeta a configuração do Supabase; (2) se o login com
+   Google já estiver ativo, adicionar o domínio novo em "Authorized domains"
+   na tela de consentimento OAuth do Google Cloud (o callback do Supabase
+   continua sendo `https://zirrdajydxbydnyaebza.supabase.co/auth/v1/callback`,
+   esse não muda nunca).
 
 ## 8. Protocolo de atualização (toda sessão futura)
 

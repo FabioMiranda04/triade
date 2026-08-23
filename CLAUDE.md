@@ -56,7 +56,8 @@ src/
 │   ├── EventModal.tsx    #   detalhes do evento + "Quero participar" (WhatsApp)
 │   ├── EditSheet.tsx     #   formulário genérico (usado por Event/Speaker/PostEditSheet)
 │   ├── SettingsSheet.tsx #   configurações do app (lista estilo iOS)
-│   ├── AccountSheet.tsx  #   entrar/cadastrar (ou perfil+sair, se logada)
+│   ├── AccountSheet.tsx  #   entrar/cadastrar/Google (ou perfil+sair, se logada)
+│   ├── ProfileEditSheet.tsx  # editar nome/bio/Instagram/negócio
 │   └── Kebab.tsx         #   menu "..." estilo Instagram
 ├── context/
 │   ├── AuthContext.tsx         # sessão (Supabase Auth) + dono do AccountSheet
@@ -182,8 +183,12 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 ## 7. O que ainda NÃO existe (não presuma)
 
 - **Autenticação existe** (Supabase Auth, e-mail/senha com confirmação por
-  e-mail — `AuthContext`/`AccountSheet`), mas só cadastro/login/sair. Sem
-  perfil editável, sem foto, sem onboarding, sem recuperação de senha.
+  e-mail, + Google via `signInWithGoogle` — `AuthContext`/`AccountSheet`) e
+  um **perfil editável básico** (nome/bio/Instagram/negócio,
+  `ProfileEditSheet`; foto só a do Google, automática). **Login com Google
+  não funciona de ponta a ponta ainda** — falta habilitar o provedor no
+  painel do Supabase (não é código, ver `docs/SUPABASE.md`). Sem
+  onboarding, sem recuperação de senha, sem upload de foto própria.
 - **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) vai para o
   Supabase só com usuária logada.** Deslogada (ou sem Supabase configurado)
   continua exatamente como antes: localStorage, por navegador, livre.
@@ -207,8 +212,8 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 1 | Landing / app shell — 5 telas | ✅ migrado para código |
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
-| 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
-| 3 | Área de membras logada (feed real, diretório, perfil editável) | ⏭️ próximo |
+| 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google, perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 (Google pendente de habilitar no painel — ver `SUPABASE.md`) |
+| 3 | Área de membras logada (feed real, diretório) | ⏭️ próximo |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
 | 6 | Migração de dados localStorage → banco | ⏳ |
@@ -223,4 +228,7 @@ As variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` precisam estar
 configuradas na Vercel; sem elas o app publica funcionando, mas com dados
 locais. Variável nova só entra no bundle em **build novo** — redeploy.
 
-Detalhes em `docs/DEPLOY.md` e `docs/SUPABASE.md`.
+**Domínio próprio**: planejado (pedido em 23/08/2026), pendente só de você
+ter/comprar um. Vercel → Settings → Domains resolve; se o login com Google
+já estiver ativo, adicione o domínio novo em "Authorized domains" no Google
+Cloud também. Detalhes em `docs/DEPLOY.md` e `docs/SUPABASE.md`.

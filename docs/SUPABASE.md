@@ -25,6 +25,37 @@ há sessão ativa — sem sessão, cai no mesmo comportamento local de sempre.
 Nenhuma configuração nova foi necessária no painel do Supabase, só código
 do app.
 
+## Login com Google (OAuth) — pendente de configuração
+
+**O código já está pronto** (`AccountSheet.tsx` tem o botão "Continuar com o
+Google", `AuthContext.tsx` tem `signInWithGoogle`) e testado: hoje ele
+redireciona certinho até o Supabase e volta com
+`{"error_code":"validation_failed","msg":"Unsupported provider: provider is
+not enabled"}` — ou seja, só falta **habilitar o provedor Google no painel
+do Supabase**, e isso exige duas contas às quais o Claude Code não tem
+acesso (Google Cloud e o painel do Supabase). Passo a passo:
+
+1. **Google Cloud Console** ([console.cloud.google.com](https://console.cloud.google.com)):
+   - Crie um projeto (ou use um existente).
+   - **APIs & Services → OAuth consent screen**: tipo **Externo**, nome do
+     app ("Tríade Conecta"), e-mail de suporte. Quando o domínio próprio
+     existir (ver seção de domínio no `ESTADO-DO-PROJETO.md`), adicione-o
+     em "Authorized domains" aqui também.
+   - **APIs & Services → Credentials → Create Credentials → OAuth client
+     ID** → tipo **Web application**.
+   - Em **Authorized redirect URIs**, adicione exatamente:
+     ```
+     https://zirrdajydxbydnyaebza.supabase.co/auth/v1/callback
+     ```
+     (esse é o callback do **seu** projeto Supabase — é fixo, não muda
+     quando o domínio do app mudar, porque quem recebe o retorno do Google
+     é o Supabase, não o Vercel).
+   - Copie o **Client ID** e o **Client Secret** gerados.
+2. **Painel do Supabase** → **Authentication → Providers → Google** →
+   habilite → cole o Client ID e o Client Secret → **Save**.
+3. Pronto — não precisa mexer em nenhuma variável de ambiente do app nem
+   fazer deploy novo. Teste clicando em "Continuar com o Google" no app.
+
 ## Configurar (10 minutos)
 
 1. Crie um projeto em [supabase.com](https://supabase.com) — região **South

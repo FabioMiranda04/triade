@@ -30,7 +30,8 @@ export type IconName =
   | 'edit'
   | 'plus'
   | 'settings'
-  | 'user';
+  | 'user'
+  | 'google';
 
 const PATHS: Record<IconName, JSX.Element> = {
   heart: (
@@ -144,6 +145,30 @@ const PATHS: Record<IconName, JSX.Element> = {
     <>
       <circle cx="12" cy="8" r="3.6" />
       <path d="M4.8 20c.9-3.7 3.6-5.8 7.2-5.8s6.3 2.1 7.2 5.8" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
+  google: (
+    <>
+      <path
+        d="M23.52 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.44c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.89c2.27-2.09 3.59-5.17 3.59-8.8Z"
+        fill="#4285F4"
+        stroke="none"
+      />
+      <path
+        d="M12 24c3.24 0 5.95-1.08 7.93-2.92l-3.89-2.98c-1.08.72-2.45 1.15-4.04 1.15-3.11 0-5.74-2.09-6.68-4.9H1.3v3.07C3.26 21.3 7.31 24 12 24Z"
+        fill="#34A853"
+        stroke="none"
+      />
+      <path
+        d="M5.32 14.35A7.2 7.2 0 0 1 4.93 12c0-.82.14-1.61.39-2.35V6.58H1.3A11.98 11.98 0 0 0 0 12c0 1.93.46 3.76 1.3 5.42l4.02-3.07Z"
+        fill="#FBBC05"
+        stroke="none"
+      />
+      <path
+        d="M12 4.75c1.76 0 3.34.6 4.58 1.79l3.44-3.44C17.94 1.19 15.23 0 12 0 7.31 0 3.26 2.7 1.3 6.58l4.02 3.07C6.26 6.84 8.89 4.75 12 4.75Z"
+        fill="#EA4335"
+        stroke="none"
+      />
     </>
   ),
   settings: (

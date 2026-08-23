@@ -3,29 +3,58 @@ import type { FormEvent } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { Icon } from '@/components/Icon';
 import { ModalOverlay } from '@/components/ModalOverlay';
+import { ProfileEditSheet } from '@/components/ProfileEditSheet';
+import type { ProfileRow } from '@/types/database';
+
+type ProfileEdits = Partial<Pick<ProfileRow, 'full_name' | 'bio' | 'instagram' | 'business'>>;
 
 interface AccountSheetProps {
   user: User | null;
+  profile: ProfileRow | null;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (
     email: string,
     password: string,
     fullName: string,
   ) => Promise<{ error: string | null; needsConfirmation: boolean }>;
+  signInWithGoogle: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  updateProfile: (patch: ProfileEdits) => Promise<{ error: string | null }>;
   onClose: () => void;
 }
 
 type Mode = 'entrar' | 'cadastrar' | 'confirmar-email';
 
 /** Pop-up de conta: login/cadastro quando deslogada, perfil + sair quando logada. */
-export function AccountSheet({ user, signIn, signUp, signOut, onClose }: AccountSheetProps) {
+export function AccountSheet({
+  user,
+  profile,
+  signIn,
+  signUp,
+  signInWithGoogle,
+  signOut,
+  updateProfile,
+  onClose,
+}: AccountSheetProps) {
   const [mode, setMode] = useState<Mode>('entrar');
+  const [editingProfile, setEditingProfile] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  async function handleGoogle() {
+    setError(null);
+    setGoogleLoading(true);
+    const result = await signInWithGoogle();
+    if (result.error) {
+      setError(result.error);
+      setGoogleLoading(false);
+    }
+    // sem erro: o navegador já está sendo redirecionado para o Google
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -47,34 +76,50 @@ export function AccountSheet({ user, signIn, signUp, signOut, onClose }: Account
 
   if (user) {
     return (
-      <ModalOverlay onClose={onClose}>
-        <div
-          className="modal-sheet glass-dark"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Sua conta"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button className="modal-close" aria-label="Fechar" onClick={onClose}>
-            <Icon name="close" size={18} />
-          </button>
-          <div className="modal-ph">
-            <Icon name="user" size={26} />
-          </div>
-          <h2 className="modal-title">Sua conta</h2>
-          <p className="modal-theme">{user.email}</p>
-          <button
-            className="btn btn-glass full"
-            style={{ marginTop: 20 }}
-            onClick={async () => {
-              await signOut();
-              onClose();
-            }}
+      <>
+        <ModalOverlay onClose={onClose}>
+          <div
+            className="modal-sheet glass-dark"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Sua conta"
+            onClick={(e) => e.stopPropagation()}
           >
-            Sair da conta
-          </button>
-        </div>
-      </ModalOverlay>
+            <button className="modal-close" aria-label="Fechar" onClick={onClose}>
+              <Icon name="close" size={18} />
+            </button>
+            {profile?.avatar_url ? (
+              <img className="modal-avatar" src={profile.avatar_url} alt="" />
+            ) : (
+              <div className="modal-ph">
+                <Icon name="user" size={26} />
+              </div>
+            )}
+            <h2 className="modal-title">{profile?.full_name || 'Sua conta'}</h2>
+            <p className="modal-theme">{user.email}</p>
+            <button className="btn btn-primary full" style={{ marginTop: 20 }} onClick={() => setEditingProfile(true)}>
+              Editar perfil
+            </button>
+            <button
+              className="btn btn-glass full"
+              style={{ marginTop: 10 }}
+              onClick={async () => {
+                await signOut();
+                onClose();
+              }}
+            >
+              Sair da conta
+            </button>
+          </div>
+        </ModalOverlay>
+        {editingProfile && (
+          <ProfileEditSheet
+            profile={profile}
+            updateProfile={updateProfile}
+            onClose={() => setEditingProfile(false)}
+          />
+        )}
+      </>
     );
   }
 
@@ -152,6 +197,19 @@ export function AccountSheet({ user, signIn, signUp, signOut, onClose }: Account
         <button type="submit" className="btn btn-primary full" disabled={submitting}>
           {submitting ? 'Só um instante...' : mode === 'entrar' ? 'Entrar' : 'Criar conta'}
         </button>
+
+        <div className="auth-divider">ou</div>
+
+        <button
+          type="button"
+          className="btn btn-google full"
+          disabled={googleLoading}
+          onClick={handleGoogle}
+        >
+          <Icon name="google" size={18} />
+          {googleLoading ? 'Redirecionando...' : 'Continuar com o Google'}
+        </button>
+
         <button
           type="button"
           className="modal-back"

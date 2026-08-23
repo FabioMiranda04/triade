@@ -188,14 +188,20 @@ create policy "cada uma gerencia seu plano"
   using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- cria o perfil automaticamente quando alguém se cadastra
+-- (full_name/avatar_url vêm do cadastro por e-mail ou, no login com Google,
+-- do próprio Google via raw_user_meta_data)
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name)
-  values (new.id, new.raw_user_meta_data ->> 'full_name')
+  insert into public.profiles (id, full_name, avatar_url)
+  values (
+    new.id,
+    new.raw_user_meta_data ->> 'full_name',
+    new.raw_user_meta_data ->> 'avatar_url'
+  )
   on conflict (id) do nothing;
   return new;
 end;

@@ -4,6 +4,9 @@ import type { User } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { db } from '@/lib/db';
 import { AccountSheet } from '@/components/AccountSheet';
+import type { ProfileRow } from '@/types/database';
+
+type ProfileEdits = Partial<Pick<ProfileRow, 'full_name' | 'bio' | 'instagram' | 'business'>>;
 
 interface SignResult {
   error: string | null;
@@ -16,10 +19,15 @@ interface SignUpResult extends SignResult {
 
 interface AuthContextValue {
   user: User | null;
+  profile: ProfileRow | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<SignUpResult>;
   signIn: (email: string, password: string) => Promise<SignResult>;
+  /** Redireciona para o consentimento do Google — só volta pro app depois. */
+  signInWithGoogle: () => Promise<SignResult>;
   signOut: () => Promise<void>;
+  /** Atualiza nome/bio/Instagram/negócio do perfil da usuária logada. */
+  updateProfile: (patch: ProfileEdits) => Promise<SignResult>;
   /** Sempre abre o pop-up de conta (login/cadastro ou perfil, se já logada). */
   openAccount: () => void;
   /**
@@ -46,6 +54,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 /** Sessão da usuária (Supabase Auth) + o pop-up de conta, num só lugar. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -64,6 +73,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.subscription.unsubscribe();
   }, []);
 
+  // Carrega o perfil da usuária logada e, se ainda não tem foto, preenche
+  // com a do Google (nunca sobrescreve uma foto que a usuária já tenha).
+  useEffect(() => {
+    if (!supabase || !user) {
+      setProfile(null);
+      return;
+    }
+    let alive = true;
+    const client = supabase;
+    client
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(async ({ data }) => {
+        if (!alive) return;
+        let row = data;
+        const googleAvatar = user.user_metadata?.avatar_url as string | undefined;
+        if (row && !row.avatar_url && googleAvatar) {
+          const { data: updated } = await client
+            .from('profiles')
+            .update({ avatar_url: googleAvatar })
+            .eq('id', user.id)
+            .select('*')
+            .maybeSingle();
+          row = updated ?? row;
+        }
+        if (alive) setProfile(row ?? null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [user]);
+
   const signUp = useCallback(async (email: string, password: string, fullName: string): Promise<SignUpResult> => {
     if (!supabase) return { error: 'Conta indisponível sem o Supabase configurado.', needsConfirmation: false };
     const { data, error } = await supabase.auth.signUp({
@@ -81,9 +124,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? translateAuthError(error.message) : null };
   }, []);
 
+  const signInWithGoogle = useCallback(async (): Promise<SignResult> => {
+    if (!supabase) return { error: 'Conta indisponível sem o Supabase configurado.' };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
+    return { error: error ? translateAuthError(error.message) : null };
+  }, []);
+
   const signOut = useCallback(async () => {
     await supabase?.auth.signOut();
   }, []);
+
+  const updateProfile = useCallback(
+    async (patch: ProfileEdits): Promise<SignResult> => {
+      if (!supabase || !user) return { error: 'Sem sessão.' };
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(patch)
+        .eq('id', user.id)
+        .select('*')
+        .maybeSingle();
+      if (error) return { error: error.message };
+      setProfile(data ?? null);
+      return { error: null };
+    },
+    [user],
+  );
 
   const openAccount = useCallback(() => setSheetOpen(true), []);
 
@@ -94,14 +162,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, openAccount, requireAuth }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        profile,
+        loading,
+        signUp,
+        signIn,
+        signInWithGoogle,
+        signOut,
+        updateProfile,
+        openAccount,
+        requireAuth,
+      }}
+    >
       {children}
       {sheetOpen && (
         <AccountSheet
           user={user}
+          profile={profile}
           signIn={signIn}
           signUp={signUp}
+          signInWithGoogle={signInWithGoogle}
           signOut={signOut}
+          updateProfile={updateProfile}
           onClose={() => setSheetOpen(false)}
         />
       )}

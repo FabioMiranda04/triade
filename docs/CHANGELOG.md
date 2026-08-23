@@ -11,6 +11,51 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v1.1.0 — Login com Google + área de perfil
+**Sessão 12 — 23/08/2026**
+
+Continuação da sessão anterior, a pedido do usuário: Google como mais uma
+opção de login (não substitui e-mail/senha) e uma área de perfil de
+verdade, em vez do "Sua conta" só com e-mail e sair.
+
+- **Botão "Continuar com o Google"** no `AccountSheet`, abaixo de um
+  divisor "ou" — `AuthContext.signInWithGoogle()` chama
+  `supabase.auth.signInWithOAuth({ provider: 'google' })`. Testado até onde
+  dava sem a conta do Google Cloud: o redirecionamento até o Supabase
+  funciona certinho, retornando `provider is not enabled` — ou seja, só
+  falta a configuração manual (não é código). Passo a passo completo, com
+  a URL de callback exata do projeto, em `docs/SUPABASE.md`.
+- **Ícone do Google** novo em `Icon.tsx` — as 4 cores oficiais da marca em
+  paths separados (`fill` fixo, não `currentColor`), porque o logo precisa
+  ser colorido para ser reconhecível.
+- **Área de perfil**: `AuthContext` agora carrega a linha de `profiles` da
+  usuária (`profile`) e expõe `updateProfile()`. Novo pop-up
+  `ProfileEditSheet.tsx` (reaproveitando `EditSheet`) edita nome, bio,
+  Instagram e negócio. O "Sua conta" agora mostra avatar (se houver) e
+  nome, com um botão "Editar perfil" antes do "Sair".
+- **Foto do Google preenche `avatar_url` sozinha**: ao carregar o perfil,
+  se `avatar_url` estiver vazio e a sessão tiver vindo do Google
+  (`user.user_metadata.avatar_url`), grava automaticamente — nunca
+  sobrescreve uma foto que a usuária já tenha. `supabase/schema.sql`
+  também atualizado (`handle_new_user()` passa a copiar `avatar_url` do
+  cadastro), para o mesmo já valer desde a criação da conta.
+- **Domínio próprio entrou no roadmap** (pedido do usuário) — documentado
+  em `docs/ESTADO-DO-PROJETO.md` e `CLAUDE.md`: a Vercel já resolve quando
+  houver um domínio; só é preciso lembrar de adicioná-lo em "Authorized
+  domains" no Google Cloud depois, se o login com Google já estiver ativo.
+- **Validado** com `tsc --noEmit`, `vite build`, Playwright (formulário
+  renderiza, botão do Google redireciona pro lugar certo, sem erros de
+  console). Não foi possível testar o login completo com Google nem o
+  preenchimento automático da foto, porque isso depende da configuração
+  pendente no painel do Supabase.
+
+**Arquivos gerados/alterados:** `src/context/AuthContext.tsx`,
+`src/components/{AccountSheet,ProfileEditSheet,Icon}.tsx`,
+`src/styles/components.css`, `supabase/schema.sql`, `CLAUDE.md`,
+`docs/{ARQUITETURA,SUPABASE,DESIGN-SYSTEM,ESTADO-DO-PROJETO}.md`
+
+---
+
 ## v1.0.0 — Módulo 2: autenticação com Supabase Auth
 **Sessão 11 — 23/08/2026**
 

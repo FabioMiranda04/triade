@@ -123,7 +123,11 @@ Estado local por tela, com `useState` + `useAsyncData`. Dois Contexts em
 `AuthContext` também é dono do pop-up de conta (`AccountSheet`, renderizado
 por ele mesmo) e expõe `requireAuth()`, que qualquer tela chama antes de
 uma ação que precisa de usuária logada — mesmo padrão do `ToastProvider`
-possuir seu próprio `<div>` de toast.
+possuir seu próprio `<div>` de toast. `AuthContext` também carrega a linha
+de `profiles` da usuária logada (`profile`) e expõe `updateProfile()` — ao
+detectar sessão, se `avatar_url` ainda estiver vazio e o login tiver vindo
+do Google, preenche sozinho com a foto do Google (nunca sobrescreve uma
+foto que a usuária já tenha definido).
 
 ## Estilos
 

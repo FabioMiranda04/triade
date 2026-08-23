@@ -133,7 +133,8 @@ qualquer pop-up:
 | `EventModal.tsx` | Detalhes do evento em destaque | 1) detalhes 2) "Quero participar" → 3 sócias no WhatsApp |
 | `EditSheet.tsx` | Formulário genérico de criar/editar | usado por `EventEditSheet`, `SpeakerEditSheet`, `PostEditSheet` |
 | `SettingsSheet.tsx` | Configurações do app | lista agrupada estilo iOS |
-| `AccountSheet.tsx` | Conta da usuária | deslogada: entrar/cadastrar (alterna) → cadastro pode levar a "confira seu e-mail"; logada: e-mail + sair |
+| `AccountSheet.tsx` | Conta da usuária | deslogada: entrar/cadastrar (alterna, com botão "Continuar com o Google") → cadastro pode levar a "confira seu e-mail"; logada: avatar/nome/e-mail + "Editar perfil" + sair |
+| `ProfileEditSheet.tsx` | Editar nome/bio/Instagram/negócio | usa `EditSheet` por dentro |
 
 Troca de passo dentro do **mesmo** pop-up (ex: detalhes → contatos): envolva
 o conteúdo de cada passo num `<div className="modal-step" key="nome-do-passo">`
@@ -187,7 +188,12 @@ Para adicionar um ícone: `viewBox="0 0 24 24"`, acrescente a chave em
 `IconName` e o path em `PATHS`. Ícones atuais: `heart(Fill)`,
 `bookmark(Fill)`, `comment`, `share`, `more`, `search`, `bell`, `home`,
 `calendar`, `mic`, `sparkle`, `check`, `pin`, `chevronRight`,
-`chevronLeft`, `close`, `users`, `whatsapp`, `edit`, `plus`, `settings`.
+`chevronLeft`, `close`, `users`, `whatsapp`, `edit`, `plus`, `settings`,
+`user`, `google`. `google` é um caso à parte: 4 `<path>` com cor própria
+fixa (as 4 cores oficiais da marca), porque o logo do Google **precisa**
+ser colorido para ser reconhecível — segue o mesmo princípio do `whatsapp`,
+só que com 4 cores fixas em vez de uma variável em `tokens.css` (usadas só
+ali dentro, não fazia sentido virar token reaproveitável).
 
 ---
 
