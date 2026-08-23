@@ -313,16 +313,14 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 6. **Rodar o `schema.sql` + `seed.sql` no Supabase** e configurar as variáveis
    na Vercel — a partir daí, ajustar datas e textos de evento vira edição de
    linha no painel, sem depender de deploy.
-7. **Domínio próprio** (pedido em 23/08/2026, depende de você ter/comprar
-   um): a Vercel já resolve isso em **Settings → Domains** — adiciona o
-   domínio, aponta o DNS que ela indicar, e o HTTPS sai automático (detalhes
-   em `docs/DEPLOY.md`, seção "Domínio próprio"). Duas coisas para lembrar
-   quando isso acontecer: (1) trocar `VITE_SUPABASE_URL`/`ANON_KEY` não muda
-   — o domínio novo não afeta a configuração do Supabase; (2) se o login com
-   Google já estiver ativo, adicionar o domínio novo em "Authorized domains"
-   na tela de consentimento OAuth do Google Cloud (o callback do Supabase
-   continua sendo `https://zirrdajydxbydnyaebza.supabase.co/auth/v1/callback`,
-   esse não muda nunca).
+7. **Domínio próprio** (pedido em 23/08/2026, ainda não comprado): guia
+   completo — onde registrar (`.com.br` no Registro.br é o recomendado,
+   ~R$40/ano; alternativa `.com` via Cloudflare Registrar/Namecheap,
+   ~US$9–15/ano), passo a passo (Vercel → Supabase → Google Cloud) e por
+   que isso sozinho **não** troca o texto "zirrdajydxbydnyaebza.supabase.co"
+   pela marca na tela do Google (precisaria do Custom Domain do Supabase
+   Auth, recurso pago à parte) — tudo em `docs/DEPLOY.md`, seção "Domínio
+   próprio".
 
 ## 8. Protocolo de atualização (toda sessão futura)
 

@@ -36,6 +36,8 @@ export function TabBar() {
   const { profile, openAccount } = useAuth();
   const floating = style === 'padrao2';
   const iconSize = floating ? 20 : 22;
+  // a foto de perfil fica um pouco maior que os outros ícones — é a usuária, precisa se destacar
+  const avatarSize = iconSize + 6;
 
   const links = TABS.map((tab) => (
     <NavLink
@@ -59,7 +61,7 @@ export function TabBar() {
   links.push(
     <button key="perfil" type="button" className="tab" aria-label="Perfil" onClick={openAccount}>
       {profile?.avatar_url ? (
-        <img className="tab-avatar" src={profile.avatar_url} alt="" style={{ width: iconSize, height: iconSize }} />
+        <img className="tab-avatar" src={profile.avatar_url} alt="" style={{ width: avatarSize, height: avatarSize }} />
       ) : (
         <Icon name="user" size={iconSize} />
       )}
