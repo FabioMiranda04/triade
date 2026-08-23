@@ -9,11 +9,15 @@ interface EventCardProps {
   /** já confirmou presença? */
   going: boolean;
   onRsvp: (id: string) => void;
+  onCancelRsvp: (id: string) => void;
   onEdit: (event: TriadeEvent) => void;
 }
 
-/** Card de uma edição do evento + botão de confirmar presença (só "em breve"). */
-export function EventCard({ event, going, onRsvp, onEdit }: EventCardProps) {
+/**
+ * Card de uma edição do evento + botão de presença (só "em breve").
+ * O mesmo botão confirma e, se tocado de novo, desconfirma a presença.
+ */
+export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit }: EventCardProps) {
   return (
     <>
       <div className="ev-card glass">
@@ -41,10 +45,10 @@ export function EventCard({ event, going, onRsvp, onEdit }: EventCardProps) {
       {event.status === 'em breve' && (
         <button
           className={`btn ${going ? 'btn-glass' : 'btn-primary'} full ev-rsvp`}
-          onClick={() => onRsvp(event.id)}
-          disabled={going}
+          onClick={() => (going ? onCancelRsvp(event.id) : onRsvp(event.id))}
+          aria-label={going ? 'Cancelar presença confirmada' : 'Confirmar presença'}
         >
-          {going ? 'Presença confirmada ✓' : 'Quero participar'}
+          {going ? 'Presença confirmada ✓ · cancelar' : 'Quero participar'}
         </button>
       )}
     </>

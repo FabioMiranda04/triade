@@ -340,6 +340,7 @@
   box-shadow: 0 12px 24px -12px rgba(124, 42, 61, 0.65);
 }
 .btn-primary:active { transform: scale(0.97); }
+.btn-glass:active { transform: scale(0.97); }
 .btn-glass {
   background: var(--glass-strong);
   border-color: var(--glass-border);

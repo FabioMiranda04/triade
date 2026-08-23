@@ -79,6 +79,11 @@ export const engagement = {
     setPref('rsvps', list);
     return list;
   },
+  cancelRsvp: (eventId: string) => {
+    const list = getPref<string[]>('rsvps', []).filter((id) => id !== eventId);
+    setPref('rsvps', list);
+    return list;
+  },
   getChosenPlan: () => getPref<string | null>('selected_plan', null),
   choosePlan: (planId: string) => setPref('selected_plan', planId),
 };

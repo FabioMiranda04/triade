@@ -3,7 +3,7 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.7.0`
+**Versão atual:** `v0.8.0`
 **Última atualização:** 23/08/2026
 **Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado; pop-up de evento com compra via WhatsApp e edição inline de conteúdo (só no aparelho) prontos, com todos os pop-ups unificados num único padrão visual (centralizado, fundo escuro) e otimizados; próximo é o Módulo 2 (autenticação) — Módulo 7 (instalar como app + notificações) planejado para depois dele
 
@@ -35,7 +35,7 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
 - [x] **Sobre** com perfil da comunidade, estatísticas, as 3 idealizadoras e
       a trajetória das edições.
 - [x] **Eventos** com filtro (Todos / Em breve / Realizados) e RSVP
-      persistido.
+      persistido — confirmar e **cancelar presença** (mesmo botão, alterna).
 - [x] **Palestrantes** em grade, com bio ao tocar.
 - [x] **Planos** com seleção persistida e bloco de patrocínio.
 - [x] **Camada de dados com dois providers** (`src/lib/db/`), tipada e

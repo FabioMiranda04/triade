@@ -25,6 +25,7 @@ export interface DataProvider {
   toggleSave(postId: string): boolean;
   hasRsvp(eventId: string): boolean;
   rsvpEvent(eventId: string): string[];
+  cancelRsvp(eventId: string): string[];
   getChosenPlan(): string | null;
   choosePlan(planId: string): boolean;
 }

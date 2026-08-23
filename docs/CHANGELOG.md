@@ -11,6 +11,23 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v0.8.0 — Desconfirmar presença em eventos
+**Sessão 8 — 23/08/2026**
+
+- **Cancelar presença**: o botão "Presença confirmada ✓" na aba Eventos
+  agora funciona como alternância — tocar de novo desconfirma ("Presença
+  confirmada ✓ · cancelar"). Novo método `cancelRsvp` no `DataProvider`
+  (`src/lib/db/prefs.ts`, mixin `engagement`, compartilhado pelos dois
+  providers automaticamente) e na tela `Eventos.tsx`.
+- **Validado** com `tsc --noEmit`, `vite build` e teste de ponta a ponta
+  (confirmar → cancelar → recarregar a página → estado correto persistido).
+
+**Arquivos gerados/alterados:** `src/lib/db/{prefs,types}.ts`,
+`src/components/EventCard.tsx`, `src/screens/Eventos.tsx`,
+`src/styles/components.css`
+
+---
+
 ## v0.7.0 — Pop-ups unificados, animação corrigida (jank de backdrop-filter) e planejamento do Módulo 7
 **Sessão 7 — 23/08/2026**
 

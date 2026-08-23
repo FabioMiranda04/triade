@@ -46,6 +46,11 @@ export default function Eventos() {
     showToast('Presença confirmada! Nos vemos lá 🤍');
   }
 
+  function handleCancelRsvp(id: string) {
+    setRsvps(db.cancelRsvp(id));
+    showToast('Presença cancelada');
+  }
+
   return (
     <section className="panel">
       <SectionHead
@@ -84,6 +89,7 @@ export default function Eventos() {
             event={event}
             going={isGoing(event.id)}
             onRsvp={handleRsvp}
+            onCancelRsvp={handleCancelRsvp}
             onEdit={setEditing}
           />
         ))
