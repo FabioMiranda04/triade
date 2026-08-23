@@ -30,6 +30,7 @@ vivem em `src/styles/tokens.css` — nunca em componente.
 | `--plum` | `#4A2140` | mancha do fundo |
 | `--blush` | `#E7B3A0` | mancha do fundo, gradientes |
 | `--whatsapp` | `#25D366` | **só** no selo do botão de WhatsApp (`.wa-badge`) |
+| `--danger` | `#E5484D` | estado de erro em formulário (`.auth-error`) |
 
 `--whatsapp` é a única cor de marca de terceiros no sistema. Regra: se um
 dia precisar de outra marca externa (ex: Instagram, um provedor de
@@ -132,6 +133,7 @@ qualquer pop-up:
 | `EventModal.tsx` | Detalhes do evento em destaque | 1) detalhes 2) "Quero participar" → 3 sócias no WhatsApp |
 | `EditSheet.tsx` | Formulário genérico de criar/editar | usado por `EventEditSheet`, `SpeakerEditSheet`, `PostEditSheet` |
 | `SettingsSheet.tsx` | Configurações do app | lista agrupada estilo iOS |
+| `AccountSheet.tsx` | Conta da usuária | deslogada: entrar/cadastrar (alterna) → cadastro pode levar a "confira seu e-mail"; logada: e-mail + sair |
 
 Troca de passo dentro do **mesmo** pop-up (ex: detalhes → contatos): envolva
 o conteúdo de cada passo num `<div className="modal-step" key="nome-do-passo">`
@@ -281,7 +283,8 @@ instantaneamente).
 | `.toast` + `useToast()` | mensagem curta no rodapé (~2,2s) |
 | `.mesh` + `<MeshBackground>` | manchas de cor desfocadas do fundo |
 | `ModalOverlay` | portal + efeitos compartilhados de todo pop-up (seção 4.1) |
-| `EventModal` / `EditSheet` / `SettingsSheet` | pop-ups (seção 4.2) |
+| `EventModal` / `EditSheet` / `SettingsSheet` / `AccountSheet` | pop-ups (seção 4.2) |
+| `.auth-error` | mensagem de erro de formulário (`--danger`) |
 | `.wa-btn` / `.wa-badge` | card de contato com cor de marca (gradiente vinho/dourado translúcido) |
 | `Kebab` / `.kebab-menu` | menu "..." estilo Instagram (seção 4.5) |
 | `.ios-group` / `.ios-row` | lista agrupada estilo iOS (seção 4.4) |

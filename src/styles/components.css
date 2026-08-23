@@ -623,6 +623,12 @@
   transition: border-color 0.15s ease, background 0.15s ease, outline-offset 0.15s ease;
 }
 .field textarea { resize: vertical; min-height: 76px; }
+.auth-error {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--danger);
+  margin: -8px 0 4px;
+}
 .field input:focus,
 .field select:focus,
 .field textarea:focus {

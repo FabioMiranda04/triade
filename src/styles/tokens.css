@@ -24,6 +24,9 @@
   /* marca de terceiros (uso pontual, ex: botão do WhatsApp) */
   --whatsapp: #25d366;
 
+  /* estado de erro (formulários) */
+  --danger: #e5484d;
+
   /* vidro */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SectionHead } from '@/components/SectionHead';
 import { PlanCard } from '@/components/PlanCard';
 import { Skeleton } from '@/components/Skeleton';
 import { Mark } from '@/components/Brand';
 import { useToast } from '@/components/Toast';
+import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { db } from '@/lib/db';
 import type { Plan } from '@/types';
@@ -11,11 +12,17 @@ import type { Plan } from '@/types';
 /** Tela Planos — assinaturas da comunidade + cota de patrocínio. */
 export default function Planos() {
   const { showToast } = useToast();
+  const { requireAuth } = useAuth();
   const { data: plans, loading } = useAsyncData<Plan[]>(() => db.getPlans(), []);
-  const [chosen, setChosen] = useState<string | null>(() => db.getChosenPlan());
+  const [chosen, setChosen] = useState<string | null>(null);
 
-  function handleChoose(plan: Plan) {
-    db.choosePlan(plan.id);
+  useEffect(() => {
+    db.getChosenPlan().then(setChosen);
+  }, []);
+
+  async function handleChoose(plan: Plan) {
+    if (!requireAuth()) return;
+    await db.choosePlan(plan.id);
     setChosen(plan.id);
     showToast(`Plano ${plan.name} selecionado!`);
   }

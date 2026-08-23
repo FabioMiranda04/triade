@@ -41,24 +41,48 @@ importante — **quem clona o repositório roda `npm run dev` e vê o app
 completo, sem configurar nada**. Isso vale para o CI também, que faz build sem
 credenciais de propósito.
 
-### Leitura assíncrona, escrita síncrona
+### Leitura e engajamento, os dois assíncronos
 
 Conteúdo (`getEvents`, `getSpeakers`, `getPlans`) retorna `Promise`, **mesmo
 no provider local**. Foi decisão deliberada: se o local fosse síncrono, ligar
 o Supabase exigiria reescrever todas as telas. As telas usam `useAsyncData` e
 mostram `<Skeleton>` enquanto carrega.
 
-Engajamento (`toggleLike`, `hasRsvp`, `choosePlan`…) continua **síncrono**,
-porque é sempre localStorage. Quando o Módulo 2 mover isso para o servidor,
-essas assinaturas vão precisar virar assíncronas — é a próxima dívida técnica
-conhecida, e está registrada aqui de propósito.
+Engajamento (`toggleLike`, `hasRsvp`, `choosePlan`…) virou assíncrono no
+Módulo 2, quando passou a poder ir para o Supabase. A regra de decisão vive
+dentro do próprio `supabaseProvider`, não na UI: com sessão ativa, lê/grava
+nas tabelas (`post_engagements`, `rsvps`, `plan_selections`); sem sessão
+(ou no `localProvider`, onde nem existe sessão possível), cai exatamente no
+mesmo comportamento local de sempre. O **gate de login** — decidir se a
+ação deve ser bloqueada até a usuária entrar — é responsabilidade da UI,
+via `useAuth().requireAuth()`, não do provider: assim o app continua livre
+para navegar sem conta, só pedindo login na hora de uma ação que precisa de
+identidade.
+
+### Pegadinha real: `interface` quebra o tipo do Supabase, `type` não
+
+Ao tipar as tabelas de engajamento (`src/types/database.ts`) pela primeira
+vez com `interface`, toda consulta a essas tabelas resolvia silenciosamente
+para `never` — sem nenhum erro na própria declaração, só bem mais tarde, ao
+usar o resultado (`Property 'x' does not exist on type 'never'`). Causa:
+`@supabase/supabase-js` v2 exige que cada linha satisfaça estruturalmente
+`Record<string, unknown>` para conseguir inferir o schema tipado a partir
+do parâmetro genérico `Database`, e uma `interface` — ao contrário de um
+`type` com exatamente o mesmo formato — não satisfaz essa checagem no
+TypeScript. Isso também estava presente, sem ninguém notar, nas tabelas de
+conteúdo (`events`/`speakers`/`plans`), que só nunca expuseram o problema
+porque só usavam `.select('*')` e passavam o resultado direto para uma
+função `map` — um `never` ali passa despercebido, porque `never` é
+atribuível a qualquer tipo. **Regra: toda linha em `database.ts` é sempre
+`type`, nunca `interface`.**
 
 ### Divisão de responsabilidade dos dados
 
 | Dado | Origem | Por quê |
 |---|---|---|
 | Eventos, palestrantes, planos | Supabase | conteúdo público, editável sem deploy |
-| Curtidas, salvos, RSVP, plano | localStorage | sem login não há usuária a quem atribuir |
+| Curtidas, salvos, RSVP, plano — **logada** | Supabase (`post_engagements`/`rsvps`/`plan_selections`) | Módulo 2: RLS por `auth.uid()` |
+| Curtidas, salvos, RSVP, plano — **deslogada**, ou sem Supabase configurado | localStorage | sem usuária não há a quem atribuir; ou não existe backend algum |
 
 Namespace no localStorage: `triade_*` — o mesmo do protótipo, então quem
 testou o HTML antigo mantém curtidas e RSVP.
@@ -93,11 +117,13 @@ reescrever tudo para `index.html` — feito no `vercel.json`.
 
 ## Estado
 
-Estado local por tela, com `useState` + `useAsyncData`. `src/context/` já
-existe (`TabBarStyleContext`, uma preferência de UI persistida) — quando
-entrar autenticação (Módulo 2), a usuária logada segue o mesmo padrão: um
-Context novo em `src/context/` alimentado por
-`supabase.auth.onAuthStateChange`, não prop drilling.
+Estado local por tela, com `useState` + `useAsyncData`. Dois Contexts em
+`src/context/`: `TabBarStyleContext` (preferência de UI persistida) e
+`AuthContext` (Módulo 2 — sessão via `supabase.auth.onAuthStateChange`).
+`AuthContext` também é dono do pop-up de conta (`AccountSheet`, renderizado
+por ele mesmo) e expõe `requireAuth()`, que qualquer tela chama antes de
+uma ação que precisa de usuária logada — mesmo padrão do `ToastProvider`
+possuir seu próprio `<div>` de toast.
 
 ## Estilos
 

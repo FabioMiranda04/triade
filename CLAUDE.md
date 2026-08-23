@@ -56,8 +56,10 @@ src/
 │   ├── EventModal.tsx    #   detalhes do evento + "Quero participar" (WhatsApp)
 │   ├── EditSheet.tsx     #   formulário genérico (usado por Event/Speaker/PostEditSheet)
 │   ├── SettingsSheet.tsx #   configurações do app (lista estilo iOS)
+│   ├── AccountSheet.tsx  #   entrar/cadastrar (ou perfil+sair, se logada)
 │   └── Kebab.tsx         #   menu "..." estilo Instagram
 ├── context/
+│   ├── AuthContext.tsx         # sessão (Supabase Auth) + dono do AccountSheet
 │   └── TabBarStyleContext.tsx  # estilo da tab bar (Padrão / Padrão 2), persistido
 ├── hooks/                # useAsyncData, useEngagement, useDoubleTap, useModalEffects
 ├── lib/
@@ -160,24 +162,31 @@ em `supabaseProvider.ts` → valor em `src/data/seed.ts` (para o modo local) →
 leitura via `db`. Os cinco passos, sempre — pular um deixa os dois providers
 fora de sincronia.
 
-**Mover engajamento para o servidor (Módulo 2):** as tabelas
-(`profiles`/`rsvps`/`post_engagements`/`plan_selections`) **já existem no
-projeto Supabase real** com RLS, confirmado ao vivo em 23/08/2026 — não é
-só o `schema.sql` do repositório, já foi rodado. Autenticação por
-e-mail/senha **já está habilitada** no Supabase (confirmação de e-mail
-obrigatória, `mailer_autoconfirm: false`; nenhum login social ligado).
-Falta só o lado do app: `src/context/AuthContext.tsx` ligado a
-`onAuthStateChange`, telas de entrar/cadastrar, e tornar assíncronas as
-assinaturas de `isLiked`/`toggleLike`/`hasRsvp`/`rsvpEvent`/`cancelRsvp`/
-`getChosenPlan`/`choosePlan` em `DataProvider`.
+**Nova ação que exige login:** chame `useAuth().requireAuth()` no início do
+handler — `true` = pode seguir (já logada, ou app rodando sem Supabase, caso
+em que não existe login possível e a ação sempre segue livre); `false` = já
+abriu o `AccountSheet` sozinho, só dar `return`. É assim que curtir,
+confirmar presença e escolher plano pedem conta hoje (Módulo 2, concluído
+em 23/08/2026) — não escreva um gate novo, reuse esse.
+
+**Novo dado de engajamento por usuária** (ex: "salvar evento"): adicione a
+tabela em `schema.sql` com RLS por `auth.uid()`, o método em `DataProvider`
+(`lib/db/types.ts`), a implementação real em `supabaseProvider.ts` (com
+fallback pra `engagement` de `prefs.ts` quando não há sessão) e o wrapper
+em `localProvider.ts`. **Atenção**: toda linha de tabela em
+`src/types/database.ts` precisa ser `type`, nunca `interface` — uma
+`interface` não satisfaz o formato que o `@supabase/supabase-js` espera
+para inferir o schema, e a consulta vira `never` silenciosamente (sem erro
+na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 
 ## 7. O que ainda NÃO existe (não presuma)
 
-- Sem autenticação/login **no app** (o lado do Supabase já está pronto —
-  ver seção 6, "Mover engajamento para o servidor"). Sem conta de usuária.
-- **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) NÃO vai
-  para o Supabase** — é localStorage, por navegador. Sem login não há a
-  quem atribuir. Só o conteúdo (eventos, palestrantes, planos) vem do banco.
+- **Autenticação existe** (Supabase Auth, e-mail/senha com confirmação por
+  e-mail — `AuthContext`/`AccountSheet`), mas só cadastro/login/sair. Sem
+  perfil editável, sem foto, sem onboarding, sem recuperação de senha.
+- **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) vai para o
+  Supabase só com usuária logada.** Deslogada (ou sem Supabase configurado)
+  continua exatamente como antes: localStorage, por navegador, livre.
 - **Edição de conteúdo pelo app (menu "..." → Editar, criar evento/
   palestrante) também é só local** — um overlay em cima do conteúdo lido,
   não grava no Supabase de propósito (sem login, chave de escrita pública
@@ -188,7 +197,8 @@ assinaturas de `isLiked`/`toggleLike`/`hasRsvp`/`rsvpEvent`/`cancelRsvp`/
   falta o backend com permissão real, ver Módulo 5).
 - Sem testes automatizados no repositório.
 - Sem atalho de instalação (Android/iOS) nem notificações de evento —
-  planejado como Módulo 7, depois da autenticação.
+  planejado como Módulo 7 (agora que a autenticação existe, o pré-requisito
+  que faltava para saber "quem" notificar está pronto).
 
 ## 8. Roadmap
 
@@ -197,8 +207,8 @@ assinaturas de `isLiked`/`toggleLike`/`hasRsvp`/`rsvpEvent`/`cancelRsvp`/
 | 1 | Landing / app shell — 5 telas | ✅ migrado para código |
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
-| 2 | Autenticação (Supabase Auth) e perfil — tabelas e auth já ativos no Supabase, falta o app | ⏭️ próximo |
-| 3 | Área de membras logada (feed real, diretório) | ⏳ |
+| 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
+| 3 | Área de membras logada (feed real, diretório, perfil editável) | ⏭️ próximo |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
 | 6 | Migração de dados localStorage → banco | ⏳ |

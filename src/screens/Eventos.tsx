@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { SectionHead } from '@/components/SectionHead';
 import { EventCard } from '@/components/EventCard';
 import { EventEditSheet } from '@/components/EventEditSheet';
 import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
+import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { db } from '@/lib/db';
 import { applyEventEdits } from '@/lib/db/localContent';
@@ -19,6 +20,7 @@ const FILTERS: { value: EventFilter; label: string }[] = [
 /** Tela Eventos — agenda das edições com filtro e confirmação de presença. */
 export default function Eventos() {
   const { showToast } = useToast();
+  const { requireAuth } = useAuth();
   const [filter, setFilter] = useState<EventFilter>('todos');
   const [rsvps, setRsvps] = useState<string[]>([]);
   const [editing, setEditing] = useState<TriadeEvent | 'new' | null>(null);
@@ -31,6 +33,18 @@ export default function Eventos() {
   );
   const visible = events.filter((e) => (filter === 'todos' ? true : e.status === filter));
 
+  useEffect(() => {
+    let alive = true;
+    Promise.all(events.map((e) => db.hasRsvp(e.id).then((going) => (going ? e.id : null)))).then(
+      (ids) => {
+        if (alive) setRsvps(ids.filter((id): id is string => id !== null));
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [events]);
+
   function handleSaved() {
     setEditing(null);
     setVersion((v) => v + 1);
@@ -38,16 +52,18 @@ export default function Eventos() {
   }
 
   function isGoing(id: string) {
-    return rsvps.includes(id) || db.hasRsvp(id);
+    return rsvps.includes(id);
   }
 
-  function handleRsvp(id: string) {
-    setRsvps(db.rsvpEvent(id));
+  async function handleRsvp(id: string) {
+    if (!requireAuth()) return;
+    setRsvps(await db.rsvpEvent(id));
     showToast('Presença confirmada! Nos vemos lá 🤍');
   }
 
-  function handleCancelRsvp(id: string) {
-    setRsvps(db.cancelRsvp(id));
+  async function handleCancelRsvp(id: string) {
+    if (!requireAuth()) return;
+    setRsvps(await db.cancelRsvp(id));
     showToast('Presença cancelada');
   }
 

@@ -14,13 +14,16 @@ planos sem publicar código novo.
 As tabelas de engajamento por usuária (`profiles`, `rsvps`,
 `post_engagements`, `plan_selections`) **já existem no projeto real**
 (confirmado ao vivo em 23/08/2026, não é só o `schema.sql` do repositório),
-com RLS restrita, esperando o lado do app do Módulo 2. A **autenticação por
-e-mail/senha também já está habilitada** no projeto Supabase — confirmação
-de e-mail obrigatória (`mailer_autoconfirm: false`), nenhum login social
-ligado. Ou seja: o Módulo 2 não precisa de nenhuma configuração nova no
-painel do Supabase, só o código do app (`AuthContext`, telas de entrar/
-cadastrar, e as funções de engajamento do `DataProvider` virando
-assíncronas).
+com RLS restrita. A **autenticação por e-mail/senha também já está
+habilitada** no projeto Supabase — confirmação de e-mail obrigatória
+(`mailer_autoconfirm: false`), nenhum login social ligado.
+
+**Módulo 2 concluído** (23/08/2026): `src/context/AuthContext.tsx` +
+`src/components/AccountSheet.tsx` fazem entrar/cadastrar/sair, e
+`supabaseProvider` grava curtida/salvo/RSVP/plano nas tabelas acima quando
+há sessão ativa — sem sessão, cai no mesmo comportamento local de sempre.
+Nenhuma configuração nova foi necessária no painel do Supabase, só código
+do app.
 
 ## Configurar (10 minutos)
 

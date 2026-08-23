@@ -16,5 +16,15 @@ export const localProvider: DataProvider = {
   getSpeakers: async (): Promise<Speaker[]> => readCache('speakers', seed.speakers),
   getPlans: async (): Promise<Plan[]> => readCache('plans', seed.plans),
 
-  ...engagement,
+  // Sem Supabase configurado não há autenticação possível — engajamento
+  // é sempre local, só embrulhado em Promise para bater com a interface.
+  isLiked: async (postId) => engagement.isLiked(postId),
+  toggleLike: async (postId) => engagement.toggleLike(postId),
+  isSaved: async (postId) => engagement.isSaved(postId),
+  toggleSave: async (postId) => engagement.toggleSave(postId),
+  hasRsvp: async (eventId) => engagement.hasRsvp(eventId),
+  rsvpEvent: async (eventId) => engagement.rsvpEvent(eventId),
+  cancelRsvp: async (eventId) => engagement.cancelRsvp(eventId),
+  getChosenPlan: async () => engagement.getChosenPlan(),
+  choosePlan: async (planId) => engagement.choosePlan(planId),
 };

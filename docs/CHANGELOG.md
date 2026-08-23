@@ -11,6 +11,60 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v1.0.0 — Módulo 2: autenticação com Supabase Auth
+**Sessão 11 — 23/08/2026**
+
+Sobe MAJOR porque fecha o Módulo 2 do roadmap (autenticação) — primeiro
+marco desde a migração do Bubble (v0.x) em que o app passa a ter conta de
+usuária de verdade.
+
+- **Entrar / cadastrar / sair** via Supabase Auth (e-mail/senha), num pop-up
+  novo (`AccountSheet.tsx`) acessível por um ícone de conta no cabeçalho.
+  Cadastro respeita a confirmação de e-mail já exigida no projeto Supabase
+  (mostra uma tela "confira seu e-mail" em vez de tentar logar direto).
+  Mensagens de erro comuns do Supabase traduzidas para PT-BR
+  (`AuthContext.tsx`).
+- **App continua livre para navegar sem conta** — login só é pedido na hora
+  de uma ação que precisa saber quem é a usuária: curtir, confirmar
+  presença (RSVP) e escolher plano. `useAuth().requireAuth()` é o gate,
+  chamado nesses três pontos; se o app estiver rodando sem Supabase
+  configurado, a checagem sempre libera (sem backend, não tem como logar,
+  então o comportamento continua idêntico a antes).
+- **Engajamento passa a ser assíncrono de verdade**: `isLiked`, `toggleLike`,
+  `isSaved`, `toggleSave`, `hasRsvp`, `rsvpEvent`, `cancelRsvp`,
+  `getChosenPlan`, `choosePlan` — no `supabaseProvider`, gravam nas tabelas
+  reais (`post_engagements`, `rsvps`, `plan_selections`) quando há sessão
+  ativa; sem sessão (ou no `localProvider`), caem exatamente no mesmo
+  comportamento local de sempre. `useEngagement`, `Eventos.tsx` e
+  `Planos.tsx` atualizados para `await` essas chamadas.
+- **Bug de tipos real encontrado e corrigido, retroativo ao app inteiro**:
+  as linhas de tabela em `src/types/database.ts` eram `interface`, e o
+  `@supabase/supabase-js` v2 exige que cada linha satisfaça
+  `Record<string, unknown>` para inferir o schema tipado — uma `interface`
+  não satisfaz essa checagem (um `type` com o mesmo formato, sim). Isso
+  fazia **toda** consulta ao Supabase (inclusive as de eventos/palestrantes/
+  planos, que já existiam) resolver silenciosamente para `never`, sem erro
+  nenhum na declaração — só ao usar o resultado, o que nunca tinha
+  acontecido porque essas leituras só faziam `.select('*')` seguido de uma
+  função `map` (um `never` ali passa despercebido). Corrigido convertendo
+  todas as linhas para `type`; documentado em `docs/ARQUITETURA.md` para
+  não voltar a acontecer.
+- **Validado** com `tsc --noEmit`, `vite build`, e testes com Playwright:
+  layout do cabeçalho com o 4º ícone em 375px, abrir/alternar entrar↔
+  cadastrar, e o gate de login abrindo (sem gravar nada) ao tentar curtir/
+  confirmar presença/escolher plano deslogada. Não foi testado um cadastro
+  real de ponta a ponta de propósito, para não criar usuária de teste no
+  projeto Supabase de produção.
+
+**Arquivos gerados/alterados:** `src/context/AuthContext.tsx`,
+`src/components/AccountSheet.tsx`, `src/lib/db/{types,prefs,localProvider,
+supabaseProvider}.ts`, `src/types/database.ts`, `src/hooks/useEngagement.ts`,
+`src/screens/{Eventos,Planos}.tsx`, `src/components/{TopBar,Icon}.tsx`,
+`src/App.tsx`, `src/styles/{tokens,components}.css`, `CLAUDE.md`,
+`docs/{ARQUITETURA,SUPABASE,DESIGN-SYSTEM}.md`
+
+---
+
 ## v0.10.0 — Manual de design vira documento vivo + skill `design-systems`
 **Sessão 10 — 23/08/2026**
 

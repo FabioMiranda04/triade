@@ -4,6 +4,7 @@ import { MeshBackground } from '@/components/Brand';
 import { TopBar } from '@/components/TopBar';
 import { TabBar } from '@/components/TabBar';
 import { ToastProvider } from '@/components/Toast';
+import { AuthProvider } from '@/context/AuthContext';
 import { TabBarStyleProvider } from '@/context/TabBarStyleContext';
 import Home from '@/screens/Home';
 import Sobre from '@/screens/Sobre';
@@ -19,9 +20,11 @@ import Planos from '@/screens/Planos';
 export default function App() {
   return (
     <ToastProvider>
-      <TabBarStyleProvider>
-        <AppShell />
-      </TabBarStyleProvider>
+      <AuthProvider>
+        <TabBarStyleProvider>
+          <AppShell />
+        </TabBarStyleProvider>
+      </AuthProvider>
     </ToastProvider>
   );
 }

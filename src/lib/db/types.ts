@@ -17,15 +17,17 @@ export interface DataProvider {
   getPlans(): Promise<Plan[]>;
 
   /* ---- engajamento da usuária ----
-     Hoje sempre local: sem autenticação (Módulo 2) não existe usuária a
-     quem atribuir curtida/presença no servidor. Ver supabase/schema.sql. */
-  isLiked(postId: string): boolean;
-  toggleLike(postId: string): boolean;
-  isSaved(postId: string): boolean;
-  toggleSave(postId: string): boolean;
-  hasRsvp(eventId: string): boolean;
-  rsvpEvent(eventId: string): string[];
-  cancelRsvp(eventId: string): string[];
-  getChosenPlan(): string | null;
-  choosePlan(planId: string): boolean;
+     Assíncrono desde o Módulo 2: com usuária logada e Supabase configurado,
+     lê/grava nas tabelas de `supabase/schema.sql` (RLS por `auth.uid()`).
+     Sem login (ou sem Supabase configurado), cada método cai exatamente no
+     mesmo comportamento local de antes — ver `prefs.ts` (`engagement`). */
+  isLiked(postId: string): Promise<boolean>;
+  toggleLike(postId: string): Promise<boolean>;
+  isSaved(postId: string): Promise<boolean>;
+  toggleSave(postId: string): Promise<boolean>;
+  hasRsvp(eventId: string): Promise<boolean>;
+  rsvpEvent(eventId: string): Promise<string[]>;
+  cancelRsvp(eventId: string): Promise<string[]>;
+  getChosenPlan(): Promise<string | null>;
+  choosePlan(planId: string): Promise<boolean>;
 }

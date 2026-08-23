@@ -4,11 +4,13 @@ import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { SettingsSheet } from '@/components/SettingsSheet';
 import { useToast } from '@/components/Toast';
+import { useAuth } from '@/context/AuthContext';
 
-/** Header fixo: logo (volta para o Início) + busca + notificações + configurações. */
+/** Header fixo: logo (volta para o Início) + busca + conta + configurações. */
 export function TopBar() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { openAccount } = useAuth();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
@@ -38,6 +40,9 @@ export function TopBar() {
         </button>
         <button className="icon-btn" aria-label="Configurações" onClick={() => setSettingsOpen(true)}>
           <Icon name="settings" size={17} />
+        </button>
+        <button className="icon-btn" aria-label="Sua conta" onClick={openAccount}>
+          <Icon name="user" size={17} />
         </button>
       </div>
       {settingsOpen && <SettingsSheet onClose={() => setSettingsOpen(false)} />}

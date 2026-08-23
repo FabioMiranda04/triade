@@ -3,18 +3,15 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v0.10.0`
+**Versão atual:** `v1.0.0`
 **Última atualização:** 23/08/2026
-**Módulo em desenvolvimento:** Módulo 1 concluído; banco (Supabase) ligado —
-**confirmado ao vivo em 23/08/2026** que as 4 tabelas do Módulo 2
-(`profiles`/`rsvps`/`post_engagements`/`plan_selections`) já existem no
-projeto real, com RLS, e que a autenticação por e-mail/senha já está
-habilitada no Supabase (com confirmação de e-mail obrigatória, sem login
-social); manual de UI/UX (`docs/DESIGN-SYSTEM.md`) reescrito por completo e
-skill `design-systems` criada para aplicá-lo em todo trabalho visual
-futuro. Próximo passo: **Módulo 2 (autenticação)** propriamente — falta só
-o lado do app (AuthContext, telas, migrar engajamento para async). Módulo 7
-(instalar como app + notificações) planejado para depois dele.
+**Módulo em desenvolvimento:** **Módulo 2 (autenticação) concluído** —
+entrar/cadastrar/sair com Supabase Auth, e curtir/salvar/RSVP/plano
+gravando nas tabelas reais quando há usuária logada (sem login, ou sem
+Supabase configurado, continua exatamente local como sempre foi). Próximo
+passo: **Módulo 3** (área de membras — feed real, diretório, perfil
+editável). Módulo 7 (instalar como app + notificações) segue planejado,
+agora sem o bloqueio de autenticação que tinha antes.
 
 ---
 
@@ -80,6 +77,14 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       (`.claude/commands/design-systems.md`) que aplica o checklist do
       manual — invocar antes de qualquer tela, componente, pop-up, ícone,
       animação ou navegação nova.
+- [x] **Autenticação (Módulo 2)**: entrar/cadastrar/sair com Supabase Auth
+      (e-mail/senha, confirmação de e-mail respeitada), pop-up
+      `AccountSheet.tsx`, ícone de conta no cabeçalho. `useAuth().requireAuth()`
+      é o gate — curtir, confirmar presença e escolher plano pedem login
+      **só** se o Supabase estiver configurado; sem ele, segue livre como
+      sempre. Engajamento (`isLiked`/`toggleLike`/`isSaved`/`toggleSave`/
+      `hasRsvp`/`rsvpEvent`/`cancelRsvp`/`getChosenPlan`/`choosePlan`) agora
+      assíncrono de propósito, gravando no Supabase quando há sessão.
 - [x] **Infra de repositório**: `CLAUDE.md`, docs, `.gitignore`,
       `vercel.json` (com rewrite de SPA), CI do GitHub Actions rodando
       typecheck + build, comandos do Claude Code em `.claude/commands/`.
@@ -90,8 +95,8 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
 - **Stack:** Vite + React 18 + TypeScript + react-router-dom + CSS puro.
 - **Dados:** o objeto `db` (`src/lib/db/`) é a única fronteira de
   persistência. Conteúdo (eventos, palestrantes, planos) vem do **Supabase**;
-  engajamento (curtir, salvar, RSVP, plano) fica no **localStorage** até
-  existir login.
+  engajamento (curtir, salvar, RSVP, plano) vai para o **Supabase quando há
+  login**, senão fica no **localStorage** (mesmo comportamento de sempre).
 - **Conteúdo de fallback:** `src/data/seed.ts`, espelhado em
   `supabase/seed.sql`.
 - **Ícones:** SVG inline em `src/components/Icon.tsx`, sem biblioteca.
@@ -116,10 +121,9 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)
 
-- Sem autenticação/login real — não existe conta de usuária.
-- **Engajamento não vai para o banco**: curtidas, salvos, RSVP e plano
-  escolhido ficam no localStorage, por navegador. Sem login não há a quem
-  atribuir. As tabelas existem no schema, esperando o Módulo 2.
+- **Autenticação existe, mas é só o básico**: entrar, cadastrar, sair. Sem
+  tela de perfil editável (foto, bio, Instagram — colunas já existem em
+  `profiles`), sem onboarding, sem "esqueci minha senha", sem login social.
 - **Edição de conteúdo dentro do app é só local** (menu "..." → Editar, ver
   seção 2) — não existe gravação real no Supabase por trás dela, de
   propósito: sem autenticação, qualquer chave que grave no banco no
@@ -135,18 +139,20 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 
 ## 6. Roadmap — próximos módulos
 
-0. **Bugs/pendências reportados (antes ou junto do Módulo 2):**
+0. **Bugs/pendências reportados:**
    - Bolha de notificação (badge do sino) não some e fica presa no final da
      tela — bug de interface a corrigir.
    - Criar **tema escuro** para o app (paleta "Liquid Glass" ainda só tem
      versão clara).
-1. **Módulo 2 — Autenticação e perfil**: cadastro/login com **Supabase Auth**,
-   foto e dados da usuária, onboarding curto. Criar
-   `src/context/AuthContext.tsx` ligado a `onAuthStateChange`. Neste módulo,
-   mover o engajamento do localStorage para as tabelas já criadas — o que
-   exige tornar assíncronas as funções de engajamento do `DataProvider`.
+   - `AccountSheet` ainda não tem "esqueci minha senha" — falta uma tela de
+     recuperação (`supabase.auth.resetPasswordForEmail`), deixado de fora
+     do Módulo 2 de propósito para não inflar o escopo.
+1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
+   cadastrar/sair com Supabase Auth; curtir/RSVP/plano gravam nas tabelas
+   reais quando logada. Ver seção 2.
 2. **Módulo 3 — Área de membras**: feed real, diretório de membras, "minhas
-   inscrições".
+   inscrições", e a tela de **perfil editável** (foto, bio, Instagram,
+   negócio — colunas já existem em `profiles`) que o Módulo 2 não cobriu.
 3. **Módulo 4 — Assinaturas e pagamento**: cobrança recorrente
    (Stripe/Pagar.me), provavelmente via Edge Function do Supabase para o
    webhook. A tabela `plan_selections` já prevê o campo `status`.
@@ -174,10 +180,9 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
      não do projeto). Alternativa mais simples, sem backend novo: lembrete
      só enquanto o app está aberto (Notification API local), que cobre menos
      casos mas não exige infraestrutura de envio.
-   - Faz mais sentido vir **depois do Módulo 2** (autenticação): sem login
-     não há onde guardar "essa usuária quer ser avisada desse evento", e
-     notificação para todo mundo indiscriminadamente tende a ser ignorada/
-     desinstalada.
+   - O pré-requisito que faltava (login, pra saber "essa usuária quer ser
+     avisada desse evento") **já está pronto** desde o Módulo 2 — este
+     módulo pode começar quando fizer sentido de prioridade.
 
 ## 7. Prioridades para uma versão apresentável a clientes
 

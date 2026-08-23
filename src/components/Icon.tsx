@@ -29,7 +29,8 @@ export type IconName =
   | 'whatsapp'
   | 'edit'
   | 'plus'
-  | 'settings';
+  | 'settings'
+  | 'user';
 
 const PATHS: Record<IconName, JSX.Element> = {
   heart: (
@@ -139,6 +140,12 @@ const PATHS: Record<IconName, JSX.Element> = {
     />
   ),
   plus: <path d="M12 5v14M5 12h14" strokeLinecap="round" />,
+  user: (
+    <>
+      <circle cx="12" cy="8" r="3.6" />
+      <path d="M4.8 20c.9-3.7 3.6-5.8 7.2-5.8s6.3 2.1 7.2 5.8" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
   settings: (
     <>
       <circle cx="12" cy="12" r="3" />
