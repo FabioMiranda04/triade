@@ -2,7 +2,9 @@
 .stories {
   display: flex;
   gap: 16px;
-  padding: 16px 2px 4px;
+  /* o respiro embaixo separa a fileira de atalhos do primeiro post; com
+     os 4px de antes os dois blocos liam como um só */
+  padding: 16px 2px 18px;
   overflow-x: auto;
   scrollbar-width: none;
 }

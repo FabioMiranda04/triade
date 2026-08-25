@@ -5,6 +5,22 @@
 html,
 body {
   height: 100%;
+  /* Sem isso, o navegador pinta um retângulo azul translúcido atrás de
+     tudo que é tocado — é o realce padrão do Android/iOS. Num app com
+     vidro e cantos arredondados ele aparece como um bloco quadrado fora
+     da paleta. O feedback de toque do app é o `:active` de cada
+     componente (manual, seção 7), não esse retângulo. */
+  -webkit-tap-highlight-color: transparent;
+}
+/* Tirar o realce de toque NÃO pode tirar o foco de quem navega por
+   teclado: `:focus-visible` só aparece nesse caso (o navegador não o
+   dispara em toque), então isso devolve um anel visível na cor do tema no
+   lugar do padrão azul. */
+:focus-visible {
+  /* sem `border-radius` aqui: o contorno já acompanha o raio do próprio
+     elemento, e forçar um valor deformaria os botões redondos */
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 body {
   margin: 0;

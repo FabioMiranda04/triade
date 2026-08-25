@@ -262,6 +262,22 @@ body.modal-open .mesh span {
 .tab .icon {
   transition: transform 0.18s cubic-bezier(0.3, 1.4, 0.4, 1);
 }
+/* Feedback de toque das abas (regra da seção 7 do manual): o ícone
+   afunda um pouco. Escalar aqui é seguro — quem tem `backdrop-filter` é a
+   barra/pílula, não o ícone; a regra da seção 9 vale para o elemento que
+   carrega o vidro, e ele não muda de tamanho. */
+.tab:active .icon {
+  transform: scale(0.86);
+}
+.tab.active:active .icon {
+  transform: translateY(-1px) scale(0.98);
+}
+.tab:active .tab-avatar {
+  transform: scale(0.9);
+}
+.tab-avatar {
+  transition: transform 0.18s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
 .tab-avatar {
   border-radius: 50%;
   object-fit: cover;
@@ -345,6 +361,11 @@ body.modal-open .mesh span {
   padding: 11px 4px;
 }
 .tab-pill .tab.active {
+  background: var(--on-dark-fill);
+}
+/* na pílula o item é uma cápsula, então o toque também acende o fundo —
+   arredondado, no lugar do bloco quadrado do realce padrão */
+.tab-pill .tab:active {
   background: var(--on-dark-fill);
 }
 .tab-pill .tab .dot {

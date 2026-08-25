@@ -65,8 +65,26 @@ entre o último item de cada tela e a pílula.
 o controle Lista/Calendário da tela Eventos tem 30px de altura — abaixo
 dos 38px recomendados. Aumentar deixa o controle visivelmente mais alto.
 
+### Acabamento (mesma sessão, após ver o app no aparelho)
+
+- **Realce azul de toque removido.** Tocar numa aba (e em qualquer botão)
+  pintava um retângulo azul translúcido atrás do elemento — é o
+  `-webkit-tap-highlight-color` padrão do navegador, que o projeto nunca
+  tinha desligado. Quadrado, fora da paleta e por cima de cantos
+  arredondados, aparecia como falta de acabamento.
+- **Abas ganharam `:active` próprio**, que não existia: o ícone afunda
+  (`scale(0.86)`) e, na pílula, o fundo acende como cápsula arredondada.
+  Isso não é enfeite — sem o realce do navegador, um elemento sem
+  `:active` fica **sem nenhum retorno ao toque**. Virou regra no manual
+  (seção 7).
+- **`:focus-visible` global** com anel de 2px na cor de acento, no lugar do
+  padrão azul. Só aparece em navegação por teclado, então desligar o realce
+  de toque não custou acessibilidade.
+- **Respiro entre os atalhos e o primeiro post** aumentado de 4px para
+  18px — com 4px os dois blocos liam como um só.
+
 **Arquivos alterados:** `src/App.tsx`, `src/context/ThemeContext.tsx`,
-`src/styles/{tokens,layout,components}.css`,
+`src/styles/{tokens,base,layout,components}.css`,
 `docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO}.md`, `CLAUDE.md`
 
 ---

@@ -417,10 +417,24 @@ vez de vários componentes animados por pessoas diferentes.
 ### Feedback de toque
 
 Todo elemento interativo (botão, item de kebab, linha de `.ios-row`, campo
-de formulário) tem uma transição curta (`0.12–0.18s`) e um estado
-`:active` (`scale(0.96–0.98)` ou mudança sutil de fundo) — nunca depender
-só do estado `:hover`/`:focus` padrão do navegador, que não existe em
-touch.
+de formulário, **aba da tab bar**) tem uma transição curta (`0.12–0.18s`) e
+um estado `:active` (`scale(0.86–0.98)` ou mudança sutil de fundo) — nunca
+depender só do estado `:hover`/`:focus` padrão do navegador, que não existe
+em touch.
+
+**O realce de toque do navegador está desligado** (`base.css`:
+`-webkit-tap-highlight-color: transparent` no `html`). Ele pintava um
+retângulo azul translúcido atrás de qualquer coisa tocada — quadrado, fora
+da paleta, e visível por cima de cantos arredondados e vidro. Consequência
+direta: **um elemento interativo sem `:active` próprio fica sem nenhum
+retorno ao toque.** Ao criar qualquer coisa clicável, o `:active` deixou de
+ser refinamento e passou a ser obrigatório.
+
+Em troca, `:focus-visible` ganhou um anel de 2px na cor `--accent`, também
+global. Ele só aparece para quem navega por teclado (o navegador não o
+dispara em toque), então desligar o realce não custou acessibilidade. Não
+declare `border-radius` junto do anel: ele já acompanha o raio do próprio
+elemento, e um valor fixo deforma botões redondos.
 
 ### Acessibilidade de movimento
 
