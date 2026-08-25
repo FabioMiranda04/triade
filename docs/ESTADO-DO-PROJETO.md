@@ -24,6 +24,10 @@ subiram para 38px sem mexer no desenho, e a tab bar "Padrão 2" virou um
 grupo **de fato flutuante** — o conteúdo passa por baixo dela, o que
 trocou de propósito uma invariante do manual (§6.2).
 
+**Próximo passo combinado:** **Módulo 11** — trazer o material real do
+Instagram (ver seção 6, item 10, e seção 7, item 1). É o único item da
+lista que depende de uma ação sua antes de qualquer código.
+
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
 grande do próximo evento, grade 3 colunas das edições anteriores com
@@ -204,7 +208,10 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 | `.env.example` | Modelo das variáveis; copiar para `.env.local` |
 | `legacy/` | HTML original do Bubble, só referência — **não editar** |
 | `vercel.json` | Configuração de deploy (inclui rewrite de SPA) |
-| `.claude/commands/` | Comandos/skills prontos para o Claude Code (inclui `design-systems`) |
+| `.claude/commands/` | Comandos/skills prontos para o Claude Code (inclui `design-systems` e `revisar-mobile`) |
+| `src/styles/tokens.css` | **Onde toda cor vive.** Três camadas: paleta de marca → papéis semânticos → blocos de tema. Nenhum outro arquivo sabe qual tema está ativo. |
+| `src/context/ThemeContext.tsx` | Tema visual (Pérola / Ônix): grava `data-theme` no `<html>`, persiste no aparelho e sincroniza a `<meta name="theme-color">` |
+| `content-raw/` | Pasta de trabalho local para o export do Instagram — **ignorada pelo Git**, nunca commitar o conteúdo |
 | `.github/workflows/ci.yml` | Typecheck + build em cada push/PR |
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)
@@ -221,7 +228,13 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
   front-end seria pública. Para editar de verdade hoje ainda é o Table
   Editor do Supabase. O Módulo 5 troca esse overlay local pela gravação
   real, já com login exigindo uma conta de administradora.
-- Sem fotos reais — todos os "espaços de imagem" são gradientes da marca.
+- Sem fotos reais — todos os "espaços de imagem" são gradientes, agora pela
+  escala `--ph-1..5`, que responde ao tema. É exatamente o que o Módulo 11
+  resolve, e é o próximo passo.
+- **Os temas são escolha manual.** Não existe seguir o tema do sistema
+  (`prefers-color-scheme`) nem trocar por horário; quem não abrir
+  Configurações continua no Pérola para sempre. Se um dia isso for
+  desejado, o gancho é o `ThemeProvider` — nada mais precisa mudar.
 - Sem pagamento integrado — escolher plano só grava a escolha localmente.
 - Sem painel administrativo (a edição inline atual não substitui isso —
   ver item acima).
@@ -356,7 +369,28 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    - O menu "..." → Editar (`Kebab`/`SpeakerEditSheet`) continua dentro do
      modal, só que o formulário precisa ganhar os campos novos também.
 10. **Módulo 11 — Infraestrutura de mídia real (Supabase Storage)**
-    (planejado em 23/08/2026): hoje o app só tem gradientes CSS como
+    — **⏭️ PRÓXIMO PASSO, combinado em 25/08/2026.**
+
+    **Atenção ao vocabulário — "API do Instagram" e "export do Instagram"
+    são duas coisas diferentes, e a decisão do projeto é a segunda:**
+
+    | | Export oficial (**o plano**) | Graph API do Instagram |
+    |---|---|---|
+    | O que é | Você pede seus dados em Configurações → Central de Privacidade → Baixar suas informações, e o Instagram manda um `.zip` | Interface de programação da Meta, consultada por código |
+    | Preparo | Nenhum — dois cliques no app | App na Meta for Developers, conta Business/Creator ligada a uma Página do Facebook, token de acesso, revisão de permissões |
+    | O que devolve | Fotos/vídeos **originais**, em boa qualidade, com legenda e data | Mídia via URLs **temporárias** (expiram em horas), qualidade já processada |
+    | Custo de manutenção | Zero — é uma vez só | Token expira e precisa ser renovado |
+    | Serve para | Trazer o acervo das edições passadas de uma vez | Manter um feed sincronizado ao vivo |
+
+    Para o que a Tríade precisa agora — pegar o acervo de 7+ edições e
+    subir para o Storage **uma vez** — o export ganha em tudo: não exige
+    app na Meta, não expira e entrega arquivo original. A Graph API só
+    valeria a pena se o objetivo virasse "o app espelha o Instagram
+    sozinho, para sempre", que não é o caso (as fotos entram por curadoria,
+    escolhidas por edição). Se um dia esse objetivo mudar, o item vira um
+    módulo próprio — não é uma troca de ferramenta, é outro escopo.
+
+    Escopo original (mantido): hoje o app só tem gradientes CSS como
     "imagem" — este módulo é o que permite entrar fotos/vídeos de verdade
     pras galerias dos Módulos 8 (Sobre) e 9 (retrospectiva de Eventos), com
     volume grande esperado (mais de 7 edições + outros eventos, conforme o
@@ -404,7 +438,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 ## 7. Prioridades para uma versão apresentável a clientes
 
 1. **Fotos reais no lugar dos gradientes** — maior salto de "protótipo" para
-   "produto"; depende só do material. Onde trocar está no `DESIGN-SYSTEM.md`.
+   "produto"; **depende só do material, e é o próximo passo combinado**
+   (Módulo 11, seção 6, item 10). Onde trocar está no `DESIGN-SYSTEM.md`.
+   O código já está pronto dos dois lados: `EventRecapModal` detecta
+   sozinho se a URL é gradiente ou foto real, e a escala `--ph-1..5` faz o
+   placeholder acompanhar o tema enquanto a foto não chega.
    **Estratégia de origem do material** (definida em 23/08/2026): em vez de
    scraping do Instagram (violaria os Termos de Uso da Meta e arrisca a
    conta ser bloqueada por atividade automatizada — descartado), usar a
@@ -433,8 +471,9 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 3. **Mais 2–3 posts reais no feed** — bastidores, depoimento de participante.
 4. **Tela de boas-vindas/splash** antes do feed, para a demo não abrir direto
    na Home.
-5. **Publicar na Vercel e mandar o link** — hoje isso substitui com vantagem
-   a antiga prévia em PDF.
+5. ~~**Publicar na Vercel e mandar o link**~~ — **feito e no ar**
+   (`triade-sand.vercel.app`); publicar virou rotina: todo push na `main`
+   vai para produção sozinho.
 6. **Rodar o `schema.sql` + `seed.sql` no Supabase** e configurar as variáveis
    na Vercel — a partir daí, ajustar datas e textos de evento vira edição de
    linha no painel, sem depender de deploy.

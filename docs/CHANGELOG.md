@@ -83,9 +83,26 @@ dos 38px recomendados. Aumentar deixa o controle visivelmente mais alto.
 - **Respiro entre os atalhos e o primeiro post** aumentado de 4px para
   18px — com 4px os dois blocos liam como um só.
 
+### Fechamento da sessão
+
+Documentação atualizada pelo protocolo (seção 9 do `ESTADO-DO-PROJETO.md`):
+mapa de arquivos com `ThemeContext.tsx`, `tokens.css` e `content-raw/`;
+seção 5 registrando que os temas são **escolha manual** (não seguem
+`prefers-color-scheme` nem horário); roadmap com o Módulo 12 (temas)
+concluído e o **Módulo 11 marcado como próximo passo**; `LAST-SESSION.md`
+de volta para "nada interrompido".
+
+Registrada também, a pedido, a diferença entre **export oficial** e **Graph
+API** do Instagram (`ESTADO-DO-PROJETO.md`, seção 6, item 10): o plano é o
+export — sem app na Meta, sem token que expira e com o arquivo original —
+porque o objetivo é trazer o acervo **uma vez**, por curadoria. A API só
+faria sentido se o app fosse espelhar o Instagram continuamente, que é
+outro escopo.
+
 **Arquivos alterados:** `src/App.tsx`, `src/context/ThemeContext.tsx`,
 `src/styles/{tokens,base,layout,components}.css`,
-`docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO}.md`, `CLAUDE.md`
+`docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO,LAST-SESSION}.md`,
+`CLAUDE.md`
 
 ---
 

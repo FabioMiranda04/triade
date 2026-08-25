@@ -63,6 +63,7 @@ src/
 │   └── Kebab.tsx         #   menu "..." estilo Instagram
 ├── context/
 │   ├── AuthContext.tsx         # sessão (Supabase Auth) + dono do AccountSheet
+│   ├── ThemeContext.tsx        # tema visual (Pérola / Ônix) — data-theme no <html>
 │   └── TabBarStyleContext.tsx  # estilo da tab bar (Padrão / Padrão 2), persistido
 ├── hooks/                # useAsyncData, useEngagement, useDoubleTap, useModalEffects
 ├── lib/
@@ -221,7 +222,11 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   palestrante) também é só local** — um overlay em cima do conteúdo lido,
   não grava no Supabase de propósito (sem login, chave de escrita pública
   seria risco de segurança). Não confunda com um painel administrativo real.
-- Sem fotos reais — todas as "imagens" são gradientes de cor da marca.
+- Sem fotos reais — todas as "imagens" são gradientes (escala `--ph-1..5`,
+  que responde ao tema). É o que o Módulo 11 resolve.
+- **Dois temas existem** (Pérola, padrão, e Ônix), escolhidos em
+  Configurações → Aparência. Não existe seguir o tema do sistema
+  (`prefers-color-scheme`) nem agendar por horário — é escolha manual.
 - Sem pagamento. Escolher plano só grava a escolha localmente.
 - Sem painel administrativo de verdade (a UI de edição acima não conta —
   falta o backend com permissão real, ver Módulo 5).
@@ -238,7 +243,7 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
-| 3 | Área de membras logada (feed real, diretório) | ⏭️ próximo |
+| 3 | Área de membras logada (feed real, diretório) | ⏳ |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
 | 6 | Migração de dados localStorage → banco | ⏳ |
@@ -246,7 +251,8 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |
-| 11 | Infraestrutura de mídia real (Supabase Storage) — fotos/vídeos de verdade a partir do export oficial do Instagram | ⏳ planejado 23/08/2026 |
+| 11 | Infraestrutura de mídia real (Supabase Storage) — fotos/vídeos de verdade a partir do export oficial do Instagram | ⏭️ **próximo** — depende de você trazer o material |
+| 12 | Dois temas visuais (Pérola / Ônix) em Configurações → Aparência | ✅ concluído 25/08/2026 |
 
 Detalhamento completo dos módulos 8 a 11 (escopo, campos de dado novos,
 componentes a criar, perguntas em aberto) está em
