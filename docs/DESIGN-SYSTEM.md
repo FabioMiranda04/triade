@@ -15,33 +15,120 @@ vivem em `src/styles/tokens.css` — nunca em componente.
 
 ## 1. Tokens (`src/styles/tokens.css`)
 
-### Cores
+### 1.1 As três camadas
 
-| Token | Valor | Uso |
-|---|---|---|
-| `--sand` | `#F4EEE3` | fundo do app |
-| `--sand-deep` | `#EAE1D1` | miolo dos stories |
-| `--ink` | `#231C1A` | texto principal (sobre fundo claro) |
-| `--ink-70` / `--ink-45` | opacidades de `--ink` | texto secundário / terciário (sobre fundo claro) |
-| `--wine` | `#7C2A3D` | destaque, CTA, eyebrow |
-| `--wine-deep` | `#511B29` | fim do gradiente do CTA |
-| `--gold` | `#C79A55` | acento, item salvo, ponto ativo da tab |
-| `--gold-soft` | `#EFDCB8` | gradientes, pill "em breve" |
-| `--plum` | `#4A2140` | mancha do fundo |
-| `--blush` | `#E7B3A0` | mancha do fundo, gradientes |
-| `--whatsapp` | `#25D366` | **só** no selo do botão de WhatsApp (`.wa-badge`) |
-| `--danger` | `#E5484D` | estado de erro em formulário (`.auth-error`) |
+`tokens.css` é organizado em três camadas, e a ordem importa:
+
+1. **Paleta de marca** — os hex crus da Tríade (`--wine`, `--gold`,
+   `--blush`...). **Não mudam com o tema**: são a identidade visual.
+2. **Papéis semânticos** — o que a cor *faz* na tela (`--accent`,
+   `--glass`, `--ph-grad`, `--btn-primary-grad`...). **É só esta camada
+   que `layout.css`/`components.css` consomem.**
+3. **Temas** — cada tema redefine a camada 2 dentro do seu próprio bloco.
+   `:root` é o tema **Areia** (padrão); `[data-theme='onyx']` é o **Ônix**.
+
+A consequência prática: **nenhum seletor de componente sabe qual tema está
+ativo.** Não existe (e não deve passar a existir) regra do tipo
+`[data-theme='onyx'] .algum-componente { ... }` fora de `tokens.css`. Se um
+componente precisa de um valor diferente por tema, isso vira um token novo
+— não um seletor de tema no CSS do componente.
+
+### 1.2 Cores por papel
+
+| Token | Papel | Areia | Ônix |
+|---|---|---|---|
+| `--sand` | fundo do app | `#F4EEE3` | `#0B0A0A` |
+| `--sand-deep` | miolo dos stories | `#EAE1D1` | `#171512` |
+| `--ink` | texto principal sobre o fundo | `#231C1A` | `#F7F5F1` |
+| `--ink-70` / `--ink-45` | texto secundário / terciário | opacidades de `--ink` | idem (claras) |
+| `--accent` / `--accent-deep` | marca em ação: eyebrow, preço, link, ícone ativo | vinho | dourado `#D9B36C` |
+| `--accent-fill` / `-strong` | véu do acento em `:active` | vinho translúcido | dourado translúcido |
+| `--accent-on-dark` / `-soft` | acento **sobre vidro escuro** (tab bar, citação) | `--gold` / `--gold-soft` | dourado / `#EBD3A0` |
+| `--fill-weak/mid/strong` | véu neutro (botão redondo, item ativo, pílula) | `--ink` translúcido | branco translúcido |
+| `--on-dark` | texto sobre `.glass-dark` | `#F4EEE3` | `#F7F5F1` |
+| `--glass` / `-strong` / `-border` | vidro claro | branco translúcido | branco quase opaco/baixo |
+| `--glass-dark` / `-border` | vidro escuro (todo pop-up) | `rgba(25,19,18,.72)` | `rgba(32,28,23,.86)` + hairline dourada |
+| `--featured-border` / `-top` | borda do plano em destaque | igual ao vidro | dourada |
+| `--ph-1..5`, `--ph-grad`, `--ph-fg`, `--ph-border` | placeholders de imagem (ver 1.4) | gradiente da marca | grafite morno + glifo dourado |
+| `--btn-primary-*`, `--cta-*`, `--badge-*`, `--seg-active-*` | preenchimentos de ação | vinho, texto claro | dourado, texto preto |
+| `--like-fg` / `--save-fg` | curtir / salvar no feed | vinho / dourado | dourado / branco |
+| `--tab-idle` / `--tab-active` / `--tab-center-grad` / `--tabbar-line` | tab bar | — | hairline dourada |
+| `--field-*` | campo de formulário dentro do pop-up | fundo claro | fundo escuro, anel dourado |
+| `--mesh-1..4`, `--mesh-op` | manchas do fundo | cores da marca | brasa dourada bem apagada |
+| `--overlay-scrim` | escurecimento atrás do pop-up | `rgba(20,14,13,.55)` | `rgba(0,0,0,.78)` |
+| `--whatsapp` | **só** no selo do botão de WhatsApp (`.wa-badge`) | `#25D366` | igual |
+| `--danger` | erro em formulário (`.auth-error`) | `#E5484D` | igual |
 
 `--whatsapp` é a única cor de marca de terceiros no sistema. Regra: se um
 dia precisar de outra marca externa (ex: Instagram, um provedor de
 pagamento), o hex dela vira token aqui também — nunca hardcoded dentro de
 um componente. Cor de marca própria da Tríade nunca sai da paleta acima.
 
-Sobre fundo escuro (`.glass-dark`, todo pop-up), o texto usa `--sand` e
-`rgba(244, 238, 227, N)` para as variações de opacidade — `--ink-70`/`-45`
-são pensados para fundo claro e ficam ilegíveis em cima de `glass-dark`.
+Três exceções deliberadas continuam com hex cru no CSS, porque são cores
+de terceiro ou véu sobre imagem, não cor de tema: `#fff` do coração do
+duplo toque, `#fff` do selo do WhatsApp e o par `#fff`/`#1f1f1f` do botão
+do Google (especificação de marca do próprio Google).
 
-### Raios e espaçamento
+Sobre vidro escuro (`.glass-dark`, todo pop-up), o texto usa `--on-dark` e
+`rgba(244, 238, 227, N)` para as variações de opacidade — `--ink-70`/`-45`
+são pensados para o fundo da tela e não servem aí. Esses véus em
+`rgba(255,255,255,α)` aplicados **sobre** `.glass-dark` são invariantes de
+tema de propósito: o vidro escuro é escuro nos dois temas.
+
+### 1.3 Temas (Configurações → Aparência)
+
+Dois temas, trocáveis no app e salvos no aparelho (`ThemeContext`,
+`src/context/ThemeContext.tsx`):
+
+- **Areia** (padrão) — o visual original: fundo claro, vinho e dourado.
+- **Ônix** — preto, branco e detalhes dourados. Princípios: preto quente
+  (`#0B0A0A`, não azulado, pra casar com o dourado); **dourado é detalhe,
+  nunca superfície grande** — hairline, ícone ativo, preço, CTA; e vidro
+  escuro vira superfície *mais clara* que o fundo (elevação), porque num
+  tema escuro o contraste claro/escuro do tema Areia deixaria de separar
+  card de fundo.
+
+Como funciona: o `ThemeProvider` grava `data-theme` no `<html>` e atualiza
+a `<meta name="theme-color">` (a faixa da barra de status no Android/no
+atalho do iOS — sem isso o tema escuro fica com uma tira clara no topo).
+Um `<script>` curto no `index.html` aplica o tema salvo **antes** do React
+montar; sem ele, abrir o app no Ônix pisca a tela clara por um quadro.
+Esse script é o único ponto do projeto que lê `localStorage` fora de
+`src/lib/db/prefs.ts` — exceção documentada lá mesmo, com a chave e o
+formato espelhados.
+
+**Para adicionar um terceiro tema:** copie o bloco `[data-theme='onyx']`
+em `tokens.css`, troque os valores, e acrescente a entrada em `THEMES`
+(`ThemeContext.tsx`) com `label`, `hint` e `statusBar`; a lista em
+Configurações e a amostra circular saem sozinhas dali. Declare **todos**
+os tokens nos dois blocos — um token declarado só num tema quebra o outro
+em silêncio. Amostra do seletor: adicione `--preview-<nome>` em `:root`
+(essas ficam fora dos blocos de tema porque descrevem o tema, então
+precisam ser iguais independente de qual está ativo).
+
+### 1.4 Placeholder de imagem — dois caminhos, os dois pelo tema
+
+Enquanto não há foto real (regra 5 da seção 10), "imagem" é gradiente. Ele
+vem de dois lugares e **os dois precisam responder ao tema**:
+
+- do **CSS**: `--ph-grad` / `--ph-grad-media` (card, tile, avatar);
+- do **conteúdo**: `post.mediaGradient` e `event.recapMedia[].url` em
+  `src/data/seed.ts` (e o espelho em `supabase/seed.sql`), que são strings
+  de gradiente gravadas no dado.
+
+Por isso existe a escala `--ph-1` … `--ph-5`: **o conteúdo referencia essa
+escala, nunca uma cor de marca.** Um `linear-gradient(..., var(--gold-soft),
+var(--blush))` gravado no dado ignora o tema e acende um retângulo claro no
+meio de uma tela preta — foi exatamente o bug encontrado ao construir o
+Ônix. Ao criar conteúdo novo com gradiente, use `var(--ph-N)`.
+
+`--ph-border` é o contorno do tile quando ele fica direto sobre o fundo da
+tela (grades de Eventos/Palestrantes): transparente no Areia, hairline
+clara no Ônix — sem ele o tile escuro some no fundo escuro. Desenhado com
+`outline` + `outline-offset: -1px`, não `border`, para não mexer na caixa
+do elemento no tema em que é transparente.
+
+### 1.5 Raios e espaçamento
 
 | Token | Valor | Uso |
 |---|---|---|
@@ -49,14 +136,14 @@ são pensados para fundo claro e ficam ilegíveis em cima de `glass-dark`.
 | `--r-lg` | `22px` | `.glass` genérico, cabeçalho |
 | `--r-md` | `14px` | cards de conteúdo, botões de formulário, badges |
 
-### Safe area
+### 1.6 Safe area
 
 `--safe-t` / `--safe-b` = `env(safe-area-inset-top/bottom, 0px)`. Todo
 elemento fixo/flutuante que toca a borda de cima ou de baixo da tela
 (header, tab bar, pop-ups) precisa somar isso ao padding — sem isso a UI
 invade a ilha dinâmica ou a barra de gestos do iPhone.
 
-### Tipografia
+### 1.7 Tipografia
 
 | Fonte | Papel |
 |---|---|
@@ -78,6 +165,12 @@ Carregadas por `<link>` do Google Fonts no `index.html`.
 
 `.sheen` é a faixa diagonal de luz sobre o vidro (opcional, decorativa,
 `position:absolute; inset:0;` dentro de um `.glass`).
+
+As três superfícies existem nos dois temas e trocam de valor junto com
+eles (seção 1.2). `.glass-dark` é escuro em **qualquer** tema — no Areia
+por contraste com o fundo claro, no Ônix como superfície elevada (mais
+clara que o preto do fundo, com hairline dourada). É por isso que texto
+sobre ela usa `--on-dark`, e não `--ink`.
 
 **Regra de performance, não é só estética — ver seção 9.** Nunca anime
 `scale`, `width` ou `height` num elemento com `backdrop-filter`. Anime só
@@ -155,6 +248,16 @@ Usada em `SettingsSheet`. Um `.ios-section-label` (rótulo em caixa alta) +
 (linha clicável, com separador fino entre elas, checkmark opcional à
 direita). Use este padrão para qualquer tela de preferências/configurações
 futura — não invente outro estilo de lista para isso.
+
+**Variante com amostra e subtítulo** (usada por Aparência → tema): a linha
+vira `.ios-row-main` (amostra + `.ios-row-text` com `.t` título e `.s`
+subtítulo) e o checkmark segue à direita. A amostra circular do tema é
+`.theme-swatch[data-theme-preview="<tema>"]`, alimentada por
+`--preview-<tema>` (ver 1.3). Toda `.ios-row` que representa escolha leva
+`aria-pressed` — o checkmark sozinho não conta para leitor de tela.
+
+Configurações hoje tem duas seções: **Aparência** (tema) e **Navegação**
+(estilo da tab bar).
 
 ### 4.5 Menu "..." (`Kebab.tsx`)
 
@@ -324,6 +427,7 @@ instantaneamente).
 | `.wa-btn` / `.wa-badge` | card de contato com cor de marca (gradiente vinho/dourado translúcido) |
 | `Kebab` / `.kebab-menu` | menu "..." estilo Instagram (seção 4.5) |
 | `.ios-group` / `.ios-row` | lista agrupada estilo iOS (seção 4.4) |
+| `.ios-row-main` / `.ios-row-text` / `.theme-swatch` | linha de configuração com amostra visual + subtítulo (seção 4.4) |
 | `.add-tile` | botão tracejado "+ Novo X" no fim/topo de uma lista |
 | `TabBar` (Padrão / Padrão 2) | navegação inferior (seção 6.2) |
 
@@ -373,6 +477,14 @@ irredutível) e o pop-up aberto e parado fica em 16,7ms constante = 60fps.
    (seção 6.3).
 8. Verifique toda mudança de UI em 375px de largura antes de considerar
    pronta (regra 1 do `CLAUDE.md`).
+9. **Toda cor nova tem que existir nos dois temas.** Na prática: declare o
+   token em `:root` **e** em `[data-theme='onyx']`. Nunca escreva um
+   seletor de tema no CSS de um componente (seção 1.1), e nunca grave cor
+   de marca dentro de conteúdo — gradiente em `seed.ts` usa a escala
+   `--ph-N` (seção 1.4).
+10. Ao mexer em qualquer coisa visual, confira nos **dois temas**. A
+   armadilha típica é um valor que só funciona sobre fundo claro
+   (`--ink-70` sobre vidro escuro) ou o inverso.
 
 ---
 

@@ -10,7 +10,7 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.55;
+  opacity: var(--mesh-op);
 }
 /* pop-up aberto usa `backdrop-filter` — se o fundo continuar se mexendo,
    o navegador recalcula o blur a cada quadro enquanto ele estiver visível,
@@ -22,7 +22,7 @@ body.modal-open .mesh span {
 .mesh .b1 {
   width: 380px;
   height: 380px;
-  background: var(--blush);
+  background: var(--mesh-1);
   top: -110px;
   left: -70px;
   animation: float1 24s ease-in-out infinite;
@@ -30,7 +30,7 @@ body.modal-open .mesh span {
 .mesh .b2 {
   width: 420px;
   height: 420px;
-  background: var(--gold-soft);
+  background: var(--mesh-2);
   top: 100px;
   right: -130px;
   animation: float2 28s ease-in-out infinite;
@@ -38,8 +38,8 @@ body.modal-open .mesh span {
 .mesh .b3 {
   width: 340px;
   height: 340px;
-  background: var(--wine);
-  opacity: 0.25;
+  background: var(--mesh-3);
+  opacity: var(--mesh-3-op);
   bottom: -90px;
   left: 8%;
   animation: float3 30s ease-in-out infinite;
@@ -47,8 +47,8 @@ body.modal-open .mesh span {
 .mesh .b4 {
   width: 280px;
   height: 280px;
-  background: var(--plum);
-  opacity: 0.2;
+  background: var(--mesh-4);
+  opacity: var(--mesh-4-op);
   bottom: 180px;
   right: 6%;
   animation: float1 20s ease-in-out infinite reverse;
@@ -74,8 +74,8 @@ body.modal-open .mesh span {
   border: 1px solid var(--glass-border);
   border-radius: var(--r-lg);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7) inset,
-    0 16px 34px -20px rgba(35, 28, 26, 0.28);
+    0 1px 0 var(--glass-inset) inset,
+    0 16px 34px -20px var(--glass-shadow);
   position: relative;
 }
 .glass-strong {
@@ -86,14 +86,14 @@ body.modal-open .mesh span {
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   border-top: 1px solid var(--glass-dark-border);
-  color: var(--sand);
+  color: var(--on-dark);
 }
 .sheen {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%);
+  background: var(--sheen-grad);
   opacity: 0.65;
 }
 
@@ -119,7 +119,7 @@ body.modal-open .mesh span {
 }
 .markwrap.on-glass,
 .markwrap.on-sand {
-  color: var(--wine);
+  color: var(--accent);
 }
 
 /* ---------- app shell ---------- */
@@ -136,7 +136,7 @@ body.modal-open .mesh span {
   align-items: center;
   justify-content: space-between;
   z-index: 20;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid var(--hairline);
 }
 .brand {
   display: flex;
@@ -156,7 +156,7 @@ body.modal-open .mesh span {
 .brand .tag {
   font-family: var(--font-script);
   font-style: italic;
-  color: var(--wine);
+  color: var(--accent);
   font-size: 14px;
   margin-left: 1px;
 }
@@ -185,13 +185,13 @@ body.modal-open .mesh span {
   height: 38px;
   border-radius: 999px;
   border: 0;
-  background: linear-gradient(135deg, var(--gold), var(--wine));
-  color: #fff;
+  background: var(--cta-grad);
+  color: var(--cta-fg);
   font-size: 11.5px;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 10px 20px -10px rgba(124, 42, 61, 0.6);
+  box-shadow: var(--cta-shadow);
   transition: transform 0.15s ease;
 }
 .btn-cta-member:active {
@@ -237,7 +237,7 @@ body.modal-open .mesh span {
   align-items: stretch;
   justify-content: space-around;
   padding: 6px 4px calc(6px + var(--safe-b));
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--tabbar-line);
   z-index: 30;
 }
 .tab {
@@ -248,7 +248,7 @@ body.modal-open .mesh span {
   justify-content: center;
   gap: 2px;
   padding: 8px 2px;
-  color: rgba(244, 238, 227, 0.55);
+  color: var(--tab-idle);
   position: relative;
   background: none;
   border: 0;
@@ -260,10 +260,10 @@ body.modal-open .mesh span {
 .tab-avatar {
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid rgba(244, 238, 227, 0.55);
+  border: 1.5px solid var(--tab-idle);
 }
 .tab.active {
-  color: var(--sand);
+  color: var(--tab-active);
 }
 .tab.active .icon {
   transform: translateY(-1px) scale(1.08);
@@ -272,7 +272,7 @@ body.modal-open .mesh span {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--accent-on-dark);
   margin-top: 2px;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -290,7 +290,7 @@ body.modal-open .mesh span {
   background: var(--glass-dark);
 }
 .tab.active .center-badge {
-  background: linear-gradient(155deg, var(--wine), var(--gold));
+  background: var(--tab-center-grad);
 }
 
 /* ---------- tab bar "Padrão 2" — pílula flutuante, estilo Uber ---------- */
@@ -320,7 +320,7 @@ body.modal-open .mesh span {
   padding: 11px 4px;
 }
 .tab-pill .tab.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--on-dark-fill);
 }
 .tab-pill .tab .dot {
   display: none;

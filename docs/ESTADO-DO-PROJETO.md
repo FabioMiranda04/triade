@@ -3,8 +3,21 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v2.2.0`
-**Última atualização:** 23/08/2026
+**Versão atual:** `v2.3.0`
+**Última atualização:** 25/08/2026
+**Última sessão (16, 25/08/2026):** entrou o **tema "Ônix"** (preto,
+branco e detalhes dourados), selecionável em **Configurações → Aparência**
+— pedido a partir de um questionamento de uma das sócias sobre a paleta.
+O tema **Areia** continua sendo o padrão e ficou pixel a pixel idêntico
+(verificado por comparação de capturas antes/depois em 21 de 22 telas; a
+22ª é o próprio pop-up de Configurações, que ganhou a seção nova). Por
+baixo, o que entrou não foi um "modo escuro" e sim um **sistema de temas**:
+`tokens.css` em três camadas (marca → papéis semânticos → temas), com
+`layout.css`/`components.css` consumindo só a camada semântica. Adicionar
+um terceiro tema agora é um bloco de variáveis + uma entrada em `THEMES`,
+sem tocar em componente — receita na seção 1.3 do `docs/DESIGN-SYSTEM.md`.
+Detalhes no `CHANGELOG.md`, entrada `v2.3.0`.
+
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
 grande do próximo evento, grade 3 colunas das edições anteriores com
@@ -114,6 +127,14 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       destaque, incluindo criar novo evento/palestrante — tudo salvo só no
       navegador via `src/lib/db/localContent.ts` (nunca grava no Supabase,
       não há autenticação ainda).
+- [x] **Dois temas visuais** (25/08/2026): **Areia** (padrão, o visual
+      original) e **Ônix** (preto, branco e detalhes dourados), trocáveis
+      em Configurações → Aparência e salvos no aparelho
+      (`ThemeContext`). O tema é um `data-theme` no `<html>` + um bloco de
+      variáveis em `tokens.css`; nenhum componente conhece o tema ativo.
+      Inclui `theme-color` da barra de status, `color-scheme` dos
+      controles nativos e aplicação antes do primeiro quadro (sem
+      piscada).
 - [x] **Manual de UI/UX vivo** (`docs/DESIGN-SYSTEM.md`, reescrito por
       completo em 23/08/2026) + skill `design-systems`
       (`.claude/commands/design-systems.md`) que aplica o checklist do
@@ -204,8 +225,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 ## 6. Roadmap — próximos módulos
 
 0. **Bugs/pendências reportados:**
-   - Criar **tema escuro** para o app (paleta "Liquid Glass" ainda só tem
-     versão clara).
+   - ~~Criar **tema escuro** para o app~~ — **resolvido em 25/08/2026**,
+     e melhor que o pedido original: em vez de um modo escuro solto,
+     entrou um sistema de temas com o **Ônix** (preto/branco/dourado)
+     escolhido em Configurações → Aparência. Ver `CHANGELOG.md` `v2.3.0` e
+     `DESIGN-SYSTEM.md` seção 1.
    - `AccountSheet` ainda não tem "esqueci minha senha" — falta uma tela de
      recuperação (`supabase.auth.resetPasswordForEmail`), deixado de fora
      do Módulo 2 de propósito para não inflar o escopo.

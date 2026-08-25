@@ -21,8 +21,8 @@ export const events: TriadeEvent[] = [
     recapText:
       'A primeira edição marcou o início do movimento: mulheres de trajetórias diferentes, reunidas por uma tarde inteira, trocando experiência em vez de cartão de visita. Lívia, Lia e Cris abriram o encontro contando por que a Tríade nasceu — e a resposta do público confirmou que fazia falta um espaço assim em Goiânia.',
     recapMedia: [
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--gold-soft), var(--blush))', legenda: 'Abertura do encontro' },
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--blush), var(--wine))', legenda: 'Roda de conversa' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-1), var(--ph-2))', legenda: 'Abertura do encontro' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-2), var(--ph-3))', legenda: 'Roda de conversa' },
     ],
   },
   {
@@ -37,8 +37,8 @@ export const events: TriadeEvent[] = [
     recapText:
       'Marcela Zaidem trouxe um olhar prático sobre cultura organizacional para quem lidera pequenos times — e sobre como o jeito feminino de gerir pessoas é, na maioria das vezes, o maior ativo escondido de um negócio. A conversa continuou muito depois do horário previsto de encerramento.',
     recapMedia: [
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--wine), var(--plum))', legenda: 'Marcela Zaidem no palco' },
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--gold-soft), var(--gold))', legenda: 'Networking depois da palestra' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-3), var(--ph-4))', legenda: 'Marcela Zaidem no palco' },
+      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-1), var(--ph-5))', legenda: 'Networking depois da palestra' },
     ],
   },
   {
@@ -163,7 +163,7 @@ export const posts: Post[] = [
     caption:
       'Recordando a 2ª edição, com Marcela Zaidem falando sobre cultura e gestão de pessoas 🤍',
     baseLikes: 98,
-    mediaGradient: 'linear-gradient(135deg, var(--gold-soft), var(--wine))',
+    mediaGradient: 'linear-gradient(135deg, var(--ph-1), var(--ph-3))',
     showActions: true,
   },
 ];

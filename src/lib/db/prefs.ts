@@ -12,7 +12,16 @@
 const NS = 'triade_';
 
 function isBrowser(): boolean {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+  // `typeof` NÃO protege aqui: quando o navegador bloqueia o storage (aba
+  // anônima restrita, cookies de terceiros bloqueados dentro de iframe), o
+  // próprio acesso a `window.localStorage` lança — e a exceção acontece
+  // antes do `typeof` avaliar. Sem o try/catch, o app inteiro morre na
+  // primeira leitura de preferência.
+  try {
+    return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+  } catch {
+    return false;
+  }
 }
 
 export function getPref<T>(key: string, fallback: T): T {

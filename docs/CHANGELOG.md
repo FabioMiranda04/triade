@@ -11,6 +11,80 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.3.0 — Tema "Ônix" (preto, branco e dourado) selecionável no app
+**Sessão 16 — 25/08/2026**
+
+Pedido: uma das sócias questionou a paleta atual. Em vez de trocar o
+visual (regra 7 da seção 10 do `DESIGN-SYSTEM.md`), o novo visual entrou
+como **opção em Configurações → Aparência** — o tema Areia continua o
+padrão e ninguém é surpreendido.
+
+- **Sistema de temas de verdade, não um "modo escuro" remendado.**
+  `tokens.css` foi reorganizado em três camadas: paleta de marca (não muda
+  com o tema) → papéis semânticos (`--accent`, `--glass`, `--ph-grad`,
+  `--btn-primary-grad`…) → blocos de tema. `layout.css` e `components.css`
+  passaram a consumir **só** a camada semântica: não existe nenhum seletor
+  `[data-theme=...]` fora do `tokens.css`, então um tema novo é um bloco
+  de variáveis, sem tocar em componente. Documentado em
+  `docs/DESIGN-SYSTEM.md`, seção 1 (reescrita).
+- **Tema Ônix**: preto quente `#0B0A0A` (não azulado, pra casar com o
+  dourado), texto `#F7F5F1`, dourado `#D9B36C` — 10,3:1 de contraste sobre
+  o fundo. Dourado é **detalhe**, nunca superfície grande: hairline do
+  pop-up e da tab bar, ícone da aba ativa, preço, pílula "em breve" e os
+  botões de ação (dourado com texto preto — o ponto mais claro da tela é
+  sempre uma ação). Vidro escuro virou superfície *mais clara* que o
+  fundo, para preservar a hierarquia que no Areia vinha do contraste
+  claro/escuro.
+- **`ThemeContext`** (`src/context/ThemeContext.tsx`), no mesmo molde do
+  `TabBarStyleContext`: grava `data-theme` no `<html>`, persiste via
+  `prefs.ts` e atualiza a `<meta name="theme-color">` — sem isso o tema
+  escuro fica com uma tira clara na barra de status do Android/atalho iOS.
+- **Sem piscada ao abrir**: um `<script>` curto no `index.html` aplica o
+  tema salvo antes do React montar. É o único ponto do projeto que lê
+  `localStorage` fora de `prefs.ts`, exceção documentada nos dois lugares
+  (qualquer import já seria tarde demais para evitar o flash).
+- **Configurações ganhou a seção "Aparência"**, com amostra circular de
+  cada tema, subtítulo e `aria-pressed` — variante nova da lista estilo
+  iOS (`.ios-row-main`/`.theme-swatch`), documentada na seção 4.4 do
+  manual.
+- **Bug de fundo encontrado no caminho — placeholder gravado no conteúdo.**
+  `post.mediaGradient` e `event.recapMedia[].url` guardam strings de
+  gradiente que referenciavam cor de **marca** (`var(--gold-soft)`), que
+  por definição não muda com o tema: no Ônix acendiam retângulos claros no
+  meio da tela preta. Criada a escala `--ph-1`…`--ph-5`, que cada tema
+  define, e o conteúdo (`src/data/seed.ts` + `supabase/seed.sql`) passou a
+  referenciar ela. Regra nova no manual (seção 1.4).
+- **`color-scheme` por tema**: os controles nativos do navegador (lista do
+  `<select>`, botão de limpar da busca, barra de rolagem) seguem o tema —
+  sem isso, o `<select>` do formulário de edição abriria um dropdown
+  branco no meio do tema escuro.
+- **Contorno de tile** (`--ph-border`) nas grades de Eventos e
+  Palestrantes: sem ele o tile escuro sumia no fundo escuro. Feito com
+  `outline`/`outline-offset: -1px` em vez de `border`, para custar zero no
+  tema Areia, inclusive em layout.
+- **Correção de robustez em `prefs.ts`** (pré-existente, encontrada nos
+  testes): `typeof window.localStorage` **não** protege quando o navegador
+  bloqueia o storage — o acesso já lança, e o app inteiro morria na
+  primeira leitura de preferência. Agora cai no valor padrão.
+- **Verificação**: 22 telas e pop-ups capturados nos dois temas em 375px
+  (e o Ônix também em 360px) com Playwright — Início, Sobre, Eventos
+  (lista/grade/calendário), Palestrantes, Planos, os 6 pop-ups, kebab,
+  toast, busca e as duas tab bars. **O tema Areia foi comparado pixel a
+  pixel com a versão anterior: 21 das 22 capturas idênticas**, e a única
+  diferença é o pop-up de Configurações, que ganhou a seção nova de
+  propósito. Duas regressões reais foram pegas assim e corrigidas antes de
+  fechar (a borda superior do plano em destaque e o deslocamento de 1px
+  dos chips das grades). Mais 14 testes funcionais: padrão, troca,
+  persistência, `theme-color`, anti-flash e storage bloqueado.
+
+**Arquivos gerados/alterados:** `src/context/ThemeContext.tsx` (novo),
+`src/App.tsx`, `src/components/SettingsSheet.tsx`, `src/lib/db/prefs.ts`,
+`src/data/seed.ts`, `src/styles/{tokens,base,layout,components}.css`,
+`index.html`, `supabase/seed.sql`,
+`docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO}.md`
+
+---
+
 ## v2.2.0 — Estratégia de mídia real (Módulo 11) + código pronto pra fotos
 **Sessão 15 — 23/08/2026**
 

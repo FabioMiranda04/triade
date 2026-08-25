@@ -24,7 +24,7 @@
   height: 58px;
   border-radius: 50%;
   padding: 3px;
-  background: conic-gradient(from 210deg, var(--wine), var(--gold), var(--blush), var(--wine));
+  background: var(--ring-grad);
 }
 .story .ring .hole {
   width: 100%;
@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--wine);
+  color: var(--accent);
 }
 .story span.lbl {
   font-size: 10.5px;
@@ -64,13 +64,13 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-size: 14px;
-  color: var(--wine-deep);
+  color: var(--ph-fg);
   flex-shrink: 0;
 }
 .post-who { flex: 1; min-width: 0; }
@@ -78,7 +78,7 @@
 .post-who .t { font-size: 11.5px; color: var(--ink-45); }
 .post-media {
   aspect-ratio: 4 / 3;
-  background: linear-gradient(135deg, var(--blush), var(--gold-soft));
+  background: var(--ph-grad-media);
   position: relative;
   display: flex;
   align-items: center;
@@ -121,8 +121,8 @@
   transition: transform 0.15s ease;
 }
 .act-btn:active { transform: scale(0.85); }
-.act-btn.liked { color: var(--wine); }
-.act-btn.saved { color: var(--gold); }
+.act-btn.liked { color: var(--like-fg); }
+.act-btn.saved { color: var(--save-fg); }
 .post-likes { padding: 2px 14px 0; font-size: 13px; font-weight: 700; }
 .post-caption { padding: 6px 14px 14px; font-size: 13.5px; color: var(--ink-70); }
 .post-caption b { color: var(--ink); font-weight: 700; }
@@ -135,7 +135,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,7 +144,7 @@
 .profile-bio { font-size: 13px; color: var(--ink-70); margin-top: 14px; }
 .profile-stats { display: flex; gap: 20px; margin-top: 16px; }
 .profile-stats div { text-align: center; flex: 1; }
-.profile-stats .num { font-family: var(--font-display); font-size: 18px; color: var(--wine); }
+.profile-stats .num { font-family: var(--font-display); font-size: 18px; color: var(--accent); }
 .profile-stats .lbl { font-size: 10.5px; color: var(--ink-45); margin-top: 2px; }
 
 .founder-row {
@@ -161,17 +161,17 @@
   height: 52px;
   border-radius: 50%;
   margin: 0 auto 8px;
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  color: var(--wine-deep);
+  color: var(--ph-fg);
 }
 .founder-chip .n { font-family: var(--font-script); font-style: italic; font-size: 16px; }
 .founder-chip .r {
   font-size: 10px;
-  color: var(--wine);
+  color: var(--accent);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -201,7 +201,7 @@
   color: var(--ink-70);
   cursor: pointer;
 }
-.segmented button.active { background: var(--ink); color: var(--sand); }
+.segmented button.active { background: var(--seg-active-bg); color: var(--seg-active-fg); }
 .ev-card {
   padding: 14px;
   padding-right: 40px;
@@ -216,7 +216,7 @@
   width: 64px;
   height: 64px;
   border-radius: var(--r-md);
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -232,8 +232,8 @@
   border-radius: 999px;
   display: inline-block;
 }
-.status-pill.realizado { background: rgba(35, 28, 26, 0.08); color: var(--ink-70); }
-.status-pill.embreve { background: var(--gold-soft); color: var(--wine-deep); }
+.status-pill.realizado { background: var(--pill-past-bg); color: var(--pill-past-fg); }
+.status-pill.embreve { background: var(--pill-soon-bg); color: var(--pill-soon-fg); }
 .ev-card h3 { font-size: 14.5px; margin-top: 6px; }
 .ev-card .meta {
   display: flex;
@@ -272,13 +272,15 @@
 .event-cell {
   aspect-ratio: 1 / 1;
   border-radius: var(--r-md);
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   padding: 8px;
   border: 0;
+  outline: 1px solid var(--ph-border);
+  outline-offset: -1px;
   cursor: pointer;
   text-align: left;
   transition: transform 0.15s ease;
@@ -286,10 +288,10 @@
 .event-cell:active { transform: scale(0.96); }
 .event-cell .date,
 .event-cell .nm {
-  color: #4a2130;
+  color: var(--tile-chip-fg);
   font-size: 10px;
   font-weight: 800;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--tile-chip-bg);
   padding: 3px 7px;
   border-radius: 8px;
 }
@@ -321,7 +323,7 @@
 }
 .ev-search input::placeholder { color: var(--ink-45); }
 .ev-search input:focus { outline: none; }
-.ev-search:focus-within { color: var(--wine); }
+.ev-search:focus-within { color: var(--accent); }
 
 /* ---------- calendário de eventos ---------- */
 .cal { padding: 14px; border-radius: var(--r-lg); margin-bottom: 14px; }
@@ -332,7 +334,7 @@
   height: 30px;
   border-radius: 50%;
   border: 0;
-  background: rgba(35, 28, 26, 0.06);
+  background: var(--fill-weak);
   color: var(--ink);
   display: flex;
   align-items: center;
@@ -340,7 +342,7 @@
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.cal-nav:active { transform: scale(0.88); background: rgba(35, 28, 26, 0.12); }
+.cal-nav:active { transform: scale(0.88); background: var(--fill-strong); }
 .cal-weekdays,
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
 .cal-weekdays span {
@@ -367,11 +369,11 @@ button.cal-cell {
   background: none;
   border-radius: 50%;
   cursor: pointer;
-  color: var(--wine-deep);
+  color: var(--cal-day-fg);
   font-weight: 800;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0.1); }
+button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-strong); }
 .cal-cell .dot {
   position: absolute;
   bottom: 4px;
@@ -380,7 +382,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--wine);
+  background: var(--accent);
 }
 
 /* ---------- retrospectiva (EventRecapModal) ---------- */
@@ -419,7 +421,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   bottom: 0;
   padding: 6px 8px;
   font-size: 10.5px;
-  color: var(--sand);
+  color: var(--on-dark);
   background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
 }
 
@@ -428,7 +430,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
 .pal-cell {
   aspect-ratio: 1 / 1;
   border-radius: var(--r-md);
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: flex-end;
   padding: 8px;
@@ -436,12 +438,14 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   overflow: hidden;
   cursor: pointer;
   border: 0;
+  outline: 1px solid var(--ph-border);
+  outline-offset: -1px;
 }
 .pal-cell .nm {
-  color: #4a2130;
+  color: var(--tile-chip-fg);
   font-size: 11px;
   font-weight: 800;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--tile-chip-bg-2);
   padding: 3px 7px;
   border-radius: 8px;
 }
@@ -452,12 +456,23 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
 
 /* ---------- planos ---------- */
 .plan-card { padding: 22px; margin-bottom: 12px; position: relative; }
+/* O plano em destaque é o único card de vidro ESCURO no meio de cards
+   claros. No tema Areia isso já basta pra destacá-lo; num tema escuro,
+   card escuro sobre fundo escuro perde a hierarquia — daí a borda vir de
+   tokens próprios, que cada tema define como quiser.
+   São DOIS tokens porque o card combina `.glass` (borda clara nos quatro
+   lados) com `.glass-dark` (que sobrescreve só o topo, mais discreto).
+   Um `border-color` só apagaria essa distinção do tema Areia. */
+.plan-card.glass-dark {
+  border-color: var(--featured-border);
+  border-top-color: var(--featured-border-top);
+}
 .plan-card .badge {
   position: absolute;
   top: -10px;
   right: 18px;
-  background: linear-gradient(155deg, var(--wine), var(--wine-deep));
-  color: var(--sand);
+  background: var(--badge-grad);
+  color: var(--badge-fg);
   font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -495,7 +510,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   margin-top: 14px;
   gap: 12px;
 }
-.sponsor-row .value { font-family: var(--font-display); font-size: 22px; color: var(--wine); }
+.sponsor-row .value { font-family: var(--font-display); font-size: 22px; color: var(--accent); }
 
 /* ---------- botões ---------- */
 .btn {
@@ -511,9 +526,9 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   transition: transform 0.15s ease;
 }
 .btn-primary {
-  background: linear-gradient(155deg, var(--wine), var(--wine-deep));
-  color: var(--sand);
-  box-shadow: 0 12px 24px -12px rgba(124, 42, 61, 0.65);
+  background: var(--btn-primary-grad);
+  color: var(--btn-primary-fg);
+  box-shadow: var(--btn-primary-shadow);
 }
 .btn-primary:active { transform: scale(0.97); }
 .btn-glass:active { transform: scale(0.97); }
@@ -529,7 +544,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   padding: 13px 16px;
   margin-bottom: 14px;
   font-size: 12px;
-  color: var(--wine-deep);
+  color: var(--note-fg);
   border-radius: var(--r-md);
 }
 
@@ -541,7 +556,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
 /* ---------- citação ---------- */
 .quote-card { padding: 26px 20px; text-align: center; }
 .quote-card .q { font-family: var(--font-display); font-size: 17px; line-height: 1.4; }
-.quote-card .handle { margin-top: 12px; color: var(--gold-soft); font-size: 16px; }
+.quote-card .handle { margin-top: 12px; color: var(--accent-on-dark-soft); font-size: 16px; }
 
 /* ---------- pop-up (evento, formulários) ---------- */
 /* Todo pop-up do app segue o mesmo padrão: centralizado, fundo escuro
@@ -556,7 +571,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(20, 14, 13, 0.55);
+  background: var(--overlay-scrim);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -619,7 +634,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   width: 52px;
   height: 52px;
   border-radius: var(--r-md);
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -674,7 +689,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   padding: 13px 14px;
   background: none;
   border: 0;
-  color: var(--sand);
+  color: var(--on-dark);
   font-size: 14px;
   font-weight: 600;
   text-align: left;
@@ -684,6 +699,35 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
 .ios-row + .ios-row {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+/* variante da linha com amostra visual + subtítulo (ex: escolher tema) */
+.ios-row-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.ios-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.ios-row-text .s {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(244, 238, 227, 0.55);
+}
+.theme-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.5);
+}
+.theme-swatch[data-theme-preview='areia'] { background: var(--preview-areia); }
+.theme-swatch[data-theme-preview='onyx'] { background: var(--preview-onyx); }
 .ios-row:active {
   background: rgba(255, 255, 255, 0.08);
 }
@@ -704,9 +748,9 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   gap: 12px;
   padding: 13px 14px;
   border-radius: var(--r-md);
-  background: linear-gradient(135deg, rgba(199, 154, 85, 0.22), rgba(124, 42, 61, 0.22));
+  background: var(--wa-btn-bg);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  color: var(--sand);
+  color: var(--on-dark);
   text-decoration: none;
   transition: transform 0.15s ease, background 0.2s ease;
   animation: contactin 0.32s cubic-bezier(0.16, 1, 0.3, 1) backwards;
@@ -723,17 +767,17 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(150deg, var(--gold-soft), var(--blush));
+  background: var(--ph-grad);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-size: 13px;
-  color: var(--wine-deep);
+  color: var(--ph-fg);
   flex-shrink: 0;
 }
 .wa-btn .who { flex: 1; min-width: 0; }
-.wa-btn .n { display: block; font-weight: 700; font-size: 13.5px; color: var(--sand); }
+.wa-btn .n { display: block; font-weight: 700; font-size: 13.5px; color: var(--on-dark); }
 .wa-btn .r { display: block; font-size: 11.5px; color: rgba(244, 238, 227, 0.7); margin-top: 2px; }
 .wa-badge {
   width: 34px;
@@ -782,7 +826,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   cursor: pointer;
   transition: background 0.12s ease, transform 0.12s ease;
 }
-.kebab-item:active { background: rgba(35, 28, 26, 0.08); transform: scale(0.97); }
+.kebab-item:active { background: var(--fill-mid); transform: scale(0.97); }
 
 /* ---------- formulários de edição ---------- */
 .edit-fields { display: flex; flex-direction: column; gap: 14px; margin: 16px 0 20px; }
@@ -801,8 +845,8 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   font-size: 14px;
   padding: 11px 12px;
   border-radius: var(--r-md);
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
   color: var(--ink);
   transition: border-color 0.15s ease, background 0.15s ease, outline-offset 0.15s ease;
 }
@@ -841,9 +885,9 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  outline: 2px solid var(--wine);
+  outline: 2px solid var(--field-ring);
   outline-offset: 1px;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--field-bg-focus);
 }
 
 /* ---------- botão "adicionar" ---------- */
@@ -858,19 +902,19 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   border-radius: var(--r-lg);
   border: 1.5px dashed var(--glass-border);
   background: none;
-  color: var(--wine);
+  color: var(--accent);
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.add-tile:active { transform: scale(0.98); background: rgba(124, 42, 61, 0.06); }
+.add-tile:active { transform: scale(0.98); background: var(--accent-fill); }
 .pal-add {
   aspect-ratio: 1 / 1;
   border-radius: var(--r-md);
   border: 1.5px dashed var(--glass-border);
   background: none;
-  color: var(--wine);
+  color: var(--accent);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -881,7 +925,7 @@ button.cal-cell:active { transform: scale(0.88); background: rgba(124, 42, 61, 0
   font-weight: 700;
   cursor: pointer;
 }
-.pal-add:active { transform: scale(0.96); background: rgba(124, 42, 61, 0.06); }
+.pal-add:active { transform: scale(0.96); background: var(--accent-fill); }
 
 /* ---------- toast ---------- */
 .toast {

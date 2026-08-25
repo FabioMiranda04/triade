@@ -1,19 +1,27 @@
 /* =============================================================
-   Design tokens — "Liquid Glass" Tríade Conecta
-   Valores idênticos aos do protótipo original (legacy/).
+   Design tokens — Tríade Conecta
    Mudou cor/raio/tipografia? Mude AQUI, nunca dentro do componente.
+
+   Organização em três camadas (nessa ordem, de propósito):
+
+   1. PALETA DE MARCA — os hex crus da Tríade. Não mudam com o tema.
+   2. PAPÉIS SEMÂNTICOS — o que cada cor *faz* na interface (fundo, texto,
+      acento, vidro, placeholder...). É essa camada que os arquivos de
+      estilo consomem: nenhum seletor em layout.css/components.css sabe
+      qual tema está ativo.
+   3. TEMAS — cada tema redefine só a camada 2 dentro do seu bloco.
+      `:root` = tema "Areia" (padrão, o visual original do app).
+      `[data-theme='onyx']` = tema "Ônix" (preto, branco e dourado).
+
+   Adicionar um tema novo = copiar o bloco `[data-theme='onyx']` e trocar
+   os valores. Se precisar de um token novo, declare-o nos DOIS blocos —
+   um token declarado só num tema quebra o outro em silêncio.
    ============================================================= */
+
 :root {
-  /* superfícies */
-  --sand: #f4eee3;
-  --sand-deep: #eae1d1;
-
-  /* texto */
-  --ink: #231c1a;
-  --ink-70: rgba(35, 28, 26, 0.68);
-  --ink-45: rgba(35, 28, 26, 0.45);
-
-  /* marca */
+  /* =========================================================
+     1. PALETA DE MARCA (constante entre temas)
+     ========================================================= */
   --wine: #7c2a3d;
   --wine-deep: #511b29;
   --gold: #c79a55;
@@ -27,12 +35,143 @@
   /* estado de erro (formulários) */
   --danger: #e5484d;
 
+  /* =========================================================
+     2 + 3. PAPÉIS SEMÂNTICOS — tema "Areia" (padrão)
+     ========================================================= */
+
+  /* superfícies e texto */
+  --sand: #f4eee3;
+  --sand-deep: #eae1d1;
+  --ink: #231c1a;
+  --ink-70: rgba(35, 28, 26, 0.68);
+  --ink-45: rgba(35, 28, 26, 0.45);
+
+  /* acento — a cor que carrega marca e ação (eyebrow, preços, links) */
+  --accent: var(--wine);
+  --accent-deep: var(--wine-deep);
+  --accent-fill: rgba(124, 42, 61, 0.06);
+  --accent-fill-strong: rgba(124, 42, 61, 0.1);
+  /* acento quando o fundo é vidro escuro (tab bar, pop-up, citação) */
+  --accent-on-dark: var(--gold);
+  --accent-on-dark-soft: var(--gold-soft);
+
+  /* preenchimentos neutros sobre fundo claro (botão redondo, item ativo) */
+  --fill-weak: rgba(35, 28, 26, 0.06);
+  --fill-mid: rgba(35, 28, 26, 0.08);
+  --fill-strong: rgba(35, 28, 26, 0.12);
+
+  /* Sobre vidro escuro. `.glass-dark` é escuro nos DOIS temas, então os
+     véus/linhas em `rgba(255,255,255,α)` aplicados sobre ele são
+     invariantes de tema — só o texto muda de tom. */
+  --on-dark: #f4eee3;
+  --on-dark-fill: rgba(255, 255, 255, 0.12);
+
   /* vidro */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(255, 255, 255, 0.75);
   --glass-dark: rgba(25, 19, 18, 0.72);
   --glass-dark-border: rgba(255, 255, 255, 0.14);
+  --glass-inset: rgba(255, 255, 255, 0.7);
+  --glass-shadow: rgba(35, 28, 26, 0.28);
+  --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%);
+  /* borda de um card que usa vidro escuro em meio a cards claros (plano
+     em destaque) — o topo é separado, ver `.plan-card.glass-dark` */
+  --featured-border: var(--glass-border);
+  --featured-border-top: var(--glass-dark-border);
+  --hairline: rgba(255, 255, 255, 0.5);
+  --overlay-scrim: rgba(20, 14, 13, 0.55);
+
+  /* fundo mesh (manchas desfocadas) */
+  --mesh-1: var(--blush);
+  --mesh-2: var(--gold-soft);
+  --mesh-3: var(--wine);
+  --mesh-4: var(--plum);
+  --mesh-op: 0.55;
+  --mesh-3-op: 0.25;
+  --mesh-4-op: 0.2;
+
+  /* Enquanto não há foto real, "imagem" é gradiente (DESIGN-SYSTEM.md,
+     regra 5). Duas origens, e as duas precisam responder ao tema:
+       - o CSS (`--ph-grad*`), usado por card/tile/avatar;
+       - o CONTEÚDO (`post.mediaGradient`, `event.recapMedia[].url` em
+         `src/data/seed.ts`), que é string de gradiente gravada no dado.
+     Por isso existe esta escala numerada: o dado referencia `--ph-1..5` em
+     vez de cor de marca, e cada tema decide o tom. Sem isso, um
+     placeholder claro fica aceso no meio de um tema escuro. */
+  --ph-1: var(--gold-soft);
+  --ph-2: var(--blush);
+  --ph-3: var(--wine);
+  --ph-4: var(--plum);
+  --ph-5: var(--gold);
+  --ph-grad: linear-gradient(150deg, var(--ph-1), var(--ph-2));
+  --ph-grad-media: linear-gradient(135deg, var(--ph-2), var(--ph-1));
+  --ph-fg: var(--wine-deep);
+  /* Contorno do tile de imagem quando ele fica direto sobre o fundo da
+     tela (grades de Eventos/Palestrantes) — num tema escuro, sem isso o
+     tile some no fundo. Desenhado com `outline` (não `border`) para não
+     alterar a caixa: no tema claro ele é transparente e precisa custar
+     zero, inclusive em layout. */
+  --ph-border: transparent;
+  --ring-grad: conic-gradient(from 210deg, var(--wine), var(--gold), var(--blush), var(--wine));
+
+  /* Etiqueta sobre um tile de imagem. Duas opacidades porque as duas
+     grades nasceram com pesos ligeiramente diferentes (Eventos 0.6,
+     Palestrantes 0.55) — mantidas como estavam. */
+  --tile-chip-bg: rgba(255, 255, 255, 0.6);
+  --tile-chip-bg-2: rgba(255, 255, 255, 0.55);
+  --tile-chip-fg: #4a2130;
+
+  /* pílulas de status do evento */
+  --pill-past-bg: var(--fill-mid);
+  --pill-past-fg: var(--ink-70);
+  --pill-soon-bg: var(--gold-soft);
+  --pill-soon-fg: var(--wine-deep);
+
+  /* botões e chamadas */
+  --btn-primary-grad: linear-gradient(155deg, var(--wine), var(--wine-deep));
+  --btn-primary-fg: var(--sand);
+  --btn-primary-shadow: 0 12px 24px -12px rgba(124, 42, 61, 0.65);
+  --cta-grad: linear-gradient(135deg, var(--gold), var(--wine));
+  --cta-fg: #fff;
+  --cta-shadow: 0 10px 20px -10px rgba(124, 42, 61, 0.6);
+  --badge-grad: linear-gradient(155deg, var(--wine), var(--wine-deep));
+  --badge-fg: var(--sand);
+  --seg-active-bg: var(--ink);
+  --seg-active-fg: var(--sand);
+  --note-fg: var(--wine-deep);
+
+  /* engajamento no feed */
+  --like-fg: var(--wine);
+  --save-fg: var(--gold);
+
+  /* tab bar (sempre sobre vidro escuro) */
+  --tab-idle: rgba(244, 238, 227, 0.55);
+  --tab-active: #f4eee3;
+  --tab-center-grad: linear-gradient(155deg, var(--wine), var(--gold));
+  --tabbar-line: rgba(255, 255, 255, 0.12);
+
+  /* calendário */
+  --cal-day-fg: var(--wine-deep);
+
+  /* formulário (campos dentro do pop-up de vidro escuro) */
+  --field-bg: rgba(255, 255, 255, 0.65);
+  --field-bg-focus: rgba(255, 255, 255, 0.85);
+  --field-border: var(--glass-border);
+  --field-ring: var(--wine);
+
+  /* card de contato do WhatsApp */
+  --wa-btn-bg: linear-gradient(135deg, rgba(199, 154, 85, 0.22), rgba(124, 42, 61, 0.22));
+
+  /* =========================================================
+     Constantes de forma e tipografia (não mudam com o tema)
+     ========================================================= */
+
+  /* Amostra de cada tema no seletor de Configurações → Aparência.
+     Ficam só aqui (não são redefinidas por tema): descrevem o tema, então
+     precisam mostrar as mesmas cores independente de qual está ativo. */
+  --preview-areia: linear-gradient(135deg, #f4eee3 0 46%, #7c2a3d 46% 73%, #c79a55 73%);
+  --preview-onyx: linear-gradient(135deg, #0b0a0a 0 46%, #f7f5f1 46% 73%, #d9b36c 73%);
 
   /* raios */
   --r-xl: 28px;
@@ -43,8 +182,139 @@
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
 
+  /* esquema de cor dos controles nativos do navegador (lista do <select>,
+     botão de limpar da busca, barra de rolagem) — sem isso, o tema escuro
+     abre um dropdown branco */
+  color-scheme: light;
+
   /* tipografia */
   --font-display: 'Fraunces', serif;
   --font-script: 'Instrument Serif', serif;
   --font-ui: 'Inter', sans-serif;
+}
+
+/* =============================================================
+   Tema "Ônix" — preto, branco e detalhes dourados
+   Ativado por `data-theme="onyx"` no <html> (ver ThemeContext).
+
+   Princípios:
+   - O preto é quente (#0b0a0a), não azulado — casa com o dourado.
+   - Dourado é *detalhe*, não fundo: hairlines, ícone ativo, preço, CTA.
+     Nenhuma superfície grande é dourada.
+   - O dourado do tema claro (#c79a55) é escuro demais para texto sobre
+     preto; sobre #0b0a0a o tom usado aqui (#d9b36c) dá 10,3:1 de
+     contraste (AAA), contra 8,2:1 do original — ambos passam, este é
+     mais legível em tela de celular sob sol.
+   - Vidro claro vira véu branco de baixa opacidade; vidro escuro vira
+     uma superfície *mais clara* que o fundo (elevação), com hairline
+     dourada — é o que mantém a hierarquia que no tema Areia vinha do
+     contraste claro/escuro.
+   ============================================================= */
+[data-theme='onyx'] {
+  /* superfícies e texto */
+  --sand: #0b0a0a;
+  --sand-deep: #171512;
+  --ink: #f7f5f1;
+  --ink-70: rgba(247, 245, 241, 0.68);
+  --ink-45: rgba(247, 245, 241, 0.46);
+
+  /* acento dourado */
+  --accent: #d9b36c;
+  --accent-deep: #b8934d;
+  --accent-fill: rgba(217, 179, 108, 0.1);
+  --accent-fill-strong: rgba(217, 179, 108, 0.18);
+  --accent-on-dark: #d9b36c;
+  --accent-on-dark-soft: #ebd3a0;
+
+  /* preenchimentos neutros — invertidos: véu branco sobre preto */
+  --fill-weak: rgba(255, 255, 255, 0.06);
+  --fill-mid: rgba(255, 255, 255, 0.09);
+  --fill-strong: rgba(255, 255, 255, 0.14);
+
+  --on-dark: #f7f5f1;
+  --on-dark-fill: rgba(255, 255, 255, 0.12);
+
+  /* vidro */
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-strong: rgba(30, 28, 25, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-dark: rgba(32, 28, 23, 0.86);
+  --glass-dark-border: rgba(217, 179, 108, 0.22);
+  --glass-inset: rgba(255, 255, 255, 0.05);
+  --glass-shadow: rgba(0, 0, 0, 0.6);
+  --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);
+  --featured-border: rgba(217, 179, 108, 0.38);
+  --featured-border-top: rgba(217, 179, 108, 0.38);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --overlay-scrim: rgba(0, 0, 0, 0.78);
+
+  /* Mesh: brasa dourada bem apagada nas bordas. Opacidade baixa de
+     propósito — o pedido é "preto com detalhes dourados"; manchas fortes
+     lavam a tela inteira de marrom e o preto deixa de ser preto. */
+  --mesh-1: #4a3820;
+  --mesh-2: #5c4520;
+  --mesh-3: #33251a;
+  --mesh-4: #1c2029;
+  --mesh-op: 0.32;
+  --mesh-3-op: 0.3;
+  --mesh-4-op: 0.28;
+
+  /* placeholders: rampa de grafite morno — leem como "foto ainda não
+     entrou", não como bloco colorido */
+  --ph-1: #2f2a20;
+  --ph-2: #241f1a;
+  --ph-3: #3b2f1c;
+  --ph-4: #1b1a20;
+  --ph-5: #4a3a20;
+  --ph-grad: linear-gradient(150deg, var(--ph-4), var(--ph-1) 55%, var(--ph-5));
+  --ph-grad-media: linear-gradient(135deg, var(--ph-4), var(--ph-2) 60%, var(--ph-5));
+  --ph-fg: #d9b36c;
+  --ph-border: rgba(255, 255, 255, 0.09);
+  --ring-grad: conic-gradient(from 210deg, #6f5730, #ebd3a0, #8a6b2e, #6f5730);
+
+  --tile-chip-bg: rgba(0, 0, 0, 0.55);
+  --tile-chip-bg-2: rgba(0, 0, 0, 0.55);
+  --tile-chip-fg: #ebd3a0;
+
+  --pill-past-bg: var(--fill-mid);
+  --pill-past-fg: var(--ink-70);
+  --pill-soon-bg: rgba(217, 179, 108, 0.16);
+  --pill-soon-fg: #ebd3a0;
+
+  /* botões: dourado como preenchimento, texto preto — o ponto mais claro
+     da tela é sempre uma ação */
+  --btn-primary-grad: linear-gradient(155deg, #e3c179, #b8934d);
+  --btn-primary-fg: #0b0a0a;
+  --btn-primary-shadow: 0 12px 24px -12px rgba(217, 179, 108, 0.45);
+  --cta-grad: linear-gradient(135deg, #f0d9a0, #c9a05a);
+  --cta-fg: #0b0a0a;
+  --cta-shadow: 0 10px 22px -10px rgba(217, 179, 108, 0.55);
+  --badge-grad: linear-gradient(155deg, #e3c179, #b8934d);
+  --badge-fg: #0b0a0a;
+  --seg-active-bg: #d9b36c;
+  --seg-active-fg: #0b0a0a;
+  --note-fg: #ebd3a0;
+
+  /* curtir = dourado (gesto afetivo); salvar = branco, para os dois
+     estados continuarem distinguíveis sem depender de cor de marca */
+  --like-fg: #d9b36c;
+  --save-fg: #f7f5f1;
+
+  --tab-idle: rgba(247, 245, 241, 0.5);
+  --tab-active: #ffffff;
+  --tab-center-grad: linear-gradient(155deg, #e3c179, #a67c33);
+  --tabbar-line: rgba(217, 179, 108, 0.16);
+
+  --cal-day-fg: #d9b36c;
+
+  /* campo claro dentro de pop-up preto brigaria com o CTA pela atenção —
+     aqui o campo é escuro com anel dourado no foco */
+  --field-bg: rgba(255, 255, 255, 0.07);
+  --field-bg-focus: rgba(255, 255, 255, 0.12);
+  --field-border: rgba(255, 255, 255, 0.14);
+  --field-ring: #d9b36c;
+
+  --wa-btn-bg: linear-gradient(135deg, rgba(217, 179, 108, 0.18), rgba(255, 255, 255, 0.05));
+
+  color-scheme: dark;
 }

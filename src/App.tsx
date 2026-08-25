@@ -6,6 +6,7 @@ import { TabBar } from '@/components/TabBar';
 import { ToastProvider } from '@/components/Toast';
 import { AuthProvider } from '@/context/AuthContext';
 import { TabBarStyleProvider } from '@/context/TabBarStyleContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 import Home from '@/screens/Home';
 import Sobre from '@/screens/Sobre';
 import Eventos from '@/screens/Eventos';
@@ -19,13 +20,15 @@ import Planos from '@/screens/Planos';
  */
 export default function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <TabBarStyleProvider>
-          <AppShell />
-        </TabBarStyleProvider>
-      </AuthProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <TabBarStyleProvider>
+            <AppShell />
+          </TabBarStyleProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 

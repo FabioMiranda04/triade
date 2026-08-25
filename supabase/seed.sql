@@ -14,11 +14,11 @@ values
   ('ed1', '1ª Edição — O início do movimento', '2025-04-12', 'realizado', 'Goiânia, GO',
    'Idealizadoras da Tríade', 'Conexões reais entre mulheres empreendedoras', 65, 1,
    'A primeira edição marcou o início do movimento: mulheres de trajetórias diferentes, reunidas por uma tarde inteira, trocando experiência em vez de cartão de visita. Lívia, Lia e Cris abriram o encontro contando por que a Tríade nasceu — e a resposta do público confirmou que fazia falta um espaço assim em Goiânia.',
-   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--gold-soft), var(--blush))","legenda":"Abertura do encontro"},{"tipo":"foto","url":"linear-gradient(150deg, var(--blush), var(--wine))","legenda":"Roda de conversa"}]'::jsonb),
+   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-1), var(--ph-2))","legenda":"Abertura do encontro"},{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-2), var(--ph-3))","legenda":"Roda de conversa"}]'::jsonb),
   ('ed2', '2ª Edição — Cultura e Gestão de Pessoas', '2025-08-23', 'realizado', 'Goiânia, GO',
    'Marcela Zaidem', 'Cultura, gestão e o olhar profundo sobre o feminino nos negócios', 65, 2,
    'Marcela Zaidem trouxe um olhar prático sobre cultura organizacional para quem lidera pequenos times — e sobre como o jeito feminino de gerir pessoas é, na maioria das vezes, o maior ativo escondido de um negócio. A conversa continuou muito depois do horário previsto de encerramento.',
-   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--wine), var(--plum))","legenda":"Marcela Zaidem no palco"},{"tipo":"foto","url":"linear-gradient(150deg, var(--gold-soft), var(--gold))","legenda":"Networking depois da palestra"}]'::jsonb),
+   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-3), var(--ph-4))","legenda":"Marcela Zaidem no palco"},{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-1), var(--ph-5))","legenda":"Networking depois da palestra"}]'::jsonb),
   ('ed3', '3ª Edição — Gestão Financeira na prática', '2026-09-19', 'em breve', 'Goiânia, GO',
    'Danielle Gouveia', 'Finanças com clareza para quem empreende', 85, 3, null, '[]'::jsonb)
 on conflict (id) do update set

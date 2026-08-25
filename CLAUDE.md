@@ -167,6 +167,14 @@ componente) para a maioria; preenchido (`fill="currentColor" stroke="none"`
 no `<path>`) só quando for um glifo de marca reconhecível (ex: WhatsApp).
 Detalhes em `docs/DESIGN-SYSTEM.md`, seção 5.
 
+**Nova cor / novo tema:** o app tem dois temas (Areia, padrão, e Ônix —
+preto/branco/dourado), escolhidos em Configurações → Aparência. Toda cor
+nova vira token **nos dois blocos** de `src/styles/tokens.css` (`:root` e
+`[data-theme='onyx']`) — nunca um seletor de tema dentro do CSS de um
+componente, e nunca cor de marca gravada em conteúdo (gradiente em
+`seed.ts` usa a escala `--ph-1..5`). Receita completa e como adicionar um
+terceiro tema: `docs/DESIGN-SYSTEM.md`, seção 1.
+
 **Novo pop-up:** sempre via `<ModalOverlay onClose={onClose}>` por dentro
 — nunca escreva `<div className="modal-overlay">` à mão (quebra
 `position: fixed` se o pop-up nascer dentro de um componente com
