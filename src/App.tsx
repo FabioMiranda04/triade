@@ -5,7 +5,7 @@ import { TopBar } from '@/components/TopBar';
 import { TabBar } from '@/components/TabBar';
 import { ToastProvider } from '@/components/Toast';
 import { AuthProvider } from '@/context/AuthContext';
-import { TabBarStyleProvider } from '@/context/TabBarStyleContext';
+import { TabBarStyleProvider, useTabBarStyle } from '@/context/TabBarStyleContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import Home from '@/screens/Home';
 import Sobre from '@/screens/Sobre';
@@ -35,6 +35,11 @@ export default function App() {
 function AppShell() {
   const mainRef = useRef<HTMLElement>(null);
   const location = useLocation();
+  // No estilo "Padrão 2" a tab bar é uma pílula que flutua POR CIMA do
+  // conteúdo — o feed passa por baixo dela e aparece através do vidro. Isso
+  // exige tirar o <nav> do fluxo e devolver o espaço em padding na
+  // `.app-main`; ver docs/DESIGN-SYSTEM.md, seção 6.2.
+  const { style } = useTabBarStyle();
 
   // ao trocar de aba, volta o conteúdo para o topo
   useEffect(() => {
@@ -44,7 +49,7 @@ function AppShell() {
   return (
     <>
       <MeshBackground />
-      <div className="app">
+      <div className={`app${style === 'padrao2' ? ' app-tabs-floating' : ''}`}>
         <TopBar />
         <main className="app-main" ref={mainRef}>
           <Routes>

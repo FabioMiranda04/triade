@@ -131,6 +131,10 @@ body.modal-open .mesh span {
 }
 .app-top {
   flex: 0 0 auto;
+  /* `.glass` arredonda tudo (--r-lg); no cabeçalho isso deixava os quatro
+     cantos vazados mostrando o fundo, o que só ficou evidente no tema
+     escuro. Cabeçalho é borda a borda, como em app nativo. */
+  border-radius: 0;
   padding: calc(10px + var(--safe-t)) 16px 10px;
   display: flex;
   align-items: center;
@@ -141,6 +145,7 @@ body.modal-open .mesh span {
 .brand {
   display: flex;
   align-items: center;
+  min-height: 38px; /* alvo de toque; não muda a altura do cabeçalho, que já é ditada pelo CTA */
   gap: 9px;
   background: none;
   border: 0;
@@ -304,6 +309,26 @@ body.modal-open .mesh span {
   border-top: none;
   padding: 8px 34px calc(12px + var(--safe-b));
   justify-content: center;
+}
+/* A pílula FLUTUA sobre o conteúdo: o <nav> sai do fluxo e a `.app-main`
+   ganha de volta, em padding, a altura que ele ocupava. Sem isso o app
+   desenha uma faixa opaca embaixo do conteúdo e a "flutuação" vira só um
+   canto arredondado — o vidro não tem o que desfocar.
+   `--tabbar-float-h` é a régua única dos dois lados: mudou a altura da
+   pílula, mude aqui e o respiro do conteúdo acompanha sozinho. */
+.app-tabs-floating .tabbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+.app-tabs-floating .tab-pill {
+  pointer-events: auto;
+  background: var(--tabbar-float-bg);
+}
+.app-tabs-floating .app-main {
+  padding-bottom: var(--tabbar-float-h);
 }
 .tab-pill {
   display: flex;

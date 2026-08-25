@@ -25,7 +25,7 @@ vivem em `src/styles/tokens.css` — nunca em componente.
    `--glass`, `--ph-grad`, `--btn-primary-grad`...). **É só esta camada
    que `layout.css`/`components.css` consomem.**
 3. **Temas** — cada tema redefine a camada 2 dentro do seu próprio bloco.
-   `:root` é o tema **Areia** (padrão); `[data-theme='onyx']` é o **Ônix**.
+   `:root` é o tema **Pérola** (padrão); `[data-theme='onyx']` é o **Ônix**.
 
 A consequência prática: **nenhum seletor de componente sabe qual tema está
 ativo.** Não existe (e não deve passar a existir) regra do tipo
@@ -35,7 +35,7 @@ componente precisa de um valor diferente por tema, isso vira um token novo
 
 ### 1.2 Cores por papel
 
-| Token | Papel | Areia | Ônix |
+| Token | Papel | Pérola | Ônix |
 |---|---|---|---|
 | `--sand` | fundo do app | `#F4EEE3` | `#0B0A0A` |
 | `--sand-deep` | miolo dos stories | `#EAE1D1` | `#171512` |
@@ -80,12 +80,12 @@ tema de propósito: o vidro escuro é escuro nos dois temas.
 Dois temas, trocáveis no app e salvos no aparelho (`ThemeContext`,
 `src/context/ThemeContext.tsx`):
 
-- **Areia** (padrão) — o visual original: fundo claro, vinho e dourado.
+- **Pérola** (padrão) — o visual original: fundo claro, vinho e dourado.
 - **Ônix** — preto, branco e detalhes dourados. Princípios: preto quente
   (`#0B0A0A`, não azulado, pra casar com o dourado); **dourado é detalhe,
   nunca superfície grande** — hairline, ícone ativo, preço, CTA; e vidro
   escuro vira superfície *mais clara* que o fundo (elevação), porque num
-  tema escuro o contraste claro/escuro do tema Areia deixaria de separar
+  tema escuro o contraste claro/escuro do tema Pérola deixaria de separar
   card de fundo.
 
 Como funciona: o `ThemeProvider` grava `data-theme` no `<html>` e atualiza
@@ -123,7 +123,7 @@ meio de uma tela preta — foi exatamente o bug encontrado ao construir o
 Ônix. Ao criar conteúdo novo com gradiente, use `var(--ph-N)`.
 
 `--ph-border` é o contorno do tile quando ele fica direto sobre o fundo da
-tela (grades de Eventos/Palestrantes): transparente no Areia, hairline
+tela (grades de Eventos/Palestrantes): transparente no Pérola, hairline
 clara no Ônix — sem ele o tile escuro some no fundo escuro. Desenhado com
 `outline` + `outline-offset: -1px`, não `border`, para não mexer na caixa
 do elemento no tema em que é transparente.
@@ -167,7 +167,7 @@ Carregadas por `<link>` do Google Fonts no `index.html`.
 `position:absolute; inset:0;` dentro de um `.glass`).
 
 As três superfícies existem nos dois temas e trocam de valor junto com
-eles (seção 1.2). `.glass-dark` é escuro em **qualquer** tema — no Areia
+eles (seção 1.2). `.glass-dark` é escuro em **qualquer** tema — no Pérola
 por contraste com o fundo claro, no Ônix como superfície elevada (mais
 clara que o preto do fundo, com hairline dourada). É por isso que texto
 sobre ela usa `--on-dark`, e não `--ink`.
@@ -251,9 +251,12 @@ futura — não invente outro estilo de lista para isso.
 
 **Variante com amostra e subtítulo** (usada por Aparência → tema): a linha
 vira `.ios-row-main` (amostra + `.ios-row-text` com `.t` título e `.s`
-subtítulo) e o checkmark segue à direita. A amostra circular do tema é
-`.theme-swatch[data-theme-preview="<tema>"]`, alimentada por
-`--preview-<tema>` (ver 1.3). Toda `.ios-row` que representa escolha leva
+subtítulo) e o checkmark segue à direita. A amostra é
+`.theme-swatch[data-theme-preview="<tema>"]`: uma **mini-tela do app**
+(fundo + card + pílula de ação), não um disco de cores — quem escolhe quer
+reconhecer o app, não decodificar uma paleta. Alimentada por
+`--preview-<tema>-bg/-card/-ink/-accent` (ver 1.3); o desenho em si é
+único e serve para qualquer tema novo. Toda `.ios-row` que representa escolha leva
 `aria-pressed` — o checkmark sozinho não conta para leitor de tela.
 
 Configurações hoje tem duas seções: **Aparência** (tema) e **Navegação**
@@ -305,6 +308,11 @@ ali dentro, não fazia sentido virar token reaproveitável).
 
 ### 6.1 Header (`TopBar.tsx`) — logo + CTA de venda sempre visível + config
 
+O cabeçalho é **borda a borda, sem cantos arredondados** (`.app-top` zera
+o `border-radius` que herda de `.glass`). Com o arredondamento, os quatro
+cantos vazavam o fundo da tela — pouco perceptível no tema claro, óbvio no
+escuro, e nenhum app nativo faz isso com a barra superior.
+
 Logo (volta pro Início) + `.top-actions` com dois elementos:
 
 1. **`.btn-cta-member`** — pílula "Quero ser membro!" (gradiente
@@ -347,12 +355,33 @@ usuária (`profile.avatar_url`, `.tab-avatar`, circular) quando logada, ou o
 ícone `user` genérico quando não. Não recebe `.active` (não é uma tela
 persistente, é um pop-up transitório).
 
-**Importante para manutenção**: o `<nav className="tabbar">` reserva
-*sempre* a mesma altura no layout flex de `.app`, independente do estilo
-— só a aparência interna muda (borda a borda vs. `.tab-pill` arredondada).
-Isso existe de propósito para `.app-main` nunca precisar recalcular
-tamanho ou ganhar padding condicional: ao adicionar um 3º estilo no
-futuro, mantenha essa invariante.
+**Como cada estilo ocupa espaço** (regra revista em 25/08/2026 — antes o
+`<nav>` reservava sempre a mesma altura em fluxo, nos dois estilos):
+
+- **"Padrão"**: o `<nav>` é item de flex normal e reserva sua altura. O
+  conteúdo termina acima dele; nada passa por baixo.
+- **"Padrão 2"**: a pílula **flutua sobre o conteúdo**. `.app` ganha o
+  modificador `.app-tabs-floating` (posto pelo `AppShell` a partir do
+  `TabBarStyleContext`), o `<nav>` sai do fluxo (`position: absolute`) e a
+  `.app-main` recebe de volta, em `padding-bottom`, a altura que ele
+  ocupava — a régua dos dois lados é o token `--tabbar-float-h`.
+  A invariante antiga (nav sempre em fluxo) foi trocada de propósito: uma
+  barra "flutuante" que desenha uma faixa opaca embaixo do conteúdo não
+  está flutuando, e o vidro não tem o que desfocar. O `<nav>` fica com
+  `pointer-events: none` e só a `.tab-pill` volta a receber toque, senão a
+  faixa transparente engoliria o toque no conteúdo atrás dela.
+  A pílula usa `--tabbar-float-bg`, mais translúcido que o `--glass-dark`
+  dos pop-ups: aqui o objetivo é deixar ver o que passa por baixo; lá, ler.
+
+**Ao adicionar um 3º estilo**, decida explicitamente em qual dos dois
+regimes ele entra e, se for flutuante, reaproveite `.app-tabs-floating` e
+`--tabbar-float-h` em vez de criar outro cálculo de espaço.
+
+Um efeito colateral aceito do estilo flutuante: o conteúdo rolando atrás
+de um `backdrop-filter` obriga o navegador a recalcular o desfoque durante
+a rolagem (seção 9). É inerente ao efeito pedido — o que a seção 9 proíbe
+é animar `scale` nesses elementos e deixar animação de fundo rodando sob
+pop-up aberto, e nenhum dos dois acontece aqui.
 
 ### 6.3 Regra: variação de UI vira opção em Configurações, não substituição silenciosa
 
@@ -477,12 +506,15 @@ irredutível) e o pop-up aberto e parado fica em 16,7ms constante = 60fps.
    (seção 6.3).
 8. Verifique toda mudança de UI em 375px de largura antes de considerar
    pronta (regra 1 do `CLAUDE.md`).
-9. **Toda cor nova tem que existir nos dois temas.** Na prática: declare o
+9. Alvo de toque abaixo de ~38px se corrige com **padding + margem
+   negativa** (é o que `.act-btn` faz), não empurrando o layout: a área
+   cresce e o desenho fica onde estava.
+10. **Toda cor nova tem que existir nos dois temas.** Na prática: declare o
    token em `:root` **e** em `[data-theme='onyx']`. Nunca escreva um
    seletor de tema no CSS de um componente (seção 1.1), e nunca grave cor
    de marca dentro de conteúdo — gradiente em `seed.ts` usa a escala
    `--ph-N` (seção 1.4).
-10. Ao mexer em qualquer coisa visual, confira nos **dois temas**. A
+11. Ao mexer em qualquer coisa visual, confira nos **dois temas**. A
    armadilha típica é um valor que só funciona sobre fundo claro
    (`--ink-70` sobre vidro escuro) ou o inverso.
 

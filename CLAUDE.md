@@ -167,7 +167,7 @@ componente) para a maioria; preenchido (`fill="currentColor" stroke="none"`
 no `<path>`) só quando for um glifo de marca reconhecível (ex: WhatsApp).
 Detalhes em `docs/DESIGN-SYSTEM.md`, seção 5.
 
-**Nova cor / novo tema:** o app tem dois temas (Areia, padrão, e Ônix —
+**Nova cor / novo tema:** o app tem dois temas (Pérola, padrão, e Ônix —
 preto/branco/dourado), escolhidos em Configurações → Aparência. Toda cor
 nova vira token **nos dois blocos** de `src/styles/tokens.css` (`:root` e
 `[data-theme='onyx']`) — nunca um seletor de tema dentro do CSS de um

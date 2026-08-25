@@ -11,6 +11,66 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.4.0 — Ajustes de design a partir da revisão de UI/UX
+**Sessão 16 — 25/08/2026**
+
+Continuação direta da `v2.3.0`, com o tema já publicado e visto no
+aparelho. Rodada a skill `revisar-mobile` (diagnóstico) + a
+`design-systems` (regras) sobre o app inteiro nos dois temas.
+
+- **Tema claro renomeado de "Areia" para "Pérola".** Faz par com "Ônix" —
+  as duas são pedras, uma clara e uma escura, e "Pérola e Ônix" lê como
+  uma coleção pensada em vez de duas escolhas soltas. O valor salvo no
+  aparelho mudou junto (`areia` → `perola`); quem tinha o nome antigo
+  gravado cai no tema padrão em vez de ficar com um `data-theme`
+  inexistente (coberto por teste).
+- **Cabeçalho borda a borda.** `.app-top` herdava o `border-radius` de
+  `.glass` e vazava o fundo nos quatro cantos — quase invisível no tema
+  claro, evidente no escuro. Zerado.
+- **Amostra do tema redesenhada.** Era um disco com gradiente de três
+  cores, que lia como uma mancha. Virou uma **mini-tela do app** (fundo,
+  card com linha de texto e pílula de ação na cor de acento) — quem
+  escolhe reconhece o app em vez de decodificar uma paleta. Alimentada por
+  `--preview-<tema>-bg/-card/-ink/-accent`; o desenho é único e serve para
+  qualquer tema futuro.
+- **A tab bar "Padrão 2" virou um grupo de fato flutuante.** Antes o
+  `<nav>` reservava altura em fluxo, então debaixo da pílula havia uma
+  faixa opaca do fundo e o vidro não tinha o que desfocar. Agora o `<nav>`
+  sai do fluxo (`.app-tabs-floating`), o conteúdo passa por baixo e a
+  `.app-main` recebe o espaço de volta em `padding-bottom`, com
+  `--tabbar-float-h` como régua única dos dois lados. A pílula ganhou
+  `--tabbar-float-bg`, mais translúcido que o vidro dos pop-ups.
+  **Isso troca de propósito uma invariante documentada** (o `<nav>`
+  sempre em fluxo, `DESIGN-SYSTEM.md` §6.2) — a seção foi reescrita
+  descrevendo os dois regimes e o que fazer num 3º estilo.
+- **Alvos de toque** (achado da revisão, pré-existente): os botões do feed
+  mediam 26–30px e o logo 28px, abaixo do mínimo confortável. Corrigidos
+  com padding + margem negativa, então a área de toque vai a 38px **sem
+  mover nada no desenho**. Virou regra 9 da seção 10 do manual.
+- **`statusBar` saiu do `ThemeContext`.** Os hex `#F4EEE3`/`#0B0A0A`
+  estavam repetidos no componente (violando a regra de cor só em token);
+  agora a `<meta name="theme-color">` é lida do próprio `--sand` do tema
+  aplicado, então não há como sair de sincronia.
+
+**Medições da revisão** (Playwright, 375px, nos dois temas): nenhum
+estouro de largura real (os avisos são as fileiras de rolagem horizontal
+intencional — stories e idealizadoras); `body` continua sem rolar; safe
+area preservada; contraste medido no pixel renderizado — o pior caso do
+Ônix é 4,2:1 na linha secundária do post (AA para texto grande) e do
+Pérola é 2,6:1 no mesmo elemento, ou seja **o tema escuro ficou mais
+legível que o claro** nesse ponto. Com a tab bar flutuante, sobram 33–51px
+entre o último item de cada tela e a pílula.
+
+**Fica pendente, não alterado** (precisa da sua decisão, muda o desenho):
+o controle Lista/Calendário da tela Eventos tem 30px de altura — abaixo
+dos 38px recomendados. Aumentar deixa o controle visivelmente mais alto.
+
+**Arquivos alterados:** `src/App.tsx`, `src/context/ThemeContext.tsx`,
+`src/styles/{tokens,layout,components}.css`,
+`docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO}.md`, `CLAUDE.md`
+
+---
+
 ## v2.3.0 — Tema "Ônix" (preto, branco e dourado) selecionável no app
 **Sessão 16 — 25/08/2026**
 

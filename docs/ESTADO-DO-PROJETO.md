@@ -3,12 +3,12 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v2.3.0`
+**Versão atual:** `v2.4.0`
 **Última atualização:** 25/08/2026
 **Última sessão (16, 25/08/2026):** entrou o **tema "Ônix"** (preto,
 branco e detalhes dourados), selecionável em **Configurações → Aparência**
 — pedido a partir de um questionamento de uma das sócias sobre a paleta.
-O tema **Areia** continua sendo o padrão e ficou pixel a pixel idêntico
+O tema **Pérola** continua sendo o padrão e ficou pixel a pixel idêntico
 (verificado por comparação de capturas antes/depois em 21 de 22 telas; a
 22ª é o próprio pop-up de Configurações, que ganhou a seção nova). Por
 baixo, o que entrou não foi um "modo escuro" e sim um **sistema de temas**:
@@ -16,7 +16,13 @@ baixo, o que entrou não foi um "modo escuro" e sim um **sistema de temas**:
 `layout.css`/`components.css` consumindo só a camada semântica. Adicionar
 um terceiro tema agora é um bloco de variáveis + uma entrada em `THEMES`,
 sem tocar em componente — receita na seção 1.3 do `docs/DESIGN-SYSTEM.md`.
-Detalhes no `CHANGELOG.md`, entrada `v2.3.0`.
+Detalhes no `CHANGELOG.md`, entrada `v2.3.0`. Numa segunda rodada
+(`v2.4.0`), com o tema já no ar, passou a revisão de UI/UX: o tema claro
+virou **Pérola** (par com Ônix), o cabeçalho ficou borda a borda, a
+amostra do tema virou uma mini-tela do app, os alvos de toque do feed
+subiram para 38px sem mexer no desenho, e a tab bar "Padrão 2" virou um
+grupo **de fato flutuante** — o conteúdo passa por baixo dela, o que
+trocou de propósito uma invariante do manual (§6.2).
 
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
@@ -127,7 +133,7 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       destaque, incluindo criar novo evento/palestrante — tudo salvo só no
       navegador via `src/lib/db/localContent.ts` (nunca grava no Supabase,
       não há autenticação ainda).
-- [x] **Dois temas visuais** (25/08/2026): **Areia** (padrão, o visual
+- [x] **Dois temas visuais** (25/08/2026): **Pérola** (padrão, o visual
       original) e **Ônix** (preto, branco e detalhes dourados), trocáveis
       em Configurações → Aparência e salvos no aparelho
       (`ThemeContext`). O tema é um `data-theme` no `<html>` + um bloco de

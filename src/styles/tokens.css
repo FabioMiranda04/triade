@@ -10,7 +10,7 @@
       estilo consomem: nenhum seletor em layout.css/components.css sabe
       qual tema está ativo.
    3. TEMAS — cada tema redefine só a camada 2 dentro do seu bloco.
-      `:root` = tema "Areia" (padrão, o visual original do app).
+      `:root` = tema "Pérola" (padrão, o visual original do app).
       `[data-theme='onyx']` = tema "Ônix" (preto, branco e dourado).
 
    Adicionar um tema novo = copiar o bloco `[data-theme='onyx']` e trocar
@@ -36,7 +36,7 @@
   --danger: #e5484d;
 
   /* =========================================================
-     2 + 3. PAPÉIS SEMÂNTICOS — tema "Areia" (padrão)
+     2 + 3. PAPÉIS SEMÂNTICOS — tema "Pérola" (padrão)
      ========================================================= */
 
   /* superfícies e texto */
@@ -72,6 +72,10 @@
   --glass-border: rgba(255, 255, 255, 0.75);
   --glass-dark: rgba(25, 19, 18, 0.72);
   --glass-dark-border: rgba(255, 255, 255, 0.14);
+  /* A pílula flutuante ("Padrão 2") é mais translúcida que o resto do
+     vidro escuro de propósito: ela existe para deixar ver o conteúdo
+     passando por baixo. Pop-up continua opaco — lá o que importa é ler. */
+  --tabbar-float-bg: var(--glass-dark);
   --glass-inset: rgba(255, 255, 255, 0.7);
   --glass-shadow: rgba(35, 28, 26, 0.28);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%);
@@ -167,11 +171,19 @@
      Constantes de forma e tipografia (não mudam com o tema)
      ========================================================= */
 
-  /* Amostra de cada tema no seletor de Configurações → Aparência.
+  /* Amostra de cada tema no seletor de Configurações → Aparência: uma
+     mini-tela do app (fundo + card + ação), não um disco de cores — quem
+     escolhe quer ver como o app fica, não uma paleta abstrata.
      Ficam só aqui (não são redefinidas por tema): descrevem o tema, então
      precisam mostrar as mesmas cores independente de qual está ativo. */
-  --preview-areia: linear-gradient(135deg, #f4eee3 0 46%, #7c2a3d 46% 73%, #c79a55 73%);
-  --preview-onyx: linear-gradient(135deg, #0b0a0a 0 46%, #f7f5f1 46% 73%, #d9b36c 73%);
+  --preview-perola-bg: #f4eee3;
+  --preview-perola-card: #fffaf2;
+  --preview-perola-ink: #231c1a;
+  --preview-perola-accent: #7c2a3d;
+  --preview-onyx-bg: #0b0a0a;
+  --preview-onyx-card: #201c17;
+  --preview-onyx-ink: #f7f5f1;
+  --preview-onyx-accent: #d9b36c;
 
   /* raios */
   --r-xl: 28px;
@@ -181,6 +193,11 @@
   /* safe areas (iPhone) */
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
+
+  /* espaço que a tab bar flutuante ("Padrão 2") ocupa sobre o conteúdo —
+     é o respiro que a `.app-main` recebe em padding para o último item não
+     ficar preso embaixo da pílula (ver layout.css) */
+  --tabbar-float-h: calc(76px + var(--safe-b));
 
   /* esquema de cor dos controles nativos do navegador (lista do <select>,
      botão de limpar da busca, barra de rolagem) — sem isso, o tema escuro
@@ -207,7 +224,7 @@
      mais legível em tela de celular sob sol.
    - Vidro claro vira véu branco de baixa opacidade; vidro escuro vira
      uma superfície *mais clara* que o fundo (elevação), com hairline
-     dourada — é o que mantém a hierarquia que no tema Areia vinha do
+     dourada — é o que mantém a hierarquia que no tema Pérola vinha do
      contraste claro/escuro.
    ============================================================= */
 [data-theme='onyx'] {
@@ -240,6 +257,7 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-dark: rgba(32, 28, 23, 0.86);
   --glass-dark-border: rgba(217, 179, 108, 0.22);
+  --tabbar-float-bg: rgba(30, 26, 21, 0.7);
   --glass-inset: rgba(255, 255, 255, 0.05);
   --glass-shadow: rgba(0, 0, 0, 0.6);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);

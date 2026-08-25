@@ -2,41 +2,31 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import type { ReactNode } from 'react';
 import { getPref, setPref } from '@/lib/db/prefs';
 
-export type ThemeName = 'areia' | 'onyx';
+export type ThemeName = 'perola' | 'onyx';
 
 /**
  * Temas disponíveis em Configurações → Aparência.
  *
- * `statusBar` alimenta a `<meta name="theme-color">` — é a cor que o
- * Android/Chrome pinta atrás da barra de status quando o app está aberto
- * (e a que o iOS usa no atalho da tela de início). Sem atualizar isso, o
- * tema Ônix ficaria com uma faixa clara colada no topo da tela.
- *
  * Cada valor aqui precisa ter um bloco correspondente em
- * `src/styles/tokens.css` (`[data-theme='<value>']`), exceto `areia`, que
- * é o `:root` padrão.
+ * `src/styles/tokens.css` (`[data-theme='<value>']`), exceto `perola`, que
+ * é o `:root` padrão. A cor da barra de status não fica aqui de propósito:
+ * é lida do próprio token `--sand` do tema (ver `applyTheme`), senão o
+ * mesmo valor viveria em dois lugares e um dia sairia de sincronia.
  */
-export const THEMES: {
-  value: ThemeName;
-  label: string;
-  hint: string;
-  statusBar: string;
-}[] = [
+export const THEMES: { value: ThemeName; label: string; hint: string }[] = [
   {
-    value: 'areia',
-    label: 'Areia',
-    hint: 'O visual original: fundo claro, vinho e dourado.',
-    statusBar: '#F4EEE3',
+    value: 'perola',
+    label: 'Pérola',
+    hint: 'O visual original: claro, com vinho e dourado.',
   },
   {
     value: 'onyx',
     label: 'Ônix',
     hint: 'Preto e branco com detalhes dourados.',
-    statusBar: '#0B0A0A',
   },
 ];
 
-const DEFAULT_THEME: ThemeName = 'areia';
+const DEFAULT_THEME: ThemeName = 'perola';
 
 /** Chave usada em `prefs.ts` — repetida no index.html, ver comentário lá. */
 const PREF_KEY = 'theme';
@@ -57,14 +47,20 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
  * adicionar um tema novo sem tocar em nenhum `.tsx`.
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeName>(() =>
-    getPref<ThemeName>(PREF_KEY, DEFAULT_THEME),
-  );
+  const [theme, setThemeState] = useState<ThemeName>(() => {
+    const salvo = getPref<ThemeName>(PREF_KEY, DEFAULT_THEME);
+    // Um valor desconhecido cai no padrão em vez de aplicar um `data-theme`
+    // que não existe em `tokens.css` — cobre quem tinha o nome antigo do
+    // tema claro salvo no aparelho (era 'areia' até 25/08/2026).
+    return THEMES.some((t) => t.value === salvo) ? salvo : DEFAULT_THEME;
+  });
 
   useEffect(() => {
-    const entry = THEMES.find((t) => t.value === theme) ?? THEMES[0];
-    document.documentElement.dataset.theme = entry.value;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', entry.statusBar);
+    document.documentElement.dataset.theme = theme;
+    // a cor da barra de status é o próprio fundo do tema, lido do CSS já
+    // aplicado — nunca um hex repetido aqui
+    const fundo = getComputedStyle(document.documentElement).getPropertyValue('--sand').trim();
+    if (fundo) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', fundo);
   }, [theme]);
 
   const setTheme = useCallback((next: ThemeName) => {
