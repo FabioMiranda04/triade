@@ -10,15 +10,21 @@
       estilo consomem: nenhum seletor em layout.css/components.css sabe
       qual tema está ativo.
    3. TEMAS — cada tema redefine só a camada 2 dentro do seu bloco.
-      `:root` = tema "Pérola" (padrão, o visual original do app).
-      `[data-theme='onyx']` = tema "Ônix" (preto, branco e dourado).
 
-   Adicionar um tema novo = copiar o bloco `[data-theme='onyx']` e trocar
+   **O tema PADRÃO mora no `:root`** — hoje o "Ônix" (preto, branco e
+   dourado). Isso não é detalhe de organização: o tema padrão precisa
+   pintar certo com CSS puro, antes de qualquer JavaScript rodar. Se ele
+   dependesse de um `data-theme` posto pelo script, toda abertura do app
+   piscaria o tema errado por um quadro.
+   `[data-theme='perola']` é o tema alternativo (o visual claro original).
+
+   Adicionar um tema novo = copiar o bloco `[data-theme='perola']` e trocar
    os valores. Se precisar de um token novo, declare-o nos DOIS blocos —
    um token declarado só num tema quebra o outro em silêncio.
    ============================================================= */
 
 :root {
+
   /* =========================================================
      1. PALETA DE MARCA (constante entre temas)
      ========================================================= */
@@ -36,15 +42,228 @@
   --danger: #e5484d;
 
   /* =========================================================
-     2 + 3. PAPÉIS SEMÂNTICOS — tema "Pérola" (padrão)
+     2 + 3. PAPÉIS SEMÂNTICOS — tema "Ônix" (PADRÃO)
+
+     Princípios:
+     - O preto é quente (#0b0a0a), não azulado — casa com o dourado.
+     - Dourado é *detalhe*, não fundo: hairlines, ícone ativo, preço, CTA.
+       Nenhuma superfície grande é dourada.
+     - Vidro claro vira véu branco de baixa opacidade; vidro escuro vira
+       uma superfície *mais clara* que o fundo (elevação), com hairline
+       dourada — é o que mantém a hierarquia que no tema Pérola vinha do
+       contraste claro/escuro.
      ========================================================= */
 
+  /* superfícies e texto */
+  --sand: #0b0a0a;
+  --sand-deep: #171512;
+  --ink: #f7f5f1;
+  --ink-70: rgba(247, 245, 241, 0.78);
+  --ink-45: rgba(247, 245, 241, 0.6);
+
+  /* acento dourado */
+  --accent: #d9b36c;
+  --accent-deep: #b8934d;
+  --accent-fill: rgba(217, 179, 108, 0.1);
+  --accent-fill-strong: rgba(217, 179, 108, 0.18);
+  --accent-on-dark: #d9b36c;
+  --accent-on-dark-soft: #ebd3a0;
+
+  /* preenchimentos neutros — invertidos: véu branco sobre preto */
+  --fill-weak: rgba(255, 255, 255, 0.06);
+  --fill-mid: rgba(255, 255, 255, 0.09);
+  --fill-strong: rgba(255, 255, 255, 0.14);
+
+  --on-dark: #f7f5f1;
+  --on-dark-fill: rgba(255, 255, 255, 0.12);
+
+  /* vidro */
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-strong: rgba(30, 28, 25, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-dark: rgba(32, 28, 23, 0.86);
+  --glass-dark-border: rgba(217, 179, 108, 0.22);
+  --tabbar-float-bg: rgba(30, 26, 21, 0.7);
+  --glass-inset: rgba(255, 255, 255, 0.05);
+  --glass-shadow: rgba(0, 0, 0, 0.6);
+  --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);
+  --featured-border: rgba(217, 179, 108, 0.38);
+  --featured-border-top: rgba(217, 179, 108, 0.38);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --overlay-scrim: rgba(0, 0, 0, 0.78);
+
+  /* Mesh: brasa dourada bem apagada nas bordas. Opacidade baixa de
+     propósito — o pedido é "preto com detalhes dourados"; manchas fortes
+     lavam a tela inteira de marrom e o preto deixa de ser preto. */
+  --mesh-1: #4a3820;
+  --mesh-2: #5c4520;
+  --mesh-3: #33251a;
+  --mesh-4: #1c2029;
+  --mesh-op: 0.32;
+  --mesh-3-op: 0.3;
+  --mesh-4-op: 0.28;
+
+  /* placeholders: rampa de grafite morno — leem como "foto ainda não
+     entrou", não como bloco colorido */
+  --ph-1: #2f2a20;
+  --ph-2: #241f1a;
+  --ph-3: #3b2f1c;
+  --ph-4: #1b1a20;
+  --ph-5: #4a3a20;
+  --ph-grad: linear-gradient(150deg, var(--ph-4), var(--ph-1) 55%, var(--ph-5));
+  --ph-grad-media: linear-gradient(135deg, var(--ph-4), var(--ph-2) 60%, var(--ph-5));
+  --ph-fg: #d9b36c;
+  --ph-border: rgba(255, 255, 255, 0.09);
+  --ring-grad: conic-gradient(from 210deg, #6f5730, #ebd3a0, #8a6b2e, #6f5730);
+
+  --tile-chip-bg: rgba(0, 0, 0, 0.55);
+  --tile-chip-bg-2: rgba(0, 0, 0, 0.55);
+  --tile-chip-fg: #ebd3a0;
+
+  --pill-past-bg: var(--fill-mid);
+  --pill-past-fg: var(--ink-70);
+  --pill-soon-bg: rgba(217, 179, 108, 0.16);
+  --pill-soon-fg: #ebd3a0;
+
+  /* botões: dourado como preenchimento, texto preto — o ponto mais claro
+     da tela é sempre uma ação */
+  --btn-primary-grad: linear-gradient(155deg, #e3c179, #b8934d);
+  --btn-primary-fg: #0b0a0a;
+  --btn-primary-shadow: 0 12px 24px -12px rgba(217, 179, 108, 0.45);
+  --cta-grad: linear-gradient(135deg, #f0d9a0, #c9a05a);
+  --cta-fg: #0b0a0a;
+  --cta-shadow: 0 10px 22px -10px rgba(217, 179, 108, 0.55);
+  --badge-grad: linear-gradient(155deg, #e3c179, #b8934d);
+  --badge-fg: #0b0a0a;
+  --seg-active-bg: #d9b36c;
+  --seg-active-fg: #0b0a0a;
+  --note-fg: #ebd3a0;
+
+  /* curtir = dourado (gesto afetivo); salvar = branco, para os dois
+     estados continuarem distinguíveis sem depender de cor de marca */
+  --like-fg: #d9b36c;
+  --save-fg: #f7f5f1;
+
+  --tab-idle: rgba(247, 245, 241, 0.5);
+  --tab-active: #ffffff;
+  --tab-center-grad: linear-gradient(155deg, #e3c179, #a67c33);
+  --tabbar-line: rgba(217, 179, 108, 0.16);
+
+  --cal-day-fg: #d9b36c;
+
+  /* campo claro dentro de pop-up preto brigaria com o CTA pela atenção —
+     aqui o campo é escuro com anel dourado no foco */
+  --field-bg: rgba(255, 255, 255, 0.07);
+  --field-bg-focus: rgba(255, 255, 255, 0.12);
+  --field-border: rgba(255, 255, 255, 0.14);
+  --field-ring: #d9b36c;
+
+  --wa-btn-bg: linear-gradient(135deg, rgba(217, 179, 108, 0.18), rgba(255, 255, 255, 0.05));
+
+  /* controles nativos do navegador (lista do <select>, botão de limpar da
+     busca, barra de rolagem) seguem o tema */
+  color-scheme: dark;
+
+  /* =========================================================
+     ESCALA TIPOGRÁFICA — em `rem`, e isso é o ponto principal
+     =========================================================
+     `rem` acompanha o tamanho de fonte que a usuária escolheu no
+     navegador/sistema. Com `px`, esse ajuste é ignorado: quem aumentou a
+     letra no celular abria o app e via o mesmo texto miúdo (medido:
+     navegador em 24px → app renderizava 13,5px, 0% do aumento aplicado).
+
+     Nunca escreva `font-size` em px num componente. Se um tamanho novo
+     for mesmo necessário, ele entra aqui como token.
+
+     Calibragem: público de 35+ empreendedoras, acostumadas ao Instagram.
+     A régua é ficar um degrau ACIMA do Instagram (cuja legenda tem ~14px)
+     em vez de replicar a densidade dele, com piso absoluto de 12px. */
+  --fs-3xs: 0.75rem;    /* 12px — micro-etiqueta: pílula de status, chip sobre imagem */
+  --fs-2xs: 0.8125rem;  /* 13px — rótulo auxiliar, eyebrow, meta de evento */
+  --fs-xs: 0.875rem;    /* 14px — texto secundário, item de lista de plano */
+  --fs-sm: 0.9375rem;   /* 15px — texto corrido secundário (bio, descrição) */
+  --fs-md: 1rem;        /* 16px — texto corrido principal (legenda do post) */
+  --fs-lg: 1.125rem;    /* 18px — nome em card, citação */
+  --fs-xl: 1.25rem;     /* 20px — título de card, marca no cabeçalho */
+  --fs-2xl: 1.375rem;   /* 22px — h3 de destaque, valor de patrocínio */
+  --fs-3xl: clamp(1.5rem, 6.2vw, 1.75rem); /* 24–28px — h2 de seção */
+  --fs-price: 2rem;     /* 32px — preço do plano */
+
+  /* CROMO — controles que vivem em espaço FIXO (rótulo da tab bar, botões
+     do cabeçalho). Esses não podem escalar livremente com a fonte do
+     sistema: a barra tem 5 colunas e o cabeçalho é uma linha só, então em
+     fonte grande o texto cortaria ou empurraria o vizinho para fora da
+     tela (medido: em 24px o CTA estourava a largura e "Palestras" virava
+     reticências). O `clamp` deixa acompanhar um pouco e para antes de
+     quebrar. Conteúdo NUNCA usa estes tokens — conteúdo escala inteiro. */
+  /* o rótulo da tab bar fica travado em 12px na prática: a barra divide
+     375px por 5, e "Palestras" já ocupa a coluna inteira nesse tamanho —
+     um pixel a mais vira reticências, que é pior que não crescer */
+  --fs-chrome-sm: clamp(11px, 0.75rem, 12px);
+  --fs-chrome-md: clamp(12px, 0.8125rem, 14px);
+  --fs-chrome-lg: clamp(16px, 1.25rem, 21px);
+
+  /* altura de linha por papel */
+  --lh-tight: 1.25;     /* títulos */
+  --lh-normal: 1.5;     /* rótulos e texto curto */
+  --lh-read: 1.62;      /* texto corrido — respiro para leitura longa */
+
+/* =========================================================
+     Constantes de forma e tipografia (não mudam com o tema)
+     ========================================================= */
+
+  /* Amostra de cada tema no seletor de Configurações → Aparência: uma
+     mini-tela do app (fundo + card + ação), não um disco de cores — quem
+     escolhe quer ver como o app fica, não uma paleta abstrata.
+     Ficam só aqui (não são redefinidas por tema): descrevem o tema, então
+     precisam mostrar as mesmas cores independente de qual está ativo. */
+  --preview-perola-bg: #f4eee3;
+  --preview-perola-card: #fffaf2;
+  --preview-perola-ink: #231c1a;
+  --preview-perola-accent: #7c2a3d;
+  --preview-onyx-bg: #0b0a0a;
+  --preview-onyx-card: #201c17;
+  --preview-onyx-ink: #f7f5f1;
+  --preview-onyx-accent: #d9b36c;
+
+  /* raios */
+  --r-xl: 28px;
+  --r-lg: 22px;
+  --r-md: 14px;
+
+  /* safe areas (iPhone) */
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+
+  /* espaço que a tab bar flutuante ("Padrão 2") ocupa sobre o conteúdo —
+     é o respiro que a `.app-main` recebe em padding para o último item não
+     ficar preso embaixo da pílula (ver layout.css) */
+  --tabbar-float-h: calc(92px + var(--safe-b));
+
+
+  /* tipografia */
+  --font-display: 'Fraunces', serif;
+  --font-script: 'Instrument Serif', serif;
+  --font-ui: 'Inter', sans-serif;
+}
+
+/* =============================================================
+   Tema "Pérola" — o visual claro original (fundo areia, vinho e dourado)
+   Ativado por `data-theme="perola"` no <html> (ver ThemeContext).
+
+   Os níveis de texto foram escurecidos em 25/08/2026 depois de medição no
+   pixel renderizado: `--ink-45` dava 2,7:1, abaixo do mínimo de 4,5:1 da
+   WCAG para texto normal. Os nomes `-70`/`-45` são o PAPEL na hierarquia
+   (secundário / terciário), não a opacidade literal — não os leia como
+   porcentagem.
+   ============================================================= */
+[data-theme='perola'] {
   /* superfícies e texto */
   --sand: #f4eee3;
   --sand-deep: #eae1d1;
   --ink: #231c1a;
-  --ink-70: rgba(35, 28, 26, 0.68);
-  --ink-45: rgba(35, 28, 26, 0.45);
+  --ink-70: rgba(35, 28, 26, 0.8);
+  --ink-45: rgba(35, 28, 26, 0.62);
 
   /* acento — a cor que carrega marca e ação (eyebrow, preços, links) */
   --accent: var(--wine);
@@ -167,172 +386,5 @@
   /* card de contato do WhatsApp */
   --wa-btn-bg: linear-gradient(135deg, rgba(199, 154, 85, 0.22), rgba(124, 42, 61, 0.22));
 
-  /* =========================================================
-     Constantes de forma e tipografia (não mudam com o tema)
-     ========================================================= */
-
-  /* Amostra de cada tema no seletor de Configurações → Aparência: uma
-     mini-tela do app (fundo + card + ação), não um disco de cores — quem
-     escolhe quer ver como o app fica, não uma paleta abstrata.
-     Ficam só aqui (não são redefinidas por tema): descrevem o tema, então
-     precisam mostrar as mesmas cores independente de qual está ativo. */
-  --preview-perola-bg: #f4eee3;
-  --preview-perola-card: #fffaf2;
-  --preview-perola-ink: #231c1a;
-  --preview-perola-accent: #7c2a3d;
-  --preview-onyx-bg: #0b0a0a;
-  --preview-onyx-card: #201c17;
-  --preview-onyx-ink: #f7f5f1;
-  --preview-onyx-accent: #d9b36c;
-
-  /* raios */
-  --r-xl: 28px;
-  --r-lg: 22px;
-  --r-md: 14px;
-
-  /* safe areas (iPhone) */
-  --safe-b: env(safe-area-inset-bottom, 0px);
-  --safe-t: env(safe-area-inset-top, 0px);
-
-  /* espaço que a tab bar flutuante ("Padrão 2") ocupa sobre o conteúdo —
-     é o respiro que a `.app-main` recebe em padding para o último item não
-     ficar preso embaixo da pílula (ver layout.css) */
-  --tabbar-float-h: calc(76px + var(--safe-b));
-
-  /* esquema de cor dos controles nativos do navegador (lista do <select>,
-     botão de limpar da busca, barra de rolagem) — sem isso, o tema escuro
-     abre um dropdown branco */
   color-scheme: light;
-
-  /* tipografia */
-  --font-display: 'Fraunces', serif;
-  --font-script: 'Instrument Serif', serif;
-  --font-ui: 'Inter', sans-serif;
-}
-
-/* =============================================================
-   Tema "Ônix" — preto, branco e detalhes dourados
-   Ativado por `data-theme="onyx"` no <html> (ver ThemeContext).
-
-   Princípios:
-   - O preto é quente (#0b0a0a), não azulado — casa com o dourado.
-   - Dourado é *detalhe*, não fundo: hairlines, ícone ativo, preço, CTA.
-     Nenhuma superfície grande é dourada.
-   - O dourado do tema claro (#c79a55) é escuro demais para texto sobre
-     preto; sobre #0b0a0a o tom usado aqui (#d9b36c) dá 10,3:1 de
-     contraste (AAA), contra 8,2:1 do original — ambos passam, este é
-     mais legível em tela de celular sob sol.
-   - Vidro claro vira véu branco de baixa opacidade; vidro escuro vira
-     uma superfície *mais clara* que o fundo (elevação), com hairline
-     dourada — é o que mantém a hierarquia que no tema Pérola vinha do
-     contraste claro/escuro.
-   ============================================================= */
-[data-theme='onyx'] {
-  /* superfícies e texto */
-  --sand: #0b0a0a;
-  --sand-deep: #171512;
-  --ink: #f7f5f1;
-  --ink-70: rgba(247, 245, 241, 0.68);
-  --ink-45: rgba(247, 245, 241, 0.46);
-
-  /* acento dourado */
-  --accent: #d9b36c;
-  --accent-deep: #b8934d;
-  --accent-fill: rgba(217, 179, 108, 0.1);
-  --accent-fill-strong: rgba(217, 179, 108, 0.18);
-  --accent-on-dark: #d9b36c;
-  --accent-on-dark-soft: #ebd3a0;
-
-  /* preenchimentos neutros — invertidos: véu branco sobre preto */
-  --fill-weak: rgba(255, 255, 255, 0.06);
-  --fill-mid: rgba(255, 255, 255, 0.09);
-  --fill-strong: rgba(255, 255, 255, 0.14);
-
-  --on-dark: #f7f5f1;
-  --on-dark-fill: rgba(255, 255, 255, 0.12);
-
-  /* vidro */
-  --glass: rgba(255, 255, 255, 0.045);
-  --glass-strong: rgba(30, 28, 25, 0.92);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-dark: rgba(32, 28, 23, 0.86);
-  --glass-dark-border: rgba(217, 179, 108, 0.22);
-  --tabbar-float-bg: rgba(30, 26, 21, 0.7);
-  --glass-inset: rgba(255, 255, 255, 0.05);
-  --glass-shadow: rgba(0, 0, 0, 0.6);
-  --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);
-  --featured-border: rgba(217, 179, 108, 0.38);
-  --featured-border-top: rgba(217, 179, 108, 0.38);
-  --hairline: rgba(255, 255, 255, 0.07);
-  --overlay-scrim: rgba(0, 0, 0, 0.78);
-
-  /* Mesh: brasa dourada bem apagada nas bordas. Opacidade baixa de
-     propósito — o pedido é "preto com detalhes dourados"; manchas fortes
-     lavam a tela inteira de marrom e o preto deixa de ser preto. */
-  --mesh-1: #4a3820;
-  --mesh-2: #5c4520;
-  --mesh-3: #33251a;
-  --mesh-4: #1c2029;
-  --mesh-op: 0.32;
-  --mesh-3-op: 0.3;
-  --mesh-4-op: 0.28;
-
-  /* placeholders: rampa de grafite morno — leem como "foto ainda não
-     entrou", não como bloco colorido */
-  --ph-1: #2f2a20;
-  --ph-2: #241f1a;
-  --ph-3: #3b2f1c;
-  --ph-4: #1b1a20;
-  --ph-5: #4a3a20;
-  --ph-grad: linear-gradient(150deg, var(--ph-4), var(--ph-1) 55%, var(--ph-5));
-  --ph-grad-media: linear-gradient(135deg, var(--ph-4), var(--ph-2) 60%, var(--ph-5));
-  --ph-fg: #d9b36c;
-  --ph-border: rgba(255, 255, 255, 0.09);
-  --ring-grad: conic-gradient(from 210deg, #6f5730, #ebd3a0, #8a6b2e, #6f5730);
-
-  --tile-chip-bg: rgba(0, 0, 0, 0.55);
-  --tile-chip-bg-2: rgba(0, 0, 0, 0.55);
-  --tile-chip-fg: #ebd3a0;
-
-  --pill-past-bg: var(--fill-mid);
-  --pill-past-fg: var(--ink-70);
-  --pill-soon-bg: rgba(217, 179, 108, 0.16);
-  --pill-soon-fg: #ebd3a0;
-
-  /* botões: dourado como preenchimento, texto preto — o ponto mais claro
-     da tela é sempre uma ação */
-  --btn-primary-grad: linear-gradient(155deg, #e3c179, #b8934d);
-  --btn-primary-fg: #0b0a0a;
-  --btn-primary-shadow: 0 12px 24px -12px rgba(217, 179, 108, 0.45);
-  --cta-grad: linear-gradient(135deg, #f0d9a0, #c9a05a);
-  --cta-fg: #0b0a0a;
-  --cta-shadow: 0 10px 22px -10px rgba(217, 179, 108, 0.55);
-  --badge-grad: linear-gradient(155deg, #e3c179, #b8934d);
-  --badge-fg: #0b0a0a;
-  --seg-active-bg: #d9b36c;
-  --seg-active-fg: #0b0a0a;
-  --note-fg: #ebd3a0;
-
-  /* curtir = dourado (gesto afetivo); salvar = branco, para os dois
-     estados continuarem distinguíveis sem depender de cor de marca */
-  --like-fg: #d9b36c;
-  --save-fg: #f7f5f1;
-
-  --tab-idle: rgba(247, 245, 241, 0.5);
-  --tab-active: #ffffff;
-  --tab-center-grad: linear-gradient(155deg, #e3c179, #a67c33);
-  --tabbar-line: rgba(217, 179, 108, 0.16);
-
-  --cal-day-fg: #d9b36c;
-
-  /* campo claro dentro de pop-up preto brigaria com o CTA pela atenção —
-     aqui o campo é escuro com anel dourado no foco */
-  --field-bg: rgba(255, 255, 255, 0.07);
-  --field-bg-focus: rgba(255, 255, 255, 0.12);
-  --field-border: rgba(255, 255, 255, 0.14);
-  --field-ring: #d9b36c;
-
-  --wa-btn-bg: linear-gradient(135deg, rgba(217, 179, 108, 0.18), rgba(255, 255, 255, 0.05));
-
-  color-scheme: dark;
 }

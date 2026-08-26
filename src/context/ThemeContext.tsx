@@ -8,25 +8,26 @@ export type ThemeName = 'perola' | 'onyx';
  * Temas disponíveis em Configurações → Aparência.
  *
  * Cada valor aqui precisa ter um bloco correspondente em
- * `src/styles/tokens.css` (`[data-theme='<value>']`), exceto `perola`, que
- * é o `:root` padrão. A cor da barra de status não fica aqui de propósito:
- * é lida do próprio token `--sand` do tema (ver `applyTheme`), senão o
- * mesmo valor viveria em dois lugares e um dia sairia de sincronia.
+ * `src/styles/tokens.css` (`[data-theme='<value>']`), exceto `onyx`, que é
+ * o `:root` — o tema PADRÃO mora lá para pintar certo sem JavaScript.
+ * A cor da barra de status não fica aqui de propósito: é lida do próprio
+ * token `--sand` do tema, senão o mesmo valor viveria em dois lugares e um
+ * dia sairia de sincronia.
  */
 export const THEMES: { value: ThemeName; label: string; hint: string }[] = [
-  {
-    value: 'perola',
-    label: 'Pérola',
-    hint: 'O visual original: claro, com vinho e dourado.',
-  },
   {
     value: 'onyx',
     label: 'Ônix',
     hint: 'Preto e branco com detalhes dourados.',
   },
+  {
+    value: 'perola',
+    label: 'Pérola',
+    hint: 'O visual claro original, com vinho e dourado.',
+  },
 ];
 
-const DEFAULT_THEME: ThemeName = 'perola';
+const DEFAULT_THEME: ThemeName = 'onyx';
 
 /** Chave usada em `prefs.ts` — repetida no index.html, ver comentário lá. */
 const PREF_KEY = 'theme';
@@ -48,11 +49,15 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeName>(() => {
-    const salvo = getPref<ThemeName>(PREF_KEY, DEFAULT_THEME);
-    // Um valor desconhecido cai no padrão em vez de aplicar um `data-theme`
-    // que não existe em `tokens.css` — cobre quem tinha o nome antigo do
-    // tema claro salvo no aparelho (era 'areia' até 25/08/2026).
-    return THEMES.some((t) => t.value === salvo) ? salvo : DEFAULT_THEME;
+    const salvo = getPref<string>(PREF_KEY, DEFAULT_THEME);
+    // O tema claro já se chamou 'areia' (até 25/08/2026). Quem tinha esse
+    // valor salvo ESCOLHEU o claro, então precisa continuar no claro — e
+    // não cair no padrão, que desde 26/08/2026 é o escuro. Trocar a
+    // escolha de alguém por causa de uma renomeação interna seria um bug.
+    const migrado = salvo === 'areia' ? 'perola' : salvo;
+    // Qualquer outro valor desconhecido cai no padrão, em vez de aplicar um
+    // `data-theme` que não existe em `tokens.css`.
+    return THEMES.some((t) => t.value === migrado) ? (migrado as ThemeName) : DEFAULT_THEME;
   });
 
   useEffect(() => {

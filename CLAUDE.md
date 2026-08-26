@@ -168,8 +168,15 @@ componente) para a maioria; preenchido (`fill="currentColor" stroke="none"`
 no `<path>`) só quando for um glifo de marca reconhecível (ex: WhatsApp).
 Detalhes em `docs/DESIGN-SYSTEM.md`, seção 5.
 
-**Nova cor / novo tema:** o app tem dois temas (Pérola, padrão, e Ônix —
-preto/branco/dourado), escolhidos em Configurações → Aparência. Toda cor
+**Novo texto na tela:** nunca escreva `font-size` em px — use um token
+`--fs-*` de `tokens.css` (escala em `rem`). Um px ali apaga o ajuste de
+fonte que a usuária fez no celular. Controle que vive em espaço fixo (tab
+bar, cabeçalho) usa `--fs-chrome-*`. Detalhes: `docs/DESIGN-SYSTEM.md`,
+seção 1.5.
+
+**Nova cor / novo tema:** o app tem dois temas — **Ônix** (padrão,
+preto/branco/dourado, mora no `:root`) e **Pérola** (claro, em
+`[data-theme='perola']`), escolhidos em Configurações → Aparência. Toda cor
 nova vira token **nos dois blocos** de `src/styles/tokens.css` (`:root` e
 `[data-theme='onyx']`) — nunca um seletor de tema dentro do CSS de um
 componente, e nunca cor de marca gravada em conteúdo (gradiente em

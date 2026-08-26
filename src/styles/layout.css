@@ -155,14 +155,14 @@ body.modal-open .mesh span {
 }
 .brand .name {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: var(--fs-chrome-lg);
   font-weight: 600;
 }
 .brand .tag {
   font-family: var(--font-script);
   font-style: italic;
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-chrome-md);
   margin-left: 1px;
 }
 .top-actions {
@@ -192,7 +192,7 @@ body.modal-open .mesh span {
   border: 0;
   background: var(--cta-grad);
   color: var(--cta-fg);
-  font-size: 11.5px;
+  font-size: var(--fs-chrome-md);
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
@@ -251,8 +251,9 @@ body.modal-open .mesh span {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding: 8px 2px;
+  gap: 5px;
+  padding: 7px 2px;
+  min-width: 0;
   color: var(--tab-idle);
   position: relative;
   background: none;
@@ -289,17 +290,21 @@ body.modal-open .mesh span {
 .tab.active .icon {
   transform: translateY(-1px) scale(1.08);
 }
-.tab .dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--accent-on-dark);
-  margin-top: 2px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+/* Rótulo de texto embaixo do ícone. Substituiu o antigo ponto indicador:
+   com o nome escrito, o ponto virava um terceiro elemento empilhado sem
+   acrescentar informação. O estado ativo é cor + peso. */
+.tab-label {
+  font-size: var(--fs-chrome-sm);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.tab.active .dot {
-  opacity: 1;
+.tab.active .tab-label {
+  font-weight: 700;
 }
 .tab .center-badge {
   width: 34px;
@@ -358,7 +363,7 @@ body.modal-open .mesh span {
 }
 .tab-pill .tab {
   border-radius: 999px;
-  padding: 11px 4px;
+  padding: 9px 2px;
 }
 .tab-pill .tab.active {
   background: var(--on-dark-fill);
@@ -367,9 +372,6 @@ body.modal-open .mesh span {
    arredondado, no lugar do bloco quadrado do realce padrão */
 .tab-pill .tab:active {
   background: var(--on-dark-fill);
-}
-.tab-pill .tab .dot {
-  display: none;
 }
 
 /* ---------- responsivo ---------- */

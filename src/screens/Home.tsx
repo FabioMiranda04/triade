@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Stories } from '@/components/Stories';
 import { PostCard } from '@/components/PostCard';
 import { SectionHead } from '@/components/SectionHead';
 import { EventModal } from '@/components/EventModal';
@@ -32,8 +31,6 @@ export default function Home() {
 
   return (
     <section className="panel">
-      <Stories />
-
       <PostCard post={featured} onOpenEvent={setOpenEventId} onEdit={() => setEditingPost(true)} />
       {openEvent && <EventModal event={openEvent} onClose={() => setOpenEventId(null)} />}
       {editingPost && (

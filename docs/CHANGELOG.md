@@ -11,6 +11,100 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.5.0 — Auditoria de UI/UX e recalibragem para o público real
+**Sessão 17 — 26/08/2026**
+
+Auditoria completa do app com as skills `design-systems` e `revisar-mobile`
+mais medição automatizada, e as correções que saíram dela. O público foi
+redefinido nesta sessão: **empreendedoras de ~35+, acostumadas ao
+Instagram** — a calibragem é ficar um degrau acima da densidade do
+Instagram, não replicá-la.
+
+### O que a auditoria mediu (antes)
+
+- **83% do texto visível abaixo de 16px**, 81% abaixo de 14px; o menor
+  tinha 9,5px (pílula de status).
+- **A tipografia inteira em `px`**, então o app ignorava por completo o
+  tamanho de fonte escolhido no celular: navegador em 24px, app
+  renderizando 13,5px — 0% do aumento aplicado.
+- **Barra de navegação com cinco ícones e nenhum rótulo.**
+- `--ink-45` em **2,7:1** no tema claro, abaixo do mínimo de 4,5:1 da WCAG;
+  o tema Pérola (padrão) reprovava em 3 de 14 elementos, contra 2 do Ônix.
+- CTA do cabeçalho e engrenagem a **6px** um do outro.
+
+Relatório completo com método e plano de ação: publicado como artifact
+nesta sessão.
+
+### O que mudou
+
+- **Escala tipográfica em `rem`** (`--fs-3xs` … `--fs-price`), com piso de
+  12px e texto corrido em 16px. As 69 declarações de `font-size` em px do
+  projeto viraram tokens; não sobrou nenhuma. Resultado medido: texto
+  abaixo de 14px caiu de **81% para 28%**, e o conteúdo agora **escala de
+  16 para 24px** quando a usuária aumenta a fonte do sistema.
+- **Distinção conteúdo × cromo** (`--fs-chrome-*`): controles em espaço
+  fixo — rótulo da tab bar (5 colunas) e botões do cabeçalho (uma linha) —
+  usam `clamp` e param de crescer antes de quebrar. Sem isso, em fonte
+  grande o cabeçalho estourava a largura e os rótulos das abas cortavam
+  (as duas coisas medidas, e é por isso que a regra existe).
+- **Ônix virou o tema padrão**, e por isso os valores dele **mudaram de
+  lugar**: agora moram no `:root`, e o Pérola é que virou o bloco
+  `[data-theme='perola']`. O tema padrão precisa pintar certo com CSS puro
+  — se dependesse do script, toda abertura piscaria o tema errado. Testado
+  com JavaScript desligado.
+- **Barra flutuante ("Padrão 2") virou o padrão**, agora **com rótulo de
+  texto** em cada item. A aba de palestrantes chama-se "Palestras": o nome
+  completo não cabe nos ~64px por item e virava reticências (medido). O
+  ponto indicador saiu — com o nome escrito, não informava mais nada.
+- **Contraste corrigido no Pérola**: `--ink-70` e `--ink-45` escurecidos
+  até 8,4:1 e 4,6:1. O tema passou de 3 reprovações no AA para **zero**.
+  No Ônix os mesmos níveis subiram para 10,5:1 e 6,6:1.
+- **Fileira de "stories" removida do Início.** Parecia stories do Instagram
+  (anel circular = foto que some) mas entregava navegação **duplicada**:
+  4 dos 5 atalhos levavam a destinos que já estão na barra de baixo ou no
+  CTA, com nomes DIFERENTES dos de lá ("Conexão" para Sobre, "Inspiração"
+  para Planos), ensinando um vocabulário errado; o 5º não levava a lugar
+  nenhum. E os três nomes já apareciam escritos logo abaixo, na seção dos
+  pilares. O componente ficou parado, documentado, para voltar no Módulo 11
+  com foto real do export do Instagram.
+- **Migração de preferências preservada**: quem escolheu o tema claro
+  quando ele se chamava 'areia' continua no claro (e não cai no novo
+  padrão escuro); quem escolheu a barra antiga continua com ela. A troca de
+  padrão só vale para quem nunca escolheu.
+- `min-height` da caixa de texto em `em` em vez de px — com fonte grande
+  ela mostrava menos linhas e cortava o conteúdo.
+- Manifest e `theme-color` acompanham o novo padrão escuro;
+  `apple-mobile-web-app-status-bar-style` passou a `black`.
+
+### Verificação
+
+18 testes funcionais automatizados, todos passando: padrões de fábrica,
+pintura sem JavaScript, escala tipográfica em 16/24px, cromo não escalando
+junto, troca e persistência de tema, aplicação antes do React montar, e as
+três migrações de valor salvo. Layout conferido em 375 e 360px, nos dois
+temas, com a fonte do sistema em 16, 20 e 24px — sem estouro de largura e
+sem texto cortado em nenhuma combinação.
+
+**Um erro de método corrigido no caminho:** o primeiro teste de escala usou
+`Page.setFontSizes` do CDP e acusou falha. Era o teste que estava errado —
+esse comando não surte efeito neste Chromium. Conferido por outro caminho
+(injetando `html{font-size:24px}`, que é o que o ajuste do navegador faz na
+prática), o `rem` funcionava desde o início.
+
+### Fica pendente (Onda 2 da auditoria, não executada)
+
+Alvos de toque ainda em 38px (a referência da Apple é 44px), CTA e
+engrenagem ainda a 6px de distância, abas Lista/Calendário em 32px, e as
+ações "em breve" ainda visíveis.
+
+**Arquivos alterados:** `index.html`, `public/manifest.webmanifest`,
+`src/components/{TabBar,Stories}.tsx`, `src/screens/Home.tsx`,
+`src/context/{ThemeContext,TabBarStyleContext}.tsx`,
+`src/styles/{tokens,base,layout,components}.css`,
+`docs/{DESIGN-SYSTEM,CHANGELOG,ESTADO-DO-PROJETO}.md`
+
+---
+
 ## v2.4.0 — Ajustes de design a partir da revisão de UI/UX
 **Sessão 16 — 25/08/2026**
 

@@ -25,7 +25,14 @@ vivem em `src/styles/tokens.css` — nunca em componente.
    `--glass`, `--ph-grad`, `--btn-primary-grad`...). **É só esta camada
    que `layout.css`/`components.css` consomem.**
 3. **Temas** — cada tema redefine a camada 2 dentro do seu próprio bloco.
-   `:root` é o tema **Pérola** (padrão); `[data-theme='onyx']` é o **Ônix**.
+   **O tema PADRÃO mora no `:root`** — desde 26/08/2026, o **Ônix**.
+   `[data-theme='perola']` é o alternativo (o visual claro original).
+
+   Isso não é arrumação: o tema padrão precisa pintar certo com CSS puro,
+   antes de qualquer JavaScript. Se dependesse de um `data-theme` posto por
+   script, toda abertura piscaria o tema errado por um quadro. Ao trocar
+   qual tema é o padrão, **mova os valores** — não basta trocar o default
+   no `ThemeContext`.
 
 A consequência prática: **nenhum seletor de componente sabe qual tema está
 ativo.** Não existe (e não deve passar a existir) regra do tipo
@@ -35,7 +42,7 @@ componente precisa de um valor diferente por tema, isso vira um token novo
 
 ### 1.2 Cores por papel
 
-| Token | Papel | Pérola | Ônix |
+| Token | Papel | Ônix (padrão) | Pérola |
 |---|---|---|---|
 | `--sand` | fundo do app | `#F4EEE3` | `#0B0A0A` |
 | `--sand-deep` | miolo dos stories | `#EAE1D1` | `#171512` |
@@ -80,8 +87,12 @@ tema de propósito: o vidro escuro é escuro nos dois temas.
 Dois temas, trocáveis no app e salvos no aparelho (`ThemeContext`,
 `src/context/ThemeContext.tsx`):
 
-- **Pérola** (padrão) — o visual original: fundo claro, vinho e dourado.
-- **Ônix** — preto, branco e detalhes dourados. Princípios: preto quente
+- **Ônix** (padrão desde 26/08/2026) — preto, branco e detalhes dourados.
+- **Pérola** — o visual claro original: fundo areia, vinho e dourado. Os
+  níveis de texto foram escurecidos em 26/08/2026 depois de medição no
+  pixel: `--ink-45` dava 2,7:1, abaixo do mínimo de 4,5:1 da WCAG. Os
+  nomes `-70`/`-45` são o **papel** na hierarquia, não a opacidade
+  literal. Princípios: preto quente
   (`#0B0A0A`, não azulado, pra casar com o dourado); **dourado é detalhe,
   nunca superfície grande** — hairline, ícone ativo, preço, CTA; e vidro
   escuro vira superfície *mais clara* que o fundo (elevação), porque num
@@ -128,7 +139,45 @@ clara no Ônix — sem ele o tile escuro some no fundo escuro. Desenhado com
 `outline` + `outline-offset: -1px`, não `border`, para não mexer na caixa
 do elemento no tema em que é transparente.
 
-### 1.5 Raios e espaçamento
+### 1.5 Tipografia: conteúdo escala, cromo não
+
+**Nenhum `font-size` em px, em lugar nenhum.** Toda a escala vive em
+`tokens.css` como `--fs-*`, em `rem`, e `rem` acompanha o tamanho de fonte
+que a usuária escolheu no navegador/sistema. Com `px`, esse ajuste é
+ignorado: quem aumentou a letra no celular via o mesmo texto miúdo
+(medido em 26/08/2026: navegador em 24px, app renderizando 13,5px — 0% do
+aumento aplicado).
+
+| Token | Tamanho | Papel |
+|---|---|---|
+| `--fs-3xs` | 12px | micro-etiqueta: pílula de status, chip sobre imagem |
+| `--fs-2xs` | 13px | rótulo auxiliar, eyebrow, meta de evento |
+| `--fs-xs` | 14px | texto secundário, item de lista de plano |
+| `--fs-sm` | 15px | texto corrido secundário (bio, descrição) |
+| `--fs-md` | 16px | **texto corrido principal** (legenda do post) |
+| `--fs-lg` | 18px | nome em card, citação |
+| `--fs-xl` | 20px | título de card |
+| `--fs-2xl` | 22px | h3 de destaque, valor de patrocínio |
+| `--fs-3xl` | 24–28px | h2 de seção (`clamp`) |
+| `--fs-price` | 32px | preço do plano |
+
+**Piso de 12px.** Antes o app tinha texto de 9,5px. A calibragem é público
+de 35+ empreendedoras acostumadas ao Instagram: a régua é ficar **um
+degrau acima** do Instagram (cuja legenda tem ~14px), não replicar a
+densidade dele.
+
+**A exceção: `--fs-chrome-*`.** Controles que vivem em espaço *fixo* — o
+rótulo da tab bar (5 colunas em 375px) e os botões do cabeçalho (uma linha
+só) — não podem escalar livremente: em fonte grande o texto cortaria ou
+empurraria o vizinho para fora da tela (medido). Esses usam
+`--fs-chrome-sm/md/lg`, que são `clamp` e param de crescer antes de
+quebrar. **Conteúdo nunca usa token de cromo, e cromo nunca usa token de
+conteúdo.**
+
+Caixa que contém texto (ex: `min-height` de `textarea`) usa `em`, não px —
+senão ela mostra menos linhas conforme a fonte cresce.
+
+### 1.6 Raios e espaçamento
 
 | Token | Valor | Uso |
 |---|---|---|
@@ -136,14 +185,14 @@ do elemento no tema em que é transparente.
 | `--r-lg` | `22px` | `.glass` genérico, cabeçalho |
 | `--r-md` | `14px` | cards de conteúdo, botões de formulário, badges |
 
-### 1.6 Safe area
+### 1.7 Safe area
 
 `--safe-t` / `--safe-b` = `env(safe-area-inset-top/bottom, 0px)`. Todo
 elemento fixo/flutuante que toca a borda de cima ou de baixo da tela
 (header, tab bar, pop-ups) precisa somar isso ao padding — sem isso a UI
 invade a ilha dinâmica ou a barra de gestos do iPhone.
 
-### 1.7 Tipografia
+### 1.8 Famílias tipográficas
 
 | Fonte | Papel |
 |---|---|
@@ -346,7 +395,24 @@ A tab bar tem duas aparências, trocáveis em **Configurações → Navegação*
   (`.tab-pill`, todos os itens uniformes, o item ativo ganha um fundo
   translúcido em vez do badge circular).
 
-Em ambos os estilos, os 5 itens são **Início, Sobre, Eventos, Palestrantes,
+**"Padrão 2" é o padrão desde 26/08/2026.**
+
+**Todo item tem rótulo de texto embaixo do ícone** (desde 26/08/2026).
+Antes eram cinco ícones mudos: "coração = Sobre" e "microfone =
+Palestrantes" não são deduzíveis e contradizem o que o público já aprendeu
+no Instagram, onde coração significa curtidas. O rótulo carrega o
+significado; o ícone só ajuda a reencontrar depois. O antigo ponto
+indicador saiu — com o nome escrito ele virava um terceiro elemento
+empilhado sem informar nada; o estado ativo é cor + peso.
+
+A aba de palestrantes se chama **"Palestras"**, não "Palestrantes": a
+pílula dá ~64px por item em 375px e o nome completo virava reticências
+(medido). Rótulo de navegação mais curto que o título da tela é normal em
+app — a tela continua "Palestrantes". O texto visível e o `aria-label` têm
+que ser **o mesmo**: um nome acessível diferente do texto na tela quebra
+comando de voz e a regra 2.5.3 da WCAG.
+
+Em ambos os estilos, os 5 itens são **Início, Sobre, Eventos, Palestras,
 Perfil** — nessa ordem, sempre 5 (o limite de espaço em telas de 360px
 continua valendo). **"Perfil" não é uma rota** — é um `<button>` (não
 `NavLink`) que chama `useAuth().openAccount()`, mesmo padrão
@@ -452,7 +518,7 @@ instantaneamente).
 | Classe / Componente | O que é |
 |---|---|
 | `.post` + `<PostCard>` | card de feed: avatar, imagem, ações, legenda, kebab opcional |
-| `.stories` + `<Stories>` | fileira circular no topo do Início |
+| ~~`.stories` + `<Stories>`~~ | **fora de uso desde 26/08/2026.** Parecia stories do Instagram mas entregava navegação duplicada (4 dos 5 atalhos repetiam destinos da tab bar, com nomes diferentes; o 5º não levava a lugar nenhum). Volta no Módulo 11, com foto real |
 | `.ev-card` + `<EventCard>` | card de edição do evento, RSVP (alterna confirmar/cancelar) e kebab; `variant="featured"` (tela Eventos, próximo evento) é bem maior — imagem cheia no topo, tema e mais itens de meta |
 | `.plan-card` + `<PlanCard>` | card de plano; `featured` usa vidro escuro |
 | `.pal-grid` / `.pal-cell` / `.pal-add` | grade 3 colunas de palestrantes + célula de adicionar |
@@ -470,6 +536,7 @@ instantaneamente).
 | `.wa-btn` / `.wa-badge` | card de contato com cor de marca (gradiente vinho/dourado translúcido) |
 | `Kebab` / `.kebab-menu` | menu "..." estilo Instagram (seção 4.5) |
 | `.ios-group` / `.ios-row` | lista agrupada estilo iOS (seção 4.4) |
+| `.tab-label` | rótulo de texto do item da tab bar (seção 6.2) |
 | `.ios-row-main` / `.ios-row-text` / `.theme-swatch` | linha de configuração com amostra visual + subtítulo (seção 4.4) |
 | `.add-tile` | botão tracejado "+ Novo X" no fim/topo de uma lista |
 | `TabBar` (Padrão / Padrão 2) | navegação inferior (seção 6.2) |
@@ -520,15 +587,17 @@ irredutível) e o pop-up aberto e parado fica em 16,7ms constante = 60fps.
    (seção 6.3).
 8. Verifique toda mudança de UI em 375px de largura antes de considerar
    pronta (regra 1 do `CLAUDE.md`).
-9. Alvo de toque abaixo de ~38px se corrige com **padding + margem
+9. **Nunca escreva `font-size` em px.** Use um token `--fs-*` (seção 1.5).
+   Um px aqui apaga o ajuste de fonte que a usuária fez no celular.
+10. Alvo de toque abaixo de ~38px se corrige com **padding + margem
    negativa** (é o que `.act-btn` faz), não empurrando o layout: a área
    cresce e o desenho fica onde estava.
-10. **Toda cor nova tem que existir nos dois temas.** Na prática: declare o
+11. **Toda cor nova tem que existir nos dois temas.** Na prática: declare o
    token em `:root` **e** em `[data-theme='onyx']`. Nunca escreva um
    seletor de tema no CSS de um componente (seção 1.1), e nunca grave cor
    de marca dentro de conteúdo — gradiente em `seed.ts` usa a escala
    `--ph-N` (seção 1.4).
-11. Ao mexer em qualquer coisa visual, confira nos **dois temas**. A
+12. Ao mexer em qualquer coisa visual, confira nos **dois temas**. A
    armadilha típica é um valor que só funciona sobre fundo claro
    (`--ink-70` sobre vidro escuro) ou o inverso.
 

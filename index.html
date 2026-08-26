@@ -6,11 +6,13 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0"
     />
-    <meta name="theme-color" content="#F4EEE3" />
+    <meta name="theme-color" content="#0B0A0A" />
     <!--
       Tema salvo aplicado ANTES do React montar. Sem isso, abrir o app no
-      tema Ônix pisca a tela clara por um quadro a cada carregamento — o
-      React só monta depois do CSS já ter pintado o fundo padrão.
+      tema alternativo pisca o tema padrão por um quadro a cada
+      carregamento. O tema PADRÃO (Ônix) não aparece aqui de propósito:
+      ele mora no `:root` do tokens.css, então pinta certo sem JavaScript
+      nenhum — este script só cobre o tema alternativo.
 
       Este é o único ponto do projeto que lê o localStorage fora de
       `src/lib/db/prefs.ts` (regra 5 do CLAUDE.md), e é de propósito:
@@ -22,9 +24,9 @@
     <script>
       try {
         var t = JSON.parse(localStorage.getItem('triade_pref_theme'));
-        if (t === 'onyx') {
-          document.documentElement.dataset.theme = 'onyx';
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0B0A0A');
+        if (t === 'perola') {
+          document.documentElement.dataset.theme = 'perola';
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#F4EEE3');
         }
       } catch (e) {
         /* storage indisponível — segue no tema padrão */
@@ -32,7 +34,7 @@
     </script>
     <meta name="description" content="Tríade Conecta — mulheres, negócios e conexões. Encontros presenciais mensais em Goiânia." />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="mobile-web-app-capable" content="yes" />
 
     <title>Tríade Conecta · App</title>

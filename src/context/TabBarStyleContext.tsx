@@ -11,10 +11,14 @@ interface TabBarStyleContextValue {
 
 const TabBarStyleContext = createContext<TabBarStyleContextValue | null>(null);
 
-/** Preferência de estilo da tab bar (Configurações → Navegação), salva no aparelho. */
+/**
+ * Preferência de estilo da tab bar (Configuracoes -> Navegacao), salva no
+ * aparelho. O padrão passou a ser a pílula flutuante ("Padrão 2") em
+ * 26/08/2026; quem já tinha escolhido mantém a escolha.
+ */
 export function TabBarStyleProvider({ children }: { children: ReactNode }) {
   const [style, setStyleState] = useState<TabBarStyle>(() =>
-    getPref<TabBarStyle>('tabbar_style', 'padrao'),
+    getPref<TabBarStyle>('tabbar_style', 'padrao2'),
   );
 
   const setStyle = useCallback((next: TabBarStyle) => {

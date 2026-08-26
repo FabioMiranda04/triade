@@ -3,8 +3,8 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v2.4.0`
-**Última atualização:** 25/08/2026
+**Versão atual:** `v2.5.0`
+**Última atualização:** 26/08/2026
 **Última sessão (16, 25/08/2026):** entrou o **tema "Ônix"** (preto,
 branco e detalhes dourados), selecionável em **Configurações → Aparência**
 — pedido a partir de um questionamento de uma das sócias sobre a paleta.
@@ -23,6 +23,22 @@ amostra do tema virou uma mini-tela do app, os alvos de toque do feed
 subiram para 38px sem mexer no desenho, e a tab bar "Padrão 2" virou um
 grupo **de fato flutuante** — o conteúdo passa por baixo dela, o que
 trocou de propósito uma invariante do manual (§6.2).
+
+**Público-alvo (redefinido em 26/08/2026):** empreendedoras de **~35 anos
+ou mais**, acostumadas ao Instagram. Isso é régua de design, não perfil de
+marketing: a calibragem é ficar **um degrau acima** da densidade do
+Instagram (cuja legenda tem ~14px), não replicá-la nem exagerar para o
+outro lado.
+
+**Última sessão (17, 26/08/2026):** auditoria de UI/UX com medição
+automatizada e as correções que saíram dela. O app passou a ter escala
+tipográfica em `rem` — ou seja, **respeita o tamanho de fonte que a
+usuária escolheu no celular**, o que antes era ignorado por completo. O
+**Ônix virou o tema padrão** e a **barra flutuante virou a navegação
+padrão, agora com rótulo de texto** em cada item. A fileira de "stories"
+saiu do Início (era navegação duplicada disfarçada de story). Contraste do
+tema Pérola corrigido: de 3 reprovações no critério AA para zero.
+Detalhes e números no `CHANGELOG.md`, entrada `v2.5.0`.
 
 **Próximo passo combinado:** **Módulo 11** — trazer o material real do
 Instagram (ver seção 6, item 10, e seção 7, item 1). É o único item da
@@ -137,7 +153,15 @@ Contexto de marca completo está no `CHANGELOG.md`, entrada `v0.1.0`.
       destaque, incluindo criar novo evento/palestrante — tudo salvo só no
       navegador via `src/lib/db/localContent.ts` (nunca grava no Supabase,
       não há autenticação ainda).
-- [x] **Dois temas visuais** (25/08/2026): **Pérola** (padrão, o visual
+- [x] **Tipografia que respeita a usuária** (26/08/2026): escala em `rem`
+      (`--fs-*`), piso de 12px, texto corrido em 16px. O conteúdo escala
+      junto com o ajuste de fonte do celular; o "cromo" (rótulo da tab bar,
+      botões do cabeçalho) usa `clamp` e para de crescer antes de quebrar o
+      layout. Nenhum `font-size` em px sobrou no projeto.
+- [x] **Navegação com rótulo** (26/08/2026): a barra flutuante virou o
+      padrão e cada item tem o nome escrito embaixo do ícone. Antes eram
+      cinco ícones mudos.
+- [x] **Dois temas visuais** (25/08/2026, padrão trocado para o Ônix em 26/08): **Pérola** (padrão, o visual
       original) e **Ônix** (preto, branco e detalhes dourados), trocáveis
       em Configurações → Aparência e salvos no aparelho
       (`ThemeContext`). O tema é um `data-theme` no `<html>` + um bloco de
@@ -244,6 +268,15 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 ## 6. Roadmap — próximos módulos
 
 0. **Bugs/pendências reportados:**
+   - **Onda 2 da auditoria de 26/08/2026, ainda não executada:** alvos de
+     toque em 38px (a referência da Apple é 44px); CTA "Seja membro!" e a
+     engrenagem a 6px de distância no cabeçalho, o que convida a erro de
+     toque; abas Lista/Calendário em 32px; e as ações "em breve"
+     (comentar) ainda visíveis, quando esconder passaria mais
+     credibilidade. Nenhuma delas é difícil — ver o relatório da auditoria.
+   - Nomes "Padrão" / "Padrão 2" em Configurações → Navegação não
+     significam nada para a usuária; mereciam nome descritivo e miniatura,
+     como os temas já têm.
    - ~~Criar **tema escuro** para o app~~ — **resolvido em 25/08/2026**,
      e melhor que o pedido original: em vez de um modo escuro solto,
      entrou um sistema de temas com o **Ônix** (preto/branco/dourado)
