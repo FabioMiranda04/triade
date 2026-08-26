@@ -139,6 +139,9 @@ body.modal-open .mesh span {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* `space-between` sozinho não garante nada quando os dois lados crescem:
+     o `gap` é o piso de separação entre a marca e os botões de ação. */
+  gap: 18px;
   z-index: 20;
   border-bottom: 1px solid var(--hairline);
 }
@@ -146,7 +149,7 @@ body.modal-open .mesh span {
   display: flex;
   align-items: center;
   min-height: 44px; /* alvo de toque mínimo (Apple HIG); não muda a altura do cabeçalho, ditada pelo CTA */
-  gap: 9px;
+  gap: 13px;
   background: none;
   border: 0;
   padding: 0;
@@ -163,7 +166,8 @@ body.modal-open .mesh span {
   font-style: italic;
   color: var(--accent);
   font-size: var(--fs-chrome-md);
-  margin-left: 1px;
+  /* sem esse respiro "TRÍADEconecta" lê como uma palavra só */
+  margin-left: 5px;
 }
 .top-actions {
   display: flex;
