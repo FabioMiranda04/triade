@@ -120,6 +120,15 @@ explícita a **ordem de sacrifício** do cabeçalho — ≤430px o CTA encurta o
 texto; ≤389px a marca solta a assinatura "conecta"; o espaço entre alvos
 não cede nunca. Folga final: 23 a 63px conforme a largura.
 
+### Acabamento do cabeçalho (fim da sessão)
+
+O símbolo e "TRÍADE" estavam a 9px um do outro e a assinatura "conecta"
+colada no nome, lendo como uma palavra só. Além disso, o `space-between`
+não garantia separação nenhuma entre a marca e os botões quando os dois
+lados cresciam. Gap interno da marca 9→13px, margem da assinatura 1→5px, e
+um piso de 18px no `.app-top`. Folga entre marca e ações: 19 a 59px
+conforme a largura, contra 0px antes.
+
 **Arquivos alterados:** `index.html`, `public/manifest.webmanifest`,
 `src/components/{TabBar,Stories}.tsx`, `src/screens/Home.tsx`,
 `src/context/{ThemeContext,TabBarStyleContext}.tsx`,

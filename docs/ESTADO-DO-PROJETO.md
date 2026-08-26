@@ -41,8 +41,12 @@ tema Pérola corrigido: de 3 reprovações no critério AA para zero.
 Detalhes e números no `CHANGELOG.md`, entrada `v2.5.0`.
 
 **Próximo passo combinado:** **Módulo 11** — trazer o material real do
-Instagram (ver seção 6, item 10, e seção 7, item 1). É o único item da
-lista que depende de uma ação sua antes de qualquer código.
+Instagram (ver seção 6, item 10, e seção 7, item 1). **Em andamento desde
+26/08/2026**: o bucket `media` já foi criado no Supabase e o export do
+Instagram já foi baixado (dois `.zip`, 2,96 GB + 1,01 GB, em formato HTML —
+que serve igual ao JSON). O que falta é extrair e curar o material, e isso
+roda na máquina do usuário, não aqui. Estado detalhado e decisões já
+tomadas: `docs/LAST-SESSION.md`.
 
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
