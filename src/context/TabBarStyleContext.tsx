@@ -4,6 +4,28 @@ import { getPref, setPref } from '@/lib/db/prefs';
 
 export type TabBarStyle = 'padrao' | 'padrao2';
 
+/**
+ * Estilos oferecidos em Configurações → Navegação.
+ *
+ * Os VALORES continuam 'padrao'/'padrao2' porque é o que está salvo nos
+ * aparelhos — renomear quebraria a escolha de quem já fez uma. O que mudou
+ * em 26/08/2026 foi o RÓTULO: "Padrão" e "Padrão 2" são nome de
+ * desenvolvedor, não dizem nada para quem usa, e obrigavam a testar os dois
+ * para descobrir a diferença. O flutuante vem primeiro por ser o padrão.
+ */
+export const TABBAR_STYLES: { value: TabBarStyle; label: string; hint: string }[] = [
+  {
+    value: 'padrao2',
+    label: 'Barra flutuante',
+    hint: 'Pílula compacta, sobre o conteúdo.',
+  },
+  {
+    value: 'padrao',
+    label: 'Barra fixa',
+    hint: 'Ocupa a largura toda da tela.',
+  },
+];
+
 interface TabBarStyleContextValue {
   style: TabBarStyle;
   setStyle: (style: TabBarStyle) => void;

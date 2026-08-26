@@ -1,17 +1,11 @@
 import { Icon } from '@/components/Icon';
 import { ModalOverlay } from '@/components/ModalOverlay';
-import { useTabBarStyle } from '@/context/TabBarStyleContext';
-import type { TabBarStyle } from '@/context/TabBarStyleContext';
+import { TABBAR_STYLES, useTabBarStyle } from '@/context/TabBarStyleContext';
 import { THEMES, useTheme } from '@/context/ThemeContext';
 
 interface SettingsSheetProps {
   onClose: () => void;
 }
-
-const TABBAR_OPTIONS: { value: TabBarStyle; label: string }[] = [
-  { value: 'padrao', label: 'Padrão' },
-  { value: 'padrao2', label: 'Padrão 2' },
-];
 
 /** Pop-up de configurações do app, com lista agrupada estilo iOS. */
 export function SettingsSheet({ onClose }: SettingsSheetProps) {
@@ -56,19 +50,25 @@ export function SettingsSheet({ onClose }: SettingsSheetProps) {
 
         <div className="ios-section-label">Navegação</div>
         <div className="ios-group">
-          {TABBAR_OPTIONS.map((opt) => (
+          {TABBAR_STYLES.map((opt) => (
             <button
               key={opt.value}
               className="ios-row"
               aria-pressed={style === opt.value}
               onClick={() => setStyle(opt.value)}
             >
-              <span>{opt.label}</span>
+              <span className="ios-row-main">
+                <span className="nav-swatch" data-nav={opt.value} aria-hidden="true" />
+                <span className="ios-row-text">
+                  <span className="t">{opt.label}</span>
+                  <span className="s">{opt.hint}</span>
+                </span>
+              </span>
               {style === opt.value && <Icon name="check" size={16} />}
             </button>
           ))}
         </div>
-        <p className="ios-hint">Estilo da barra de navegação no rodapé do app.</p>
+        <p className="ios-hint">Como a barra de navegação aparece no rodapé do app.</p>
       </div>
     </ModalOverlay>
   );

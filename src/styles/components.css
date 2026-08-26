@@ -108,21 +108,20 @@
 .post-actions {
   display: flex;
   align-items: center;
-  gap: 30px; /* 30 - 16 das margens negativas do .act-btn = os 14px de sempre */
-  padding: 18px 22px 10px; /* idem: +8px em cada lado compensa o -8 da margem */
+  gap: 36px; /* 36 - 22 das margens negativas do .act-btn = os 14px de sempre */
+  padding: 21px 25px 13px; /* idem: +11px em cada lado compensa o -11 da margem */
 }
 .post-actions .grow { flex: 1; }
 .act-btn {
   background: none;
   border: 0;
-  /* Área de toque de 38px sem mexer no visual: o padding cresce e a margem
-     negativa devolve o espaço, então os ícones ficam exatamente onde
-     estavam. Antes o alvo media 26–30px, abaixo do mínimo confortável
-     (regra 2 da seção 10). */
-  padding: 8px;
-  margin: -8px;
-  min-width: 38px;
-  min-height: 38px;
+  /* Área de toque de 44px (mínimo da Apple HIG) sem mexer no visual: o
+     padding cresce e a margem negativa devolve o espaço, então os ícones
+     ficam exatamente onde estavam. Antes o alvo media 26–30px. */
+  padding: 11px;
+  margin: -11px;
+  min-width: 44px;
+  min-height: 44px;
   color: var(--ink);
   cursor: pointer;
   display: flex;
@@ -204,7 +203,12 @@
 .segmented button {
   border: 0;
   background: transparent;
-  padding: 8px 15px;
+  /* 44px de altura: era 32px, abaixo do mínimo de toque. Como é o controle
+     que troca a tela inteira de Eventos, errar aqui custa caro. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
   border-radius: 999px;
   font-size: var(--fs-xs);
   font-weight: 700;
@@ -781,6 +785,50 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 }
 .ios-row:active {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* Miniatura do estilo da barra de navegação, no mesmo espírito da amostra
+   de tema: mostra a FORMA (barra inteira x pílula solta) em vez de pedir
+   que a usuária teste os dois para descobrir a diferença. Usa as cores do
+   tema ativo, porque descreve a forma, não um tema. */
+.nav-swatch {
+  width: 34px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+/* bloco de "conteúdo" da tela */
+.nav-swatch::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 5px;
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.nav-swatch::after {
+  content: '';
+  position: absolute;
+  background: var(--accent-on-dark);
+}
+.nav-swatch[data-nav='padrao']::after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+}
+.nav-swatch[data-nav='padrao2']::after {
+  left: 5px;
+  right: 5px;
+  bottom: 4px;
+  height: 7px;
+  border-radius: 999px;
 }
 .ios-hint {
   font-size: var(--fs-2xs);

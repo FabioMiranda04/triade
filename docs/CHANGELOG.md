@@ -91,11 +91,34 @@ esse comando não surte efeito neste Chromium. Conferido por outro caminho
 (injetando `html{font-size:24px}`, que é o que o ajuste do navegador faz na
 prática), o `rem` funcionava desde o início.
 
-### Fica pendente (Onda 2 da auditoria, não executada)
+### Onda 2 da auditoria — executada na mesma sessão
 
-Alvos de toque ainda em 38px (a referência da Apple é 44px), CTA e
-engrenagem ainda a 6px de distância, abas Lista/Calendário em 32px, e as
-ações "em breve" ainda visíveis.
+- **Alvo de toque mínimo subiu de 38 para 44px** (referência da Apple HIG)
+  em todo o app. Onde aumentar a caixa estragaria o desenho, só a área
+  cresceu: `padding` + margem negativa nas ações do feed, e um `::after`
+  com `inset` negativo na engrenagem — que continua com 38px de círculo
+  para não pesar no cabeçalho. Verificado com clique real 2,5px fora do
+  círculo: abre Configurações.
+- **CTA e engrenagem separados**: 6px → 12px. Com 6px, abrir Configurações
+  querendo ver os Planos era questão de tempo.
+- **Abas Lista/Calendário de 32 para 44px** — é o controle que troca a tela
+  inteira de Eventos, errar ali custa caro.
+- **Botão de comentar removido do feed.** Ele só mostrava "em breve". Um
+  botão que não faz o que promete não é lido como "ainda não pronto": é
+  lido como "eu errei alguma coisa" ou "esse app está quebrado". Volta no
+  Módulo 3, com comentários de verdade.
+- **"Padrão" e "Padrão 2" viraram "Barra flutuante" e "Barra fixa"**, com
+  miniatura mostrando a forma de cada uma, no mesmo espírito da amostra de
+  tema. Os nomes antigos eram vocabulário de desenvolvedor e obrigavam a
+  testar os dois para descobrir a diferença. Os valores salvos continuam
+  'padrao'/'padrao2', então ninguém perde a escolha.
+
+**O cabeçalho estourou por causa disso e foi recalibrado.** Somados, o CTA
+maior, a engrenagem de 44px e os 12px de respiro deixaram logo e ações
+encostados em 390px e abaixo (medido: 0px de folga). A correção foi tornar
+explícita a **ordem de sacrifício** do cabeçalho — ≤430px o CTA encurta o
+texto; ≤389px a marca solta a assinatura "conecta"; o espaço entre alvos
+não cede nunca. Folga final: 23 a 63px conforme a largura.
 
 **Arquivos alterados:** `index.html`, `public/manifest.webmanifest`,
 `src/components/{TabBar,Stories}.tsx`, `src/screens/Home.tsx`,

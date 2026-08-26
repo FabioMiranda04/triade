@@ -18,8 +18,14 @@ const TAB_PATH: Record<TabId, string> = {
 
 /**
  * Post do feed, estilo rede social: avatar, imagem, ações
- * (curtir / comentar / compartilhar / salvar) e legenda.
+ * (curtir / compartilhar / salvar) e legenda.
  * Curtir também funciona com duplo toque na imagem.
+ *
+ * **Não existe botão de comentar** — ele existiu até 26/08/2026 mostrando
+ * só um toast de "em breve". Um botão que não faz o que promete não é lido
+ * como "ainda não pronto": é lido como "eu errei alguma coisa" ou "esse app
+ * está quebrado", e isso custa a confiança que vira venda de plano. Ele
+ * volta quando o Módulo 3 entregar comentários de verdade.
  */
 interface PostCardProps {
   post: Post;
@@ -94,13 +100,6 @@ export function PostCard({ post, onOpenEvent, onEdit }: PostCardProps) {
               aria-label={liked ? 'Descurtir' : 'Curtir'}
             >
               <Icon name={liked ? 'heartFill' : 'heart'} />
-            </button>
-            <button
-              className="act-btn"
-              aria-label="Comentar"
-              onClick={() => showToast('Em breve: comentários da comunidade')}
-            >
-              <Icon name="comment" />
             </button>
             <button
               className="act-btn"

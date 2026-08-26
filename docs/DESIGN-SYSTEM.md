@@ -371,11 +371,20 @@ Logo (volta pro Início) + `.top-actions` com dois elementos:
    que uma aba você só vê se lembrar de visitar; um CTA permanente no
    cabeçalho aparece pra usuária o tempo todo, o que vale mais numa
    estratégia de vendas do que ser "só mais uma opção" entre 5 abas iguais.
-   **Responsivo por necessidade real, não estética**: `"Quero ser membro!"`
-   por extenso estoura o cabeçalho em telas ≤389px de largura (medido, não
-   estimado — ver `.cta-full`/`.cta-short` em `layout.css`); abaixo disso
-   vira `"Seja membro!"`. Se mudar o texto do CTA, meça de novo em 360/375px
-   antes de finalizar — não assuma que cabe.
+   **Responsivo por necessidade real, não estética.** O cabeçalho carrega
+   marca + CTA de venda + configurações na mesma linha, e isso não cabe em
+   celular sem uma ordem de sacrifício explícita, medida em 360/375/390/430px:
+   1. **≤430px**: o CTA troca `"Quero ser membro!"` por `"Seja membro!"`.
+   2. **≤389px**: a marca solta a assinatura `"conecta"` (o símbolo e o
+      nome seguem identificando; "conecta" continua por extenso na tela
+      Sobre).
+   3. **Nunca**: o espaço entre o CTA e a engrenagem. São 12px, e é o que
+      evita abrir Configurações querendo ver os Planos.
+
+   Se mudar o texto do CTA ou o tamanho de qualquer controle do cabeçalho,
+   **meça de novo nas quatro larguras** — não assuma que cabe. A engrenagem
+   é um caso à parte: o círculo tem 38px para não pesar, e a área de toque
+   chega a 44px por um `::after` invisível.
 2. **`.icon-btn`** de configurações (engrenagem), único ícone que sobrou
    aqui. Busca e notificações saíram do cabeçalho (eram só placeholders
    "em breve", sem função) e a conta virou o último item da tab bar (6.2)

@@ -268,15 +268,14 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 ## 6. Roadmap — próximos módulos
 
 0. **Bugs/pendências reportados:**
-   - **Onda 2 da auditoria de 26/08/2026, ainda não executada:** alvos de
-     toque em 38px (a referência da Apple é 44px); CTA "Seja membro!" e a
-     engrenagem a 6px de distância no cabeçalho, o que convida a erro de
-     toque; abas Lista/Calendário em 32px; e as ações "em breve"
-     (comentar) ainda visíveis, quando esconder passaria mais
-     credibilidade. Nenhuma delas é difícil — ver o relatório da auditoria.
-   - Nomes "Padrão" / "Padrão 2" em Configurações → Navegação não
-     significam nada para a usuária; mereciam nome descritivo e miniatura,
-     como os temas já têm.
+   - ~~Onda 2 da auditoria~~ — **concluída em 26/08/2026**: alvos de toque
+     a 44px, CTA e engrenagem separados, abas Lista/Calendário a 44px,
+     botão de comentar (que só dizia "em breve") removido, e os estilos da
+     barra renomeados para "Barra flutuante" / "Barra fixa" com miniatura.
+   - Da auditoria, segue em aberto só o que é **decisão de produto**: tela
+     de boas-vindas na primeira abertura (hoje a usuária cai direto no
+     feed, sem nada explicando o que é a Tríade) e fotos reais no lugar dos
+     gradientes — este último é o próprio Módulo 11.
    - ~~Criar **tema escuro** para o app~~ — **resolvido em 25/08/2026**,
      e melhor que o pedido original: em vez de um modo escuro solto,
      entrou um sistema de temas com o **Ônix** (preto/branco/dourado)

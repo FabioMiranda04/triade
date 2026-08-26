@@ -145,7 +145,7 @@ body.modal-open .mesh span {
 .brand {
   display: flex;
   align-items: center;
-  min-height: 38px; /* alvo de toque; não muda a altura do cabeçalho, que já é ditada pelo CTA */
+  min-height: 44px; /* alvo de toque mínimo (Apple HIG); não muda a altura do cabeçalho, ditada pelo CTA */
   gap: 9px;
   background: none;
   border: 0;
@@ -167,12 +167,19 @@ body.modal-open .mesh span {
 }
 .top-actions {
   display: flex;
-  gap: 6px;
+  /* 12px, não 6: com 6px o CTA de venda e a engrenagem ficavam praticamente
+     colados, e abrir Configurações querendo ver os Planos é um erro caro.
+     Alvos vizinhos precisam de pelo menos 8px entre eles. */
+  gap: 12px;
   flex-shrink: 0;
 }
 .icon-btn {
+  /* O círculo fica em 38px — um botão de 44px de diâmetro pesa demais num
+     cabeçalho que já divide espaço com a marca e o CTA. A ÁREA DE TOQUE vai
+     a 44px pelo ::after abaixo, que é invisível e não ocupa layout. */
   width: 38px;
   height: 38px;
+  position: relative;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -186,8 +193,8 @@ body.modal-open .mesh span {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 0 10px;
-  height: 38px;
+  padding: 0 12px;
+  height: 44px;
   border-radius: 999px;
   border: 0;
   background: var(--cta-grad);
@@ -205,15 +212,33 @@ body.modal-open .mesh span {
 .btn-cta-member .cta-short {
   display: none;
 }
-/* Até iPhone 12/13/14 "normal" (390px), "Quero ser membro!" não cabe com o
-   resto do cabeçalho sem estourar o padding — troca por um texto mais
-   curto. Medido, não estimado: ver docs/DESIGN-SYSTEM.md seção 6. */
-@media (max-width: 389px) {
+/* área de toque de 44px sem inchar o círculo (ver comentário em .icon-btn) */
+.icon-btn::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+}
+
+/* O cabeçalho carrega marca + CTA de venda + configurações na mesma linha,
+   e em 26/08/2026 ele ficou apertado: o CTA cresceu junto com a fonte e o
+   alvo de toque subiu para 44px. A ordem de sacrifício, medida em 360, 375,
+   390 e 430px, é: primeiro o texto longo do CTA, depois a assinatura
+   "conecta" da marca — nunca o espaço entre alvos, que é o que evita tocar
+   em Configurações querendo ver os Planos. */
+@media (max-width: 430px) {
   .btn-cta-member .cta-full {
     display: none;
   }
   .btn-cta-member .cta-short {
     display: inline;
+  }
+}
+@media (max-width: 389px) {
+  /* a assinatura sai; o nome e o símbolo seguem identificando a marca, e
+     "conecta" continua por extenso na tela Sobre */
+  .brand .tag {
+    display: none;
   }
 }
 
