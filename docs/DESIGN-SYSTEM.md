@@ -44,27 +44,27 @@ componente precisa de um valor diferente por tema, isso vira um token novo
 
 | Token | Papel | Ônix (padrão) | Pérola |
 |---|---|---|---|
-| `--sand` | fundo do app | `#F4EEE3` | `#0B0A0A` |
-| `--sand-deep` | miolo dos stories | `#EAE1D1` | `#171512` |
-| `--ink` | texto principal sobre o fundo | `#231C1A` | `#F7F5F1` |
-| `--ink-70` / `--ink-45` | texto secundário / terciário | opacidades de `--ink` | idem (claras) |
-| `--accent` / `--accent-deep` | marca em ação: eyebrow, preço, link, ícone ativo | vinho | dourado `#D9B36C` |
-| `--accent-fill` / `-strong` | véu do acento em `:active` | vinho translúcido | dourado translúcido |
-| `--accent-on-dark` / `-soft` | acento **sobre vidro escuro** (tab bar, citação) | `--gold` / `--gold-soft` | dourado / `#EBD3A0` |
-| `--fill-weak/mid/strong` | véu neutro (botão redondo, item ativo, pílula) | `--ink` translúcido | branco translúcido |
-| `--on-dark` | texto sobre `.glass-dark` | `#F4EEE3` | `#F7F5F1` |
-| `--glass` / `-strong` / `-border` | vidro claro | branco translúcido | branco quase opaco/baixo |
-| `--glass-dark` / `-border` | vidro escuro (todo pop-up) | `rgba(25,19,18,.72)` | `rgba(32,28,23,.86)` + hairline dourada |
-| `--featured-border` / `-top` | borda do plano em destaque | igual ao vidro | dourada |
-| `--ph-1..5`, `--ph-grad`, `--ph-fg`, `--ph-border` | placeholders de imagem (ver 1.4) | gradiente da marca | grafite morno + glifo dourado |
-| `--btn-primary-*`, `--cta-*`, `--badge-*`, `--seg-active-*` | preenchimentos de ação | vinho, texto claro | dourado, texto preto |
-| `--like-fg` / `--save-fg` | curtir / salvar no feed | vinho / dourado | dourado / branco |
-| `--tab-idle` / `--tab-active` / `--tab-center-grad` / `--tabbar-line` | tab bar | — | hairline dourada |
-| `--field-*` | campo de formulário dentro do pop-up | fundo claro | fundo escuro, anel dourado |
-| `--mesh-1..4`, `--mesh-op` | manchas do fundo | cores da marca | brasa dourada bem apagada |
-| `--overlay-scrim` | escurecimento atrás do pop-up | `rgba(20,14,13,.55)` | `rgba(0,0,0,.78)` |
-| `--whatsapp` | **só** no selo do botão de WhatsApp (`.wa-badge`) | `#25D366` | igual |
-| `--danger` | erro em formulário (`.auth-error`) | `#E5484D` | igual |
+| `--sand` | fundo do app | `#0B0A0A` | `#F4EEE3` |
+| `--sand-deep` | miolo dos stories | `#171512` | `#EAE1D1` |
+| `--ink` | texto principal sobre o fundo | `#F7F5F1` | `#231C1A` |
+| `--ink-70` / `--ink-45` | texto secundário / terciário | níveis claros de `--ink` | níveis escuros de `--ink` |
+| `--accent` / `--accent-deep` | marca em ação: eyebrow, preço, link, ícone ativo | dourado `#D9B36C` | vinho |
+| `--accent-fill` / `-strong` | véu do acento em `:active` | dourado translúcido | vinho translúcido |
+| `--accent-on-dark` / `-soft` | acento **sobre vidro escuro** (tab bar, citação) | dourado / `#EBD3A0` | `--gold` / `--gold-soft` |
+| `--fill-weak/mid/strong` | véu neutro (botão redondo, item ativo, pílula) | branco translúcido | `--ink` translúcido |
+| `--on-dark` | texto sobre `.glass-dark` | `#F7F5F1` | `#F4EEE3` |
+| `--glass` / `-strong` / `-border` | vidro sobre o fundo da tela | véu branco de baixa opacidade | branco translúcido |
+| `--glass-dark` / `-border` | vidro escuro (todo pop-up) | `rgba(32,28,23,.86)` + hairline dourada | `rgba(25,19,18,.72)` |
+| `--featured-border` / `-top` | borda do plano em destaque | dourada | igual ao vidro |
+| `--ph-1..5`, `--ph-grad`, `--ph-fg`, `--ph-border` | placeholders de imagem (ver 1.4) | grafite morno + glifo dourado | gradiente da marca |
+| `--btn-primary-*`, `--cta-*`, `--badge-*`, `--seg-active-*` | preenchimentos de ação | dourado, texto preto | vinho, texto claro |
+| `--like-fg` / `--save-fg` | curtir / salvar no feed | dourado / branco | vinho / dourado |
+| `--tab-idle` / `--tab-active` / `--tab-center-grad` / `--tabbar-line` | tab bar | hairline dourada | hairline branca |
+| `--field-*` | campo de formulário dentro do pop-up | fundo escuro, anel dourado | fundo claro |
+| `--mesh-1..4`, `--mesh-op` | manchas do fundo | brasa dourada bem apagada | cores da marca |
+| `--overlay-scrim` | escurecimento atrás do pop-up | `rgba(0,0,0,.78)` | `rgba(20,14,13,.55)` |
+| `--whatsapp` | **só** no selo do botão de WhatsApp (`.wa-badge`) | igual | `#25D366` |
+| `--danger` | erro em formulário (`.auth-error`) | igual | `#E5484D` |
 
 `--whatsapp` é a única cor de marca de terceiros no sistema. Regra: se um
 dia precisar de outra marca externa (ex: Instagram, um provedor de
@@ -88,30 +88,30 @@ Dois temas, trocáveis no app e salvos no aparelho (`ThemeContext`,
 `src/context/ThemeContext.tsx`):
 
 - **Ônix** (padrão desde 26/08/2026) — preto, branco e detalhes dourados.
+  Princípios: preto **quente** (`#0B0A0A`, não azulado, para casar com o
+  dourado); **dourado é detalhe, nunca superfície grande** — hairline,
+  ícone ativo, preço, CTA; e vidro escuro vira uma superfície *mais clara*
+  que o fundo (elevação), porque num tema escuro o contraste claro/escuro
+  do Pérola deixaria de separar card de fundo.
 - **Pérola** — o visual claro original: fundo areia, vinho e dourado. Os
   níveis de texto foram escurecidos em 26/08/2026 depois de medição no
-  pixel: `--ink-45` dava 2,7:1, abaixo do mínimo de 4,5:1 da WCAG. Os
-  nomes `-70`/`-45` são o **papel** na hierarquia, não a opacidade
-  literal. Princípios: preto quente
-  (`#0B0A0A`, não azulado, pra casar com o dourado); **dourado é detalhe,
-  nunca superfície grande** — hairline, ícone ativo, preço, CTA; e vidro
-  escuro vira superfície *mais clara* que o fundo (elevação), porque num
-  tema escuro o contraste claro/escuro do tema Pérola deixaria de separar
-  card de fundo.
+  pixel: `--ink-45` dava 2,7:1, abaixo do mínimo de 4,5:1 da WCAG. Os nomes
+  `-70`/`-45` são o **papel** na hierarquia, não a opacidade literal.
 
 Como funciona: o `ThemeProvider` grava `data-theme` no `<html>` e atualiza
 a `<meta name="theme-color">` (a faixa da barra de status no Android/no
 atalho do iOS — sem isso o tema escuro fica com uma tira clara no topo).
 Um `<script>` curto no `index.html` aplica o tema salvo **antes** do React
-montar; sem ele, abrir o app no Ônix pisca a tela clara por um quadro.
+montar; sem ele, abrir o app no tema alternativo pisca o padrão por um
+quadro. O tema padrão não precisa dele: mora no `:root` e pinta sem JS.
 Esse script é o único ponto do projeto que lê `localStorage` fora de
 `src/lib/db/prefs.ts` — exceção documentada lá mesmo, com a chave e o
 formato espelhados.
 
-**Para adicionar um terceiro tema:** copie o bloco `[data-theme='onyx']`
-em `tokens.css`, troque os valores, e acrescente a entrada em `THEMES`
-(`ThemeContext.tsx`) com `label`, `hint` e `statusBar`; a lista em
-Configurações e a amostra circular saem sozinhas dali. Declare **todos**
+**Para adicionar um terceiro tema:** copie o bloco `[data-theme='perola']`
+em `tokens.css` (o `:root` é o tema padrão, não um modelo), troque os valores, e acrescente a entrada em `THEMES`
+(`ThemeContext.tsx`) com `label`, `hint` e `hint`; a lista em
+Configurações e a amostra saem sozinhas dali. Declare **todos**
 os tokens nos dois blocos — um token declarado só num tema quebra o outro
 em silêncio. Amostra do seletor: adicione `--preview-<nome>` em `:root`
 (essas ficam fora dos blocos de tema porque descrevem o tema, então
