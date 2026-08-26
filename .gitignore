@@ -17,3 +17,8 @@ coverage
 # material bruto exportado (Instagram etc.) — pasta de trabalho local, nunca versionar
 content-raw/*
 !content-raw/README.md
+
+# Cache incremental do TypeScript — regerado por `npm run build`.
+# Estava versionado por engano: aparecia como alteração pendente depois de
+# qualquer build, sujando `git status` e o histórico sem informar nada.
+tsconfig.tsbuildinfo
