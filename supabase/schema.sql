@@ -18,7 +18,7 @@ create table if not exists public.events (
   location    text        not null default '',
   speaker     text        not null default '',
   theme       text        not null default '',
-  spots       integer     not null default 0,
+  spots       integer,
   sort_order  integer     not null default 0,
   published   boolean     not null default true,
   created_at  timestamptz not null default now(),

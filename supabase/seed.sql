@@ -9,18 +9,38 @@
 --  RASCUNHO a validar com as idealizadoras.
 -- =============================================================
 
+-- Histórico antigo (mock, anterior ao Módulo 11) removido — sem respaldo no
+-- export do Instagram. Substituído pelas edições reais abaixo.
+delete from public.events where id in ('ed1', 'ed2', 'ed3');
+
 insert into public.events (id, title, date, status, location, speaker, theme, spots, sort_order, recap_text, recap_media)
 values
-  ('ed1', '1ª Edição — O início do movimento', '2025-04-12', 'realizado', 'Goiânia, GO',
-   'Idealizadoras da Tríade', 'Conexões reais entre mulheres empreendedoras', 65, 1,
-   'A primeira edição marcou o início do movimento: mulheres de trajetórias diferentes, reunidas por uma tarde inteira, trocando experiência em vez de cartão de visita. Lívia, Lia e Cris abriram o encontro contando por que a Tríade nasceu — e a resposta do público confirmou que fazia falta um espaço assim em Goiânia.',
-   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-1), var(--ph-2))","legenda":"Abertura do encontro"},{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-2), var(--ph-3))","legenda":"Roda de conversa"}]'::jsonb),
-  ('ed2', '2ª Edição — Cultura e Gestão de Pessoas', '2025-08-23', 'realizado', 'Goiânia, GO',
-   'Marcela Zaidem', 'Cultura, gestão e o olhar profundo sobre o feminino nos negócios', 65, 2,
-   'Marcela Zaidem trouxe um olhar prático sobre cultura organizacional para quem lidera pequenos times — e sobre como o jeito feminino de gerir pessoas é, na maioria das vezes, o maior ativo escondido de um negócio. A conversa continuou muito depois do horário previsto de encerramento.',
-   '[{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-3), var(--ph-4))","legenda":"Marcela Zaidem no palco"},{"tipo":"foto","url":"linear-gradient(150deg, var(--ph-1), var(--ph-5))","legenda":"Networking depois da palestra"}]'::jsonb),
-  ('ed3', '3ª Edição — Gestão Financeira na prática', '2026-09-19', 'em breve', 'Goiânia, GO',
-   'Danielle Gouveia', 'Finanças com clareza para quem empreende', 85, 3, null, '[]'::jsonb)
+  ('ed-set25', 'Edição Especial — Casa Benedita', '2025-09-15', 'realizado', 'Casa Benedita, Goiânia, GO',
+   'Geórgia Maia', 'Conexões verdadeiras, aprendizados compartilhados e um pouco de marketing', null, 1,
+   'Um encontro pensado para empreendedoras, profissionais autônomas e comerciantes expandirem sua rede — com direito a uma conversa sobre marketing com Geórgia Maia. A resposta de quem esteve na Casa Benedita confirmou: era isso que fazia falta.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-1.jpg","legenda":"Aprendendo sobre marketing com Geórgia Maia"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-2.jpg","legenda":"No cantinho da marca"}]'::jsonb),
+  ('ed-out25', 'Edição com Carla Martins', '2025-10-20', 'realizado', 'Goiânia, GO',
+   'Carla Martins', 'Liderança feminina: o primeiro púlpito de uma mulher — sua família, sua casa e seu lar', null, 2,
+   'Carla Martins, especialista em liderança feminina, trouxe um tema pedido pelas próprias participantes: será que dá pra ter sucesso também dentro de casa? Um encontro sobre equilibrar pratos e papéis sem perder a essência.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg","legenda":"Quando mulheres se encontram, tudo muda"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-2.jpg","legenda":"Conectar, aprender e se inspirar"}]'::jsonb),
+  ('ed6-nov25', '6ª Edição', '2025-11-17', 'realizado', 'Goiânia, GO',
+   'Idealizadoras da Tríade', 'Acolher, inspirar e impulsionar mulheres — fechando o ano com chave de ouro', null, 3,
+   'Casa cheia para encerrar o ano: a 6ª edição reuniu quem já acredita no movimento criado por Lívia, Lia e Cris para acolher, inspirar e impulsionar mulheres, gerando conexões autênticas.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-1.jpg","legenda":"Lívia, Lia e Cris com convidadas"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg","legenda":"A vida é feita de boas conexões"}]'::jsonb),
+  ('ed9-mar26', '9ª Edição', '2026-03-31', 'realizado', 'Goiânia, GO',
+   'Idealizadoras da Tríade', 'Conexão, aprendizado e fortalecimento de vínculos', null, 4,
+   'A 9ª edição chegou com a mesma proposta desde o início: mesas que levam quem participa a um próximo nível, num ambiente feito pra conectar, aprender e fortalecer vínculos.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/9a-edicao-2026-03/foto-1.jpg","legenda":"Quando mulheres se encontram, tudo muda"}]'::jsonb),
+  ('ed-mai26', 'Edição de Maio', '2026-05-12', 'realizado', 'Goiânia, GO',
+   'Idealizadoras da Tríade', 'Conexões reais entre mulheres empreendedoras', null, 5,
+   'Mais uma tarde de conexões reais, com Lívia, Lia e Cris recebendo o grupo pessoalmente — prova de que o movimento que começou pequeno continua crescendo edição após edição.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-1.jpg","legenda":"Lívia, Lia, Cris e convidadas"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-2.jpg","legenda":"No cantinho da marca"}]'::jsonb),
+  ('ed11-ago26', '11ª Edição', '2026-08-11', 'realizado', 'Goiânia, GO',
+   'Idealizadoras da Tríade', 'Conexões que geram oportunidades, crescimento e pertencimento', null, 6,
+   'A 11ª edição da Tríade Conecta reuniu quem já entendeu que crescer sozinha é mais lento — mais um encontro pra criar conexões reais e fortalecer negócios ao lado de quem compartilha do mesmo propósito.',
+   '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-1.jpg","legenda":"Roda de conversa"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-2.jpg","legenda":"Lugar à mesa reservado"}]'::jsonb),
+  ('jantar-casais-set26', 'Jantar da Tríade para Casais', '2026-09-30', 'em breve', 'Goiânia, GO',
+   'Idealizadoras da Tríade', 'Uma noite para sair da rotina e se reconectar, às 19h', null, 7, null, '[]'::jsonb)
 on conflict (id) do update set
   title = excluded.title,
   date = excluded.date,

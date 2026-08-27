@@ -4,8 +4,8 @@ import { founders, timeline } from '@/data/seed';
 
 const STATS = [
   { num: '3', lbl: 'idealizadoras' },
-  { num: '3', lbl: 'edições' },
-  { num: '85+', lbl: 'próxima edição' },
+  { num: '11+', lbl: 'edições' },
+  { num: 'set/26', lbl: 'próxima edição' },
 ];
 
 /** Tela Sobre — perfil da comunidade, idealizadoras e trajetória. */

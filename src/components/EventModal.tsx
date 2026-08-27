@@ -52,9 +52,11 @@ export function EventModal({ event, onClose }: EventModalProps) {
               <span>
                 <Icon name="mic" size={14} /> {event.speaker}
               </span>
-              <span>
-                <Icon name="users" size={14} /> {event.spots} vagas
-              </span>
+              {!!event.spots && (
+                <span>
+                  <Icon name="users" size={14} /> {event.spots} vagas
+                </span>
+              )}
             </div>
             {event.status === 'em breve' && (
               <button className="btn btn-primary full" onClick={() => setStep('contact')}>

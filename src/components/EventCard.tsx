@@ -43,7 +43,7 @@ export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit, variant 
                 <Icon name="mic" size={12} /> {event.speaker}
               </span>
             )}
-            {featured && (
+            {featured && !!event.spots && (
               <span>
                 <Icon name="users" size={12} /> {event.spots} vagas
               </span>

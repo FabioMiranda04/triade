@@ -22,7 +22,8 @@ export interface TriadeEvent {
   location: string;
   speaker: string;
   theme: string;
-  spots: number;
+  /** número de vagas — omitido quando ainda não decidido (ex: evento recém-anunciado) */
+  spots?: number;
   /** retrospectiva em texto — só eventos "realizado" costumam ter */
   recapText?: string;
   /** galeria de fotos/vídeos da retrospectiva — só eventos "realizado" costumam ter */

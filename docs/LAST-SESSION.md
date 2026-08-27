@@ -7,95 +7,82 @@
 > — este registra trabalho **em andamento**, e deve voltar para "nada
 > pendente" assim que for retomado e terminado.
 
-**Status:** o trabalho de código da sessão 17 fechou inteiro (auditoria de
-UI/UX e as duas ondas de correção, tudo em produção). O que está **em
-andamento de verdade** é o Módulo 11: o material do Instagram chegou, mas
-ainda não foi processado.
+**Status:** Módulo 11 avançou muito na sessão 18 (26/08/2026) — o histórico
+de edições foi reconstruído a partir do export real do Instagram e já está
+em produção. Falta só **um passo manual do usuário** pra fechar de vez.
 
-## Módulo 11 — onde exatamente paramos (26/08/2026)
+## O que já foi feito e já está em produção
 
-**Já resolvido:**
-- ✅ **Bucket `media` criado** no Supabase Storage pelo usuário. Falta só
-  confirmar se a opção **Public bucket** ficou marcada (Storage → clicar no
-  bucket → Configuration). Sem ela, as fotos sobem mas o app leva 403 na
-  hora de exibir — e o sintoma engana, parece URL errada.
-- ✅ **Export do Instagram baixado**: dois `.zip` de
-  `bigzipfiles.instagram.com`, um de **2,96 GB** e outro de **1,01 GB**.
-  Provavelmente a mesma exportação partida em duas partes.
+- **Histórico de edições inteiro reescrito** com dados reais do Instagram
+  (não mais mock): `src/data/seed.ts`, `supabase/seed.sql` e a tabela
+  `events` do Supabase real já têm as edições confirmadas —
+  Edição Especial (15/09/2025, Casa Benedita, Geórgia Maia), Edição com
+  Carla Martins (20/10/2025), 6ª Edição (17/11/2025), 9ª Edição
+  (31/03/2026), Edição de Maio (12/05/2026), 11ª Edição (11/08/2026) e o
+  próximo evento real, "Jantar da Tríade para Casais" (30/09/2026, em
+  breve). As antigas "1ª/2ª/3ª Edição" (mock, sem respaldo no Instagram)
+  foram removidas do banco e do código, a pedido do usuário.
+- **11 fotos reais** já sobem no bucket `media` do Supabase Storage
+  (confirmado público, testado com 200 OK), em
+  `media/<slug-da-edição>/foto-N.jpg` — 2 por edição (1 só na 9ª, que tinha
+  pouco material de Stories). Curadoria feita visualmente foto por foto.
+- **Timeline da tela Sobre** (`timeline` em `seed.ts`) e o **card de
+  estatísticas** (`STATS` em `src/screens/Sobre.tsx`) atualizados pros
+  números reais ("11+ edições", "set/26" como próxima) — não mais "3
+  edições"/"85+" do mock antigo.
+- **Feed da tela Início**: o post de CTA agora aponta pro Jantar da Tríade
+  para Casais (real), não mais pra uma "3ª edição" inventada.
+- **Campo `spots` virou opcional** (`TriadeEvent.spots?: number`,
+  `EventRow.spots: number | null`) porque nem toda edição real tem vagas
+  conhecidas — `EventCard`/`EventModal` só mostram a linha "X vagas" quando
+  o valor é truthy (`!!event.spots`), tanto faz se vier `null` (schema novo)
+  quanto `0`/ausente (schema antigo, ainda em produção — ver pendência
+  abaixo). Build (`npm run build`) e verificação visual via Playwright em
+  375px confirmados sem erro.
 
-**O detalhe que muda o plano:** o export saiu em **HTML**, não em JSON (o
-usuário pediu o formato errado por engano e depois solicitou de novo em
-JSON). **Isso não é problema**: os dois formatos trazem o mesmo conteúdo —
-mesmas fotos, mesmas datas, mesmas legendas — muda só o embrulho dos
-metadados, e a pasta de mídia é idêntica. Não é preciso esperar o JSON, e o
-export em HTML não deve ser apagado mesmo que o JSON chegue depois (as
-fotos já baixadas são as mesmas, e re-baixar custa 4 GB).
+## Pendência única: rodar SQL no Supabase real
 
-**Por que não terminou:** os arquivos de metadados são grandes demais para
-anexar na conversa. Foram tentados dois caminhos que não valem a pena e
-ficam registrados para ninguém repetir:
-1. Mandar as 3 GB para o Claude — **desnecessário**. As fotos vão da
-   máquina do usuário direto para o Supabase Storage; só os metadados
-   precisariam chegar aqui, e nem eles são indispensáveis (ver abaixo).
-2. Passar o export do celular para o computador — **desnecessário também**:
-   o link de download do Instagram funciona em qualquer aparelho enquanto
-   está válido, então basta baixar de novo já no computador.
+As colunas `recap_text`/`recap_media` **ainda não existem** na tabela
+`events` do Supabase real (confirmado via REST: `select *` não trouxe essas
+colunas) — isso já era uma pendência de antes desta sessão (Módulo 9), e
+não dá pra criar coluna via REST (só via SQL Editor, precisa de acesso que
+esta sessão não tinha). Por isso as retrospectivas hoje mostram "Em breve,
+o registro completo dessa edição" em vez do texto e das fotos reais, mesmo
+com as fotos já no Storage.
 
-**Decisão do usuário ao encerrar:** ele vai **abrir o export no VS Code** e
-combinar comigo a extração numa próxima conversa. Não quer separar foto por
-foto manualmente.
+**Como resolver** (usuário, no SQL Editor do projeto Supabase):
+1. Rodar `supabase/schema.sql` inteiro (idempotente — só adiciona o que
+   falta, não duplica nada).
+2. Rodar `supabase/seed.sql` inteiro (também idempotente — faz upsert).
 
-## Como retomar
+Depois disso, as fotos e os textos de retrospectiva aparecem no app real
+sem precisar tocar em nada mais — `EventRecapModal.tsx` já sabe renderizar
+URL real vs. gradiente sozinho.
 
-O usuário abre o export no VS Code e diz o que está vendo (estrutura de
-pastas, nomes de arquivo). A partir daí eu escrevo o script de extração,
-que roda **na máquina dele**, não aqui.
+## O que ficou de fora desta reconstrução (decisão consciente)
 
-Duas coisas que já estão decididas e não precisam ser rediscutidas:
-
-- **A curadoria é dele, não minha.** Eu não consigo ver se a foto ficou boa
-  ou se representa bem o encontro. O que eu posso fazer é reduzir o
-  universo — filtrar por período e gerar índice/miniaturas para ele
-  escolher rápido.
-- **O cruzamento por data é quase de graça**, porque o export organiza a
-  mídia em pastas por mês (`media/posts/YYYYMM/`). As edições em
-  `src/data/seed.ts`:
-
-  | Edição | Data | Pasta esperada |
-  |---|---|---|
-  | 1ª — O início do movimento | 12/04/2025 | `202504` |
-  | 2ª — Cultura e Gestão de Pessoas | 23/08/2025 | `202508` |
-  | 3ª — Gestão Financeira na prática | 19/09/2026 | `202609` |
-
-**Convenção de upload combinada** (o app monta a URL sozinho a partir
-dela, então não é preciso copiar link nenhum):
-
-```
-media/edicao-1/foto-1.jpg …
-media/edicao-2/foto-1.jpg …
-media/edicao-3/foto-1.jpg …
-```
-
-→ `https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2/foto-1.jpg`
-
-**Antes de subir, reduzir para ~1600px de largura.** Foto de celular vem
-com 2–4 MB e deixaria a retrospectiva lenta no 4G. Sem instalar nada dá
-para usar um redimensionador em lote no navegador; com o VS Code aberto,
-um script local resolve melhor.
-
-**Do lado do app não falta nada:** `EventRecapModal` já detecta sozinho se
-a URL é gradiente placeholder ou foto real e renderiza a imagem. Quando as
-URLs entrarem em `recapMedia` (`src/data/seed.ts` + `supabase/seed.sql`),
-as fotos aparecem sem tocar em `.tsx` nem `.css`.
+- **Marcela Zaidem** e **Danielle Gouveia** continuam na tabela/tela de
+  Palestrantes (`speakers`) — não foram removidas, porque essa reconstrução
+  foi só do histórico de **edições**, não da lista de palestrantes
+  (Módulo 10, ainda não começou). Elas só deixaram de estar ligadas a uma
+  edição específica no mock antigo.
+- **Não foi feita reconstrução completa da numeração** (edições 1–5, 7–8,
+  10 e 12+ não têm data/palestrante/tema confirmados no Instagram) — só
+  entraram no app as edições com âncora real clara. O usuário pediu pra
+  "resgatar o que der" e organizar; o restante fica pra uma sessão futura,
+  se o usuário quiser preencher os buracos com conhecimento próprio.
+- **content-raw/instagram-export/ continua vazio** — o export ficou no
+  Downloads do usuário (`instagram-triade.conecta-2026-08-26-azIUlA2Q` e
+  `-CrCb0s1A`), não foi copiado pro repo por causa do tamanho (~4 GB). Ver
+  detalhes de estrutura/localização no histórico do chat da sessão 18, ou
+  em `content-raw/curadoria-edicoes.md` (tabela com todos os 91 dias de
+  pico de Stories encontrados, não só os 7 usados nesta rodada).
 
 ## Também pendente, sem bloquear nada
 
-- Rodar `supabase/schema.sql` + `seed.sql` atualizados (colunas
-  `recap_text`/`recap_media`, do Módulo 9) no SQL Editor do Supabase real —
-  ver `docs/SUPABASE.md`.
+- Confirmar se o bucket `media` no Supabase está marcado **Public**
+  — ✅ **já confirmado nesta sessão** (Storage → bucket → Configuration
+  retornou `"public": true` via API). Pendência antiga, resolvida.
 - Da auditoria de 26/08/2026, sobrou só o que é **decisão de produto**:
   tela de boas-vindas na primeira abertura (hoje a usuária cai direto no
   feed, sem nada explicando o que é a Tríade).
-- O usuário mencionou "diversos arquivos do Drive". A busca no Drive dele
-  só encontrou `.ts` de outro projeto — nada da Tríade. Ficou sem
-  esclarecer o que são e onde estão.

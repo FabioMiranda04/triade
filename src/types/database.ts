@@ -29,7 +29,7 @@ export type EventRow = {
   location: string;
   speaker: string;
   theme: string;
-  spots: number;
+  spots: number | null;
   recap_text: string | null;
   recap_media: EventRecapMedia[] | null;
   sort_order: number;

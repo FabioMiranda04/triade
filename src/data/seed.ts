@@ -8,48 +8,156 @@ import type { Founder, Plan, Post, Speaker, TriadeEvent } from '@/types';
  * inicial do banco e a UI não muda.
  */
 
+/**
+ * Histórico de edições reconstruído a partir do export oficial do Instagram
+ * (Módulo 11, sessão 18) — datas, temas, palestrantes e fotos são todos
+ * reais, cruzados entre legendas de posts/reels e picos de Stories no dia
+ * (sinal de evento presencial ao vivo). Onde a legenda não confirma um
+ * número de edição explícito, o título não afirma um — evita numeração
+ * inventada num histórico que é público.
+ */
 export const events: TriadeEvent[] = [
   {
-    id: 'ed1',
-    title: '1ª Edição — O início do movimento',
-    date: '2025-04-12',
+    id: 'ed-set25',
+    title: 'Edição Especial — Casa Benedita',
+    date: '2025-09-15',
+    status: 'realizado',
+    location: 'Casa Benedita, Goiânia, GO',
+    speaker: 'Geórgia Maia',
+    theme: 'Conexões verdadeiras, aprendizados compartilhados e um pouco de marketing',
+    recapText:
+      'Um encontro pensado para empreendedoras, profissionais autônomas e comerciantes expandirem sua rede — com direito a uma conversa sobre marketing com Geórgia Maia. A resposta de quem esteve na Casa Benedita confirmou: era isso que fazia falta.',
+    recapMedia: [
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-1.jpg',
+        legenda: 'Aprendendo sobre marketing com Geórgia Maia',
+      },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-2.jpg',
+        legenda: 'No cantinho da marca',
+      },
+    ],
+  },
+  {
+    id: 'ed-out25',
+    title: 'Edição com Carla Martins',
+    date: '2025-10-20',
+    status: 'realizado',
+    location: 'Goiânia, GO',
+    speaker: 'Carla Martins',
+    theme: 'Liderança feminina: o primeiro púlpito de uma mulher — sua família, sua casa e seu lar',
+    recapText:
+      'Carla Martins, especialista em liderança feminina, trouxe um tema pedido pelas próprias participantes: será que dá pra ter sucesso também dentro de casa? Um encontro sobre equilibrar pratos e papéis sem perder a essência.',
+    recapMedia: [
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg',
+        legenda: 'Quando mulheres se encontram, tudo muda',
+      },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-2.jpg',
+        legenda: 'Conectar, aprender e se inspirar',
+      },
+    ],
+  },
+  {
+    id: 'ed6-nov25',
+    title: '6ª Edição',
+    date: '2025-11-17',
+    status: 'realizado',
+    location: 'Goiânia, GO',
+    speaker: 'Idealizadoras da Tríade',
+    theme: 'Acolher, inspirar e impulsionar mulheres — fechando o ano com chave de ouro',
+    recapText:
+      'Casa cheia para encerrar o ano: a 6ª edição reuniu quem já acredita no movimento criado por Lívia, Lia e Cris para acolher, inspirar e impulsionar mulheres, gerando conexões autênticas.',
+    recapMedia: [
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-1.jpg',
+        legenda: 'Lívia, Lia e Cris com convidadas',
+      },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg',
+        legenda: 'A vida é feita de boas conexões',
+      },
+    ],
+  },
+  {
+    id: 'ed9-mar26',
+    title: '9ª Edição',
+    date: '2026-03-31',
+    status: 'realizado',
+    location: 'Goiânia, GO',
+    speaker: 'Idealizadoras da Tríade',
+    theme: 'Conexão, aprendizado e fortalecimento de vínculos',
+    recapText:
+      'A 9ª edição chegou com a mesma proposta desde o início: mesas que levam quem participa a um próximo nível, num ambiente feito pra conectar, aprender e fortalecer vínculos.',
+    recapMedia: [
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/9a-edicao-2026-03/foto-1.jpg',
+        legenda: 'Quando mulheres se encontram, tudo muda',
+      },
+    ],
+  },
+  {
+    id: 'ed-mai26',
+    title: 'Edição de Maio',
+    date: '2026-05-12',
     status: 'realizado',
     location: 'Goiânia, GO',
     speaker: 'Idealizadoras da Tríade',
     theme: 'Conexões reais entre mulheres empreendedoras',
-    spots: 65,
     recapText:
-      'A primeira edição marcou o início do movimento: mulheres de trajetórias diferentes, reunidas por uma tarde inteira, trocando experiência em vez de cartão de visita. Lívia, Lia e Cris abriram o encontro contando por que a Tríade nasceu — e a resposta do público confirmou que fazia falta um espaço assim em Goiânia.',
+      'Mais uma tarde de conexões reais, com Lívia, Lia e Cris recebendo o grupo pessoalmente — prova de que o movimento que começou pequeno continua crescendo edição após edição.',
     recapMedia: [
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-1), var(--ph-2))', legenda: 'Abertura do encontro' },
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-2), var(--ph-3))', legenda: 'Roda de conversa' },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-1.jpg',
+        legenda: 'Lívia, Lia, Cris e convidadas',
+      },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-2.jpg',
+        legenda: 'No cantinho da marca',
+      },
     ],
   },
   {
-    id: 'ed2',
-    title: '2ª Edição — Cultura e Gestão de Pessoas',
-    date: '2025-08-23',
+    id: 'ed11-ago26',
+    title: '11ª Edição',
+    date: '2026-08-11',
     status: 'realizado',
     location: 'Goiânia, GO',
-    speaker: 'Marcela Zaidem',
-    theme: 'Cultura, gestão e o olhar profundo sobre o feminino nos negócios',
-    spots: 65,
+    speaker: 'Idealizadoras da Tríade',
+    theme: 'Conexões que geram oportunidades, crescimento e pertencimento',
     recapText:
-      'Marcela Zaidem trouxe um olhar prático sobre cultura organizacional para quem lidera pequenos times — e sobre como o jeito feminino de gerir pessoas é, na maioria das vezes, o maior ativo escondido de um negócio. A conversa continuou muito depois do horário previsto de encerramento.',
+      'A 11ª edição da Tríade Conecta reuniu quem já entendeu que crescer sozinha é mais lento — mais um encontro pra criar conexões reais e fortalecer negócios ao lado de quem compartilha do mesmo propósito.',
     recapMedia: [
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-3), var(--ph-4))', legenda: 'Marcela Zaidem no palco' },
-      { tipo: 'foto', url: 'linear-gradient(150deg, var(--ph-1), var(--ph-5))', legenda: 'Networking depois da palestra' },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-1.jpg',
+        legenda: 'Roda de conversa',
+      },
+      {
+        tipo: 'foto',
+        url: 'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-2.jpg',
+        legenda: 'Lugar à mesa reservado',
+      },
     ],
   },
   {
-    id: 'ed3',
-    title: '3ª Edição — Gestão Financeira na prática',
-    date: '2026-09-19',
+    id: 'jantar-casais-set26',
+    title: 'Jantar da Tríade para Casais',
+    date: '2026-09-30',
     status: 'em breve',
     location: 'Goiânia, GO',
-    speaker: 'Danielle Gouveia',
-    theme: 'Finanças com clareza para quem empreende',
-    spots: 85,
+    speaker: 'Idealizadoras da Tríade',
+    theme: 'Uma noite para sair da rotina e se reconectar, às 19h',
   },
 ];
 
@@ -144,14 +252,14 @@ export const founders: Founder[] = [
 
 export const posts: Post[] = [
   {
-    id: 'post-ed3',
+    id: 'post-jantar-casais',
     author: 'Tríade Conecta',
-    authorInitials: 'DG',
-    subtitle: '3ª Edição · em breve',
+    authorInitials: 'TC',
+    subtitle: 'Jantar da Tríade para Casais · em breve',
     caption:
-      'Gestão financeira na prática, com Danielle Gouveia — 19 de setembro, Goiânia. Garante sua vaga em Eventos ✨',
+      'A pedidos das nossas queridas Tríades, uma noite para sair da rotina e se reconectar — 30 de setembro, às 19h. Garante sua vaga em Eventos ✨',
     baseLikes: 141,
-    eventId: 'ed3',
+    eventId: 'jantar-casais-set26',
     ctaLabel: 'Ver detalhes',
     showActions: true,
   },
@@ -159,9 +267,9 @@ export const posts: Post[] = [
     id: 'post-recap',
     author: 'Lívia Duarte',
     authorInitials: 'LD',
-    subtitle: 'idealizadora · 2ª edição',
+    subtitle: 'idealizadora · edição com Carla Martins',
     caption:
-      'Recordando a 2ª edição, com Marcela Zaidem falando sobre cultura e gestão de pessoas 🤍',
+      'Recordando a edição com Carla Martins, especialista em liderança feminina 🤍',
     baseLikes: 98,
     mediaGradient: 'linear-gradient(135deg, var(--ph-1), var(--ph-3))',
     showActions: true,
@@ -171,18 +279,18 @@ export const posts: Post[] = [
 export const timeline = [
   {
     id: 'tl1',
-    label: '2025 · 1ª edição',
-    text: 'O início do movimento — mulheres de diferentes trajetórias, a mesma vontade de crescer juntas.',
+    label: '2025 · 6ª edição',
+    text: 'Casa cheia pra fechar o ano com chave de ouro — o movimento criado por Lívia, Lia e Cris já reunia um grupo fiel de mulheres em Goiânia.',
   },
   {
     id: 'tl2',
-    label: '2025 · 2ª edição',
-    text: 'Marcela Zaidem trouxe cultura e gestão de pessoas, com o olhar profundo sobre o feminino nos negócios.',
+    label: '2026 · 9ª edição',
+    text: 'Conexão, aprendizado e fortalecimento de vínculos — o ritmo quase mensal segue firme.',
   },
   {
     id: 'tl3',
-    label: '2026 · 3ª edição',
-    text: 'Danielle Gouveia recebe a comunidade para falar de gestão financeira na prática.',
+    label: '2026 · 11ª edição',
+    text: 'Mais de uma dezena de encontros depois, a Tríade Conecta segue criando conexões reais e fortalecendo negócios em Goiânia.',
   },
 ];
 
