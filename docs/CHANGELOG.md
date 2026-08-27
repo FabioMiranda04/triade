@@ -11,6 +11,41 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v2.6.0 — Landing page de captação (rascunho)
+**Sessão 17 — 27/08/2026**
+
+As sócias vão colocar um outdoor com QR code e pediram uma página para ser
+o destino dele. Não é o app: mandar um scan frio para o feed, que não
+explica o que é a Tríade, desperdiçaria a mídia.
+
+- **`landing/convite.html`** — `.html` autocontido, **fora do build**, que
+  abre direto no navegador. Fica fora de `src/` de propósito: não faz parte
+  do app e não deve ser confundido com ele.
+- **Estratégia da página**, decidida antes do desenho e registrada em
+  `landing/README.md`: **uma única ação, WhatsApp** (formulário com e-mail
+  parece trabalho; o app já tem o fluxo com as três sócias); **a página não
+  vende assinatura**, porque ninguém assina uma comunidade que nunca
+  experimentou — o funil é outdoor → encontro → aí assina; e a primeira
+  tela se basta sozinha, para quem não rolar.
+- **Desenho**: mundo visual Ônix (o mesmo tema padrão do app), tipografia
+  da marca com o Instrument Serif itálico dourado quebrando cada título na
+  palavra que importa, e a estrutura organizada pela própria tríade — as
+  três setas da marca separam as seções, os números são três, as
+  idealizadoras são três.
+- Publicado como artifact para as sócias revisarem no celular; **a URL está
+  registrada no `landing/README.md`** para que uma sessão futura republique
+  no mesmo endereço em vez de criar uma segunda versão circulando.
+
+**Pendente:** padding e formatação, fotos reais (dependem do Módulo 11),
+conferência de verossimilhança das informações, depoimento real no lugar do
+fictício, descrição da Cris, e os links de WhatsApp/Instagram, hoje em
+`href="#"`.
+
+**Arquivos gerados:** `landing/convite.html`, `landing/README.md`,
+`CLAUDE.md`, `docs/{CHANGELOG,ESTADO-DO-PROJETO}.md`
+
+---
+
 ## v2.5.0 — Auditoria de UI/UX e recalibragem para o público real
 **Sessão 17 — 26/08/2026**
 

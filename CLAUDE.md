@@ -91,6 +91,10 @@ src/
 supabase/
 ├── schema.sql            # tabelas + RLS + triggers (idempotente) — já rodado no projeto real
 └── seed.sql              # conteúdo inicial (idempotente)
+
+landing/                  # página de captação do QR code do outdoor — NÃO é o app
+├── convite.html          #   .html autocontido, fora do build (abrir direto no navegador)
+└── README.md             #   status, decisões tomadas, ajustes pendentes e link de revisão
 ```
 
 `docs/DESIGN-SYSTEM.md` é o manual de UI/UX (tokens, pop-ups, ícones,

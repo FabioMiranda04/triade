@@ -40,6 +40,14 @@ saiu do Início (era navegação duplicada disfarçada de story). Contraste do
 tema Pérola corrigido: de 3 reprovações no critério AA para zero.
 Detalhes e números no `CHANGELOG.md`, entrada `v2.5.0`.
 
+**Landing page de captação (27/08/2026):** as sócias querem um outdoor com
+QR code, e o destino desse QR é uma página nova — não o app. O app abre no
+feed e não explica o que é a Tríade para quem chega sem contexto, então
+mandar o QR para lá desperdiçaria o investimento. Rascunho pronto e
+aprovado em conceito, guardado em `landing/`; ajustes pendentes listados
+lá. Estratégia definida: **uma única ação (WhatsApp), e a página não vende
+assinatura** — quem nunca foi a um encontro não assina uma comunidade.
+
 **Próximo passo combinado:** **Módulo 11** — trazer o material real do
 Instagram (ver seção 6, item 10, e seção 7, item 1). **Em andamento desde
 26/08/2026**: o bucket `media` já foi criado no Supabase e o export do
@@ -240,6 +248,7 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 | `src/styles/tokens.css` | **Onde toda cor vive.** Três camadas: paleta de marca → papéis semânticos → blocos de tema. Nenhum outro arquivo sabe qual tema está ativo. |
 | `src/context/ThemeContext.tsx` | Tema visual (Pérola / Ônix): grava `data-theme` no `<html>`, persiste no aparelho e sincroniza a `<meta name="theme-color">` |
 | `content-raw/` | Pasta de trabalho local para o export do Instagram — **ignorada pelo Git**, nunca commitar o conteúdo |
+| `landing/` | Página de captação do QR code do outdoor (rascunho). `.html` autocontido, **fora do build** — não é o app. Status e pendências em `landing/README.md` |
 | `.github/workflows/ci.yml` | Typecheck + build em cada push/PR |
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)

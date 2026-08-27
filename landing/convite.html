@@ -1,0 +1,537 @@
+<title>Convite Tríade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+
+<style>
+  /* =========================================================
+     Página de marca: compromete-se com UM mundo visual (Ônix,
+     o mesmo tema padrão do app) para todo mundo, em vez de
+     seguir o tema do aparelho. Toda cor é pintada explicitamente.
+     ========================================================= */
+  :root {
+    --preto: #0b0a0a;
+    --preto-2: #131110;
+    --carvao: #1c1917;
+    --linha: rgba(217, 179, 108, 0.16);
+    --linha-fraca: rgba(255, 255, 255, 0.08);
+    --creme: #f7f5f1;
+    --creme-70: rgba(247, 245, 241, 0.74);
+    --creme-45: rgba(247, 245, 241, 0.52);
+    --ouro: #d9b36c;
+    --ouro-claro: #f0d9a0;
+    --ouro-fundo: #b8934d;
+    --vinho: #7c2a3d;
+    --vinho-fundo: #4a1a26;
+    --zap: #25d366;
+
+    --display: 'Fraunces', Georgia, serif;
+    --script: 'Instrument Serif', Georgia, serif;
+    --ui: 'Inter', system-ui, -apple-system, sans-serif;
+
+    --largura: 34rem;
+    --raio: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--preto);
+    color: var(--creme);
+    font-family: var(--ui);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+  p { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--ouro); outline-offset: 3px; }
+
+  .env { width: 100%; max-width: var(--largura); margin: 0 auto; padding: 0 1.5rem; }
+  .it { font-family: var(--script); font-style: italic; font-weight: 400; letter-spacing: 0; }
+
+  /* ---------- marca ---------- */
+  .marca { display: inline-flex; color: var(--ouro); }
+  .marca svg { display: block; }
+  .m-cheia { fill: currentColor; }
+  .m-vazia { fill: none; stroke: currentColor; stroke-width: 6; opacity: 0.45; }
+
+  /* ---------- topo ---------- */
+  .topo {
+    position: relative;
+    padding: 2rem 0 3.5rem;
+    overflow: hidden;
+  }
+  /* brasa dourada: o único "efeito" da página, e ele é estático */
+  .topo::before {
+    content: '';
+    position: absolute;
+    top: -30%; left: 50%;
+    width: 130vw; height: 90vh;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 50% 30%, rgba(217, 179, 108, 0.13), rgba(124, 42, 61, 0.09) 42%, transparent 68%);
+    pointer-events: none;
+  }
+  .topo > * { position: relative; }
+
+  .cabecalho { display: flex; align-items: center; gap: 0.7rem; }
+  .cabecalho .nome {
+    font-family: var(--display); font-size: 1.15rem; font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .cabecalho .assin { font-family: var(--script); font-style: italic; color: var(--ouro); font-size: 1.05rem; margin-left: 0.35rem; }
+
+  .sobre-linha {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    margin-top: 3rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ouro);
+  }
+  .sobre-linha::before { content: ''; width: 26px; height: 1px; background: var(--ouro); opacity: 0.7; }
+
+  h1 {
+    font-size: clamp(2.6rem, 12.5vw, 4rem);
+    line-height: 0.98;
+    margin-top: 1.1rem;
+  }
+  h1 .it { font-size: 1.06em; color: var(--ouro); display: block; }
+  .chamada {
+    margin-top: 1.4rem;
+    font-size: 1.0625rem;
+    color: var(--creme-70);
+    max-width: 30rem;
+  }
+
+  /* ---------- cartão do próximo encontro ---------- */
+  .encontro {
+    margin-top: 2.2rem;
+    background: linear-gradient(158deg, rgba(41, 35, 27, 0.92), rgba(19, 17, 16, 0.92));
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 1.4rem 1.4rem 1.5rem;
+    box-shadow: 0 30px 60px -40px rgba(0, 0, 0, 0.9);
+  }
+  .encontro .rot {
+    font-size: 0.68rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ouro);
+  }
+  .encontro .quando {
+    font-family: var(--display); font-size: 2rem; line-height: 1.05; margin-top: 0.55rem;
+  }
+  .encontro .onde { margin-top: 0.45rem; color: var(--creme-70); font-size: 0.95rem; }
+  .encontro .vagas {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    margin-top: 1rem;
+    font-size: 0.8rem; font-weight: 600; color: var(--ouro-claro);
+    background: rgba(217, 179, 108, 0.12);
+    border: 1px solid var(--linha);
+    padding: 0.35rem 0.75rem; border-radius: 999px;
+  }
+  .ponto { width: 6px; height: 6px; border-radius: 50%; background: var(--ouro); flex-shrink: 0; }
+
+  /* ---------- botões ---------- */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    width: 100%; min-height: 56px;
+    border: 0; border-radius: 999px;
+    font-family: var(--ui); font-size: 1.0625rem; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), filter 0.16s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-ouro {
+    background: linear-gradient(135deg, var(--ouro-claro), var(--ouro-fundo));
+    color: var(--preto);
+    box-shadow: 0 16px 34px -18px rgba(217, 179, 108, 0.75);
+  }
+  .btn-ouro:hover { filter: brightness(1.05); }
+  .btn-linha {
+    background: transparent; color: var(--creme);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .btn-linha:hover { border-color: var(--ouro); color: var(--ouro-claro); }
+  .encontro .btn { margin-top: 1.3rem; }
+  .sob-btn { margin-top: 0.85rem; text-align: center; font-size: 0.8rem; color: var(--creme-45); }
+
+  /* ---------- régua com a marca ---------- */
+  .regua {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3.5rem 0 2.5rem;
+    color: var(--ouro);
+  }
+  .regua::before, .regua::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--linha), transparent);
+  }
+
+  /* ---------- números ---------- */
+  .numeros {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--linha-fraca); border-radius: var(--raio);
+    overflow: hidden;
+  }
+  .numeros div { padding: 1.1rem 0.6rem; text-align: center; }
+  .numeros div + div { border-left: 1px solid var(--linha-fraca); }
+  .numeros .n { font-family: var(--display); font-size: 1.9rem; color: var(--ouro); line-height: 1; }
+  .numeros .l { font-size: 0.72rem; color: var(--creme-45); margin-top: 0.4rem; letter-spacing: 0.04em; }
+
+  /* ---------- seções ---------- */
+  section { padding-top: 1rem; }
+  .titulo-secao { font-size: clamp(1.75rem, 7vw, 2.25rem); line-height: 1.1; }
+  .titulo-secao .it { color: var(--ouro); }
+  .apoio { margin-top: 0.9rem; color: var(--creme-70); }
+
+  /* ---------- roteiro do encontro ---------- */
+  .roteiro { margin-top: 1.8rem; display: flex; flex-direction: column; }
+  .etapa {
+    display: grid; grid-template-columns: 4.2rem 1fr; gap: 1rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--linha-fraca);
+  }
+  .etapa:last-child { border-bottom: 1px solid var(--linha-fraca); }
+  .etapa .h {
+    font-family: var(--display); font-size: 1.05rem; color: var(--ouro);
+    font-variant-numeric: tabular-nums; padding-top: 0.1rem;
+  }
+  .etapa .t { font-weight: 700; font-size: 1rem; }
+  .etapa .d { color: var(--creme-70); font-size: 0.92rem; margin-top: 0.2rem; }
+
+  /* ---------- galeria ---------- */
+  .galeria {
+    margin-top: 1.8rem;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;
+  }
+  .foto {
+    aspect-ratio: 1 / 1; border-radius: 14px; position: relative; overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex; align-items: flex-end;
+  }
+  .foto:nth-child(1) { background: linear-gradient(150deg, #1b1a20, #2f2a20 55%, #4a3a20); }
+  .foto:nth-child(2) { background: linear-gradient(150deg, #241f1a, #3b2f1c 60%, #5c4520); }
+  .foto:nth-child(3) { background: linear-gradient(150deg, #2a1d22, #4a1a26 60%, #3b2f1c); }
+  .foto:nth-child(4) { background: linear-gradient(150deg, #1b1a20, #33251a 55%, #4a3a20); }
+  .foto .cap {
+    width: 100%; padding: 0.7rem 0.8rem;
+    font-size: 0.75rem; color: var(--creme-70);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  }
+  .nota-foto { margin-top: 0.8rem; font-size: 0.78rem; color: var(--creme-45); text-align: center; }
+
+  /* ---------- idealizadoras ---------- */
+  .trio { margin-top: 1.8rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .pessoa {
+    display: flex; align-items: center; gap: 1rem;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--linha-fraca);
+    border-radius: 16px; padding: 0.9rem 1rem;
+  }
+  .pessoa .av {
+    width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(150deg, #2f2a20, #4a3a20);
+    border: 1px solid var(--linha);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-size: 1.05rem; color: var(--ouro);
+  }
+  .pessoa .n { font-family: var(--script); font-style: italic; font-size: 1.35rem; line-height: 1.15; }
+  .pessoa .f { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ouro); margin-top: 0.15rem; }
+  .pessoa .d { font-size: 0.88rem; color: var(--creme-70); margin-top: 0.3rem; }
+
+  /* ---------- depoimento ---------- */
+  .depo {
+    margin-top: 1.5rem;
+    background: linear-gradient(158deg, rgba(74, 26, 38, 0.4), rgba(19, 17, 16, 0.6));
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 1.6rem 1.4rem;
+  }
+  .depo .aspas { font-family: var(--display); font-size: 2.6rem; line-height: 0.6; color: var(--ouro); opacity: 0.5; }
+  .depo .q { font-family: var(--display); font-size: 1.2rem; line-height: 1.45; margin-top: 0.6rem; }
+  .depo .quem { margin-top: 1rem; font-size: 0.85rem; color: var(--creme-45); }
+  .depo .quem b { color: var(--creme); font-weight: 600; }
+
+  /* ---------- comunidade (secundário de propósito) ---------- */
+  .comunidade {
+    margin-top: 1.5rem;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    border-radius: var(--raio);
+    padding: 1.2rem 1.3rem;
+    text-align: center;
+  }
+  .comunidade .t { font-size: 0.95rem; color: var(--creme-70); }
+  .comunidade .t b { color: var(--creme); font-weight: 600; }
+  .comunidade a { color: var(--ouro); font-weight: 600; border-bottom: 1px solid var(--linha); }
+
+  /* ---------- fecho ---------- */
+  .fecho { padding: 3.5rem 0 2rem; text-align: center; }
+  .fecho .titulo-secao { text-align: center; }
+  .fecho .btn { margin-top: 1.6rem; }
+  .insta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-top: 1.6rem; color: var(--creme-45); font-size: 0.9rem;
+  }
+  footer {
+    padding: 2rem 0 7rem;
+    text-align: center; font-size: 0.76rem; color: rgba(247, 245, 241, 0.3);
+    border-top: 1px solid var(--linha-fraca);
+    margin-top: 2rem;
+  }
+
+  /* ---------- barra fixa de ação ---------- */
+  .barra {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, rgba(11, 10, 10, 0.97) 62%, rgba(11, 10, 10, 0));
+    transform: translateY(120%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .barra.on { transform: translateY(0); pointer-events: auto; }
+  .barra .env { padding: 0; max-width: var(--largura); }
+  .barra .btn { box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.9), 0 16px 34px -18px rgba(217, 179, 108, 0.6); }
+
+  /* ---------- revelação suave ---------- */
+  .rev { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .rev.vis { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rev { opacity: 1; transform: none; } }
+
+  /* ---------- telas largas: continua sendo uma página de celular ---------- */
+  @media (min-width: 48rem) {
+    body { font-size: 1.125rem; }
+    :root { --largura: 40rem; }
+    h1 { font-size: 4.2rem; }
+    .galeria { grid-template-columns: repeat(4, 1fr); }
+    .trio { flex-direction: row; }
+    .pessoa { flex-direction: column; text-align: center; gap: 0.7rem; padding: 1.4rem 1rem; }
+    .barra { display: none; }
+  }
+</style>
+
+<div class="topo">
+  <div class="env">
+    <div class="cabecalho">
+      <span class="marca" aria-hidden="true">
+        <svg width="34" height="29" viewBox="0 0 140 120">
+          <polygon class="m-cheia" points="6,10 6,110 66,60"></polygon>
+          <polygon class="m-vazia" points="34,14 34,106 88,60"></polygon>
+          <polygon class="m-vazia" points="62,18 62,102 116,60"></polygon>
+        </svg>
+      </span>
+      <span><span class="nome">TRÍADE</span><span class="assin">conecta</span></span>
+    </div>
+
+    <div class="sobre-linha">Goiânia · encontro presencial</div>
+
+    <h1>A mesa onde<br>mulheres de Goiânia<span class="it">fazem negócio.</span></h1>
+
+    <p class="chamada">
+      Uma tarde por mês, cinco horas, uma especialista convidada e um grupo
+      pequeno. Sem palestra motivacional, sem cartão trocado no corredor.
+    </p>
+
+    <div class="encontro">
+      <div class="rot">Próximo encontro</div>
+      <div class="quando">19 de setembro</div>
+      <div class="onde">Sábado, 14h às 19h · Goiânia, GO</div>
+      <div class="vagas"><span class="ponto"></span> 85 vagas · confirmação por WhatsApp</div>
+      <a class="btn btn-ouro" href="#" data-cta="hero">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
+        Quero minha vaga
+      </a>
+      <p class="sob-btn">Abre uma conversa direto com as idealizadoras.</p>
+    </div>
+  </div>
+</div>
+
+<div class="env">
+  <div class="numeros rev">
+    <div><div class="n">3</div><div class="l">edições realizadas</div></div>
+    <div><div class="n">85+</div><div class="l">mulheres na mesa</div></div>
+    <div><div class="n">5h</div><div class="l">por encontro</div></div>
+  </div>
+
+  <div class="regua" aria-hidden="true">
+    <span class="marca">
+      <svg width="26" height="22" viewBox="0 0 140 120">
+        <polygon class="m-cheia" points="6,10 6,110 66,60"></polygon>
+        <polygon class="m-vazia" points="34,14 34,106 88,60"></polygon>
+        <polygon class="m-vazia" points="62,18 62,102 116,60"></polygon>
+      </svg>
+    </span>
+  </div>
+
+  <section class="rev">
+    <h2 class="titulo-secao">Cinco horas,<span class="it">quatro momentos.</span></h2>
+    <p class="apoio">
+      Você não chega e senta numa plateia. O encontro é desenhado para que
+      todas falem — e para que você saia sabendo o nome e o negócio de quem
+      estava na mesa.
+    </p>
+
+    <div class="roteiro">
+      <div class="etapa">
+        <div class="h">14h</div>
+        <div>
+          <div class="t">Chegada e apresentações</div>
+          <div class="d">Cada uma conta em um minuto o que faz e o que está buscando.</div>
+        </div>
+      </div>
+      <div class="etapa">
+        <div class="h">15h</div>
+        <div>
+          <div class="t">A convidada</div>
+          <div class="d">Uma especialista por edição, com tema prático — finanças, gestão, cultura.</div>
+        </div>
+      </div>
+      <div class="etapa">
+        <div class="h">17h</div>
+        <div>
+          <div class="t">Roda de conversa</div>
+          <div class="d">A mesa inteira discute o tema aplicado ao próprio negócio.</div>
+        </div>
+      </div>
+      <div class="etapa">
+        <div class="h">18h30</div>
+        <div>
+          <div class="t">Conexões</div>
+          <div class="d">A parte informal, que é onde a maioria das parcerias começa.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="regua" aria-hidden="true">
+    <span class="marca">
+      <svg width="26" height="22" viewBox="0 0 140 120">
+        <polygon class="m-cheia" points="6,10 6,110 66,60"></polygon>
+        <polygon class="m-vazia" points="34,14 34,106 88,60"></polygon>
+        <polygon class="m-vazia" points="62,18 62,102 116,60"></polygon>
+      </svg>
+    </span>
+  </div>
+
+  <section class="rev">
+    <h2 class="titulo-secao">Como foi<span class="it">até aqui.</span></h2>
+    <div class="galeria">
+      <div class="foto"><div class="cap">1ª edição · abril</div></div>
+      <div class="foto"><div class="cap">A convidada no palco</div></div>
+      <div class="foto"><div class="cap">Roda de conversa</div></div>
+      <div class="foto"><div class="cap">2ª edição · agosto</div></div>
+    </div>
+    <p class="nota-foto">Espaços reservados para as fotos reais das edições.</p>
+  </section>
+
+  <div class="regua" aria-hidden="true">
+    <span class="marca">
+      <svg width="26" height="22" viewBox="0 0 140 120">
+        <polygon class="m-cheia" points="6,10 6,110 66,60"></polygon>
+        <polygon class="m-vazia" points="34,14 34,106 88,60"></polygon>
+        <polygon class="m-vazia" points="62,18 62,102 116,60"></polygon>
+      </svg>
+    </span>
+  </div>
+
+  <section class="rev">
+    <h2 class="titulo-secao">Quem senta<span class="it">na cabeceira.</span></h2>
+    <p class="apoio">Três mulheres que construíram os próprios negócios em Goiânia.</p>
+
+    <div class="trio">
+      <div class="pessoa">
+        <div class="av">LD</div>
+        <div>
+          <div class="n">Lívia Duarte</div>
+          <div class="f">Gestora</div>
+          <div class="d">Ex-Swarovski, hoje empreendedora.</div>
+        </div>
+      </div>
+      <div class="pessoa">
+        <div class="av">LC</div>
+        <div>
+          <div class="n">Lia Chaves</div>
+          <div class="f">Mentora</div>
+          <div class="d">Advogada e consultora de imagem.</div>
+        </div>
+      </div>
+      <div class="pessoa">
+        <div class="av">CM</div>
+        <div>
+          <div class="n">Cris Miranda</div>
+          <div class="f">Idealizadora</div>
+          <div class="d">Descrição a definir com ela.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="depo">
+      <div class="aspas" aria-hidden="true">“</div>
+      <p class="q">
+        Saí do primeiro encontro com duas parcerias fechadas e uma sócia. Era
+        exatamente o que eu não estava encontrando em evento de negócios.
+      </p>
+      <p class="quem"><b>Nome da participante</b> · segmento do negócio</p>
+    </div>
+
+    <div class="comunidade">
+      <p class="t">
+        Existe também a <b>comunidade Tríade</b>, para quem quer continuar entre
+        um encontro e outro. <a href="#">Ver como funciona</a>
+      </p>
+    </div>
+  </section>
+</div>
+
+<div class="fecho env rev">
+  <h2 class="titulo-secao">A próxima cadeira<span class="it">pode ser sua.</span></h2>
+  <p class="apoio">São 85 vagas por edição, e elas costumam acabar antes da data.</p>
+  <a class="btn btn-ouro" href="#" data-cta="fim">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
+    Quero minha vaga
+  </a>
+  <a class="insta" href="#">@triade.conecta no Instagram</a>
+</div>
+
+<footer class="env">
+  Tríade Conecta · Goiânia, GO<br>
+  Mulheres · negócios · conexões
+</footer>
+
+<div class="barra" id="barra">
+  <div class="env">
+    <a class="btn btn-ouro" href="#" data-cta="fixa">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
+      Quero minha vaga · 19 de setembro
+    </a>
+  </div>
+</div>
+
+<script>
+  // A barra fixa só entra depois que o botão do topo sai de vista: antes
+  // disso ela competiria com ele e cobriria conteúdo à toa.
+  (function () {
+    var alvo = document.querySelector('.encontro .btn');
+    var barra = document.getElementById('barra');
+    if (!alvo || !barra || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (e) {
+      barra.classList.toggle('on', !e[0].isIntersecting && e[0].boundingClientRect.top < 0);
+    }, { threshold: 0 }).observe(alvo);
+  })();
+
+  // Revelação ao rolar. Sem JS ou com movimento reduzido, tudo já nasce visível.
+  (function () {
+    var itens = document.querySelectorAll('.rev');
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      itens.forEach(function (n) { n.classList.add('vis'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    itens.forEach(function (n) { obs.observe(n); });
+  })();
+</script>
