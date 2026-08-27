@@ -53,10 +53,24 @@ nenhum contexto sobre a marca.
 Levantados com as sócias em 27/08/2026:
 
 - [ ] **Padding e formatação** — revisão de espaçamentos em geral.
-- [ ] **Imagens** — as quatro fotos são espaços reservados. Entram com o
-      material do Módulo 11 (export do Instagram).
-- [ ] **Verossimilhança das informações** — conferir se datas, horários,
-      número de vagas e a descrição de cada encontro batem com a realidade.
+- [ ] **Imagens** — as quatro fotos ainda são espaços reservados, mas
+      **o material já existe**: o Módulo 11 fechou em 26/08/2026 e há 11
+      fotos reais no bucket `media` do Supabase Storage, em
+      `media/<slug-da-edição>/foto-N.jpg`. É só apontar as URLs.
+- [ ] **Verossimilhança das informações — os números do rascunho estão
+      DESATUALIZADOS.** O rascunho foi escrito antes do Módulo 11 fechar e
+      usa o conteúdo mock que existia então. Os dados reais já estão em
+      `src/data/seed.ts` desde 26/08/2026:
+
+      | No rascunho (errado) | Real |
+      |---|---|
+      | Próximo encontro: 19 de setembro | **Jantar da Tríade para Casais, 30/09/2026** |
+      | "3 edições realizadas" | **11+ edições** |
+      | "85+ mulheres na mesa" | número real a confirmar |
+      | Convidada: — | Geórgia Maia, Carla Martins e outras já passaram |
+
+      O roteiro das 5h (14h/15h/17h/18h30) também é suposição minha e
+      precisa bater com o formato real dos encontros.
 - [ ] **Depoimento é fictício.** Precisa ser real, com nome e negócio, ou
       sair da página.
 - [ ] **Descrição da Cris Miranda** está marcada como pendente no HTML.

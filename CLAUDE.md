@@ -233,8 +233,10 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   palestrante) também é só local** — um overlay em cima do conteúdo lido,
   não grava no Supabase de propósito (sem login, chave de escrita pública
   seria risco de segurança). Não confunda com um painel administrativo real.
-- Sem fotos reais — todas as "imagens" são gradientes (escala `--ph-1..5`,
-  que responde ao tema). É o que o Módulo 11 resolve.
+- **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
+  26/08/2026): 11 fotos no bucket `media` do Supabase Storage. O resto das
+  "imagens" do app continua sendo gradiente (escala `--ph-1..5`, que
+  responde ao tema).
 - **Dois temas existem** (Pérola, padrão, e Ônix), escolhidos em
   Configurações → Aparência. Não existe seguir o tema do sistema
   (`prefers-color-scheme`) nem agendar por horário — é escolha manual.
@@ -262,7 +264,7 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |
-| 11 | Infraestrutura de mídia real (Supabase Storage) — fotos/vídeos de verdade a partir do export oficial do Instagram | ⏭️ **próximo** — depende de você trazer o material |
+| 11 | Infraestrutura de mídia real (Supabase Storage) — fotos/vídeos de verdade a partir do export oficial do Instagram | ✅ concluído 26/08/2026 — histórico de edições reconstruído com dados reais, 11 fotos no Storage |
 | 12 | Dois temas visuais (Pérola / Ônix) em Configurações → Aparência | ✅ concluído 25/08/2026 |
 
 Detalhamento completo dos módulos 8 a 11 (escopo, campos de dado novos,

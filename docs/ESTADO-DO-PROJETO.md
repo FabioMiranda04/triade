@@ -48,13 +48,18 @@ aprovado em conceito, guardado em `landing/`; ajustes pendentes listados
 lá. Estratégia definida: **uma única ação (WhatsApp), e a página não vende
 assinatura** — quem nunca foi a um encontro não assina uma comunidade.
 
-**Próximo passo combinado:** **Módulo 11** — trazer o material real do
-Instagram (ver seção 6, item 10, e seção 7, item 1). **Em andamento desde
-26/08/2026**: o bucket `media` já foi criado no Supabase e o export do
-Instagram já foi baixado (dois `.zip`, 2,96 GB + 1,01 GB, em formato HTML —
-que serve igual ao JSON). O que falta é extrair e curar o material, e isso
-roda na máquina do usuário, não aqui. Estado detalhado e decisões já
-tomadas: `docs/LAST-SESSION.md`.
+**Módulo 11 — CONCLUÍDO em 26/08/2026 (sessão 18).** O histórico de edições
+foi reconstruído com dados reais do export do Instagram, 11 fotos reais
+estão no bucket `media` do Storage, e a migração do banco (colunas
+`recap_text`/`recap_media`, pendente desde o Módulo 9) foi aplicada.
+Detalhes em `docs/LAST-SESSION.md`.
+
+**Consequência para quem for mexer em conteúdo:** as edições "1ª/2ª/3ª"
+que existiam como mock **não existem mais** — foram substituídas por
+edições reais (Casa Benedita, Carla Martins, 6ª, 9ª, Maio, 11ª) e pelo
+próximo evento de verdade, o Jantar da Tríade para Casais (30/09/2026).
+Qualquer texto do projeto que ainda cite "3 edições" ou "85+ mulheres" é
+resíduo do mock — inclusive o rascunho em `landing/`.
 
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card
