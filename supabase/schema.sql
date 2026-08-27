@@ -225,3 +225,11 @@ create trigger on_auth_user_created
 
 alter table public.events add column if not exists recap_text text;
 alter table public.events add column if not exists recap_media jsonb not null default '[]'::jsonb;
+
+-- =============================================================
+--  Migração (Módulo 11, 26/08/2026): `spots` vira opcional — nem toda
+--  edição real reconstruída do Instagram tem número de vagas conhecido.
+-- =============================================================
+
+alter table public.events alter column spots drop not null;
+alter table public.events alter column spots drop default;

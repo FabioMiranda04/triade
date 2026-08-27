@@ -7,9 +7,10 @@
 > — este registra trabalho **em andamento**, e deve voltar para "nada
 > pendente" assim que for retomado e terminado.
 
-**Status:** Módulo 11 avançou muito na sessão 18 (26/08/2026) — o histórico
-de edições foi reconstruído a partir do export real do Instagram e já está
-em produção. Falta só **um passo manual do usuário** pra fechar de vez.
+**Status:** Módulo 11 fechado na sessão 18 (26/08/2026) — o histórico de
+edições foi reconstruído a partir do export real do Instagram, está em
+produção (código + Storage + banco), e a migração do banco (que exigia SQL
+Editor) já foi rodada. **Nada pendente.**
 
 ## O que já foi feito e já está em produção
 
@@ -40,24 +41,20 @@ em produção. Falta só **um passo manual do usuário** pra fechar de vez.
   abaixo). Build (`npm run build`) e verificação visual via Playwright em
   375px confirmados sem erro.
 
-## Pendência única: rodar SQL no Supabase real
+## Migração do banco — já aplicada
 
-As colunas `recap_text`/`recap_media` **ainda não existem** na tabela
-`events` do Supabase real (confirmado via REST: `select *` não trouxe essas
-colunas) — isso já era uma pendência de antes desta sessão (Módulo 9), e
-não dá pra criar coluna via REST (só via SQL Editor, precisa de acesso que
-esta sessão não tinha). Por isso as retrospectivas hoje mostram "Em breve,
-o registro completo dessa edição" em vez do texto e das fotos reais, mesmo
-com as fotos já no Storage.
-
-**Como resolver** (usuário, no SQL Editor do projeto Supabase):
-1. Rodar `supabase/schema.sql` inteiro (idempotente — só adiciona o que
-   falta, não duplica nada).
-2. Rodar `supabase/seed.sql` inteiro (também idempotente — faz upsert).
-
-Depois disso, as fotos e os textos de retrospectiva aparecem no app real
-sem precisar tocar em nada mais — `EventRecapModal.tsx` já sabe renderizar
-URL real vs. gradiente sozinho.
+As colunas `recap_text`/`recap_media` não existiam na tabela `events` do
+Supabase real (pendência de antes desta sessão, Módulo 9) e a coluna
+`spots` ainda tinha `not null default 0`. Não dava pra resolver via REST
+(só DDL via SQL direto) — o usuário passou a senha do Postgres e a sessão
+conectou direto no banco (via connection pooler Supavisor, região
+`us-west-2`; a conexão direta em `db.<ref>.supabase.co:5432` só tem AAAA/
+IPv6 e não é alcançável desta rede) e rodou `schema.sql` + `seed.sql`
+inteiros. Confirmado por query: as 6 edições realizadas têm
+`recap_text`/`recap_media` populados, verificado também visualmente via
+Playwright (fotos reais carregando, `naturalWidth` > 0, não é placeholder
+quebrado). **Senha usada só em memória nesta sessão, nunca gravada em
+arquivo nem commitada.**
 
 ## O que ficou de fora desta reconstrução (decisão consciente)
 
