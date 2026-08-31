@@ -11,6 +11,113 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.0.0 — Manual de Marca oficial: app e landing espelham a marca
+**Sessão 19 — 31/08/2026**
+
+As sócias organizaram um **manual de marca** e o entregaram (PDF de 10
+páginas). Com ele, a camada 1 do `tokens.css` deixou de ser escolha nossa:
+passou a ter dono externo. MAJOR sobe porque isso muda o contrato do
+projeto, não só a aparência.
+
+### O manual entrou no repositório
+
+- **`docs/MANUAL-DE-MARCA.md`** — o manual transcrito: paleta com hex,
+  papel de cada fonte, regras da logomarca, critério de imagens, e um mapa
+  de onde cada coisa aparece no código. O PDF original ficou em
+  **`docs/marca/`**, mas ninguém precisa abri-lo para trabalhar (são 10
+  JPEGs de 300 dpi, não dá para pesquisar nem revisar em diff).
+- O que é **decisão nossa** e não do manual está marcado como tal, para
+  ninguém confundir depois.
+
+### Cores
+
+A paleta antiga (`--wine #7c2a3d`, `--gold #c79a55`, `--plum`, `--blush`)
+saiu inteira. Entrou a oficial:
+
+| | |
+|---|---|
+| Principais | Dourado `#C9A66B` · Cream Quartz `#F6F3EE` · Almond `#EADED0` · Sand `#D9B991` |
+| Apoio | Walnut `#402814` · Deep Maroon `#400106` · Burgundy `#65202D` · Olive `#4A5A3A` · Moss `#8C916C` |
+
+Os dois temas foram remapeados papel a papel. **Ônix**: preto derivado do
+Walnut (`#0F0A06`) e, como superfície elevada, o `#372E25` **medido no
+pixel** da página 06 do manual, onde a logo aparece em uso reverso — não é
+um tom inventado. **Pérola**: Cream Quartz de fundo, texto Walnut, Burgundy
+na ação. Saíram os dois azuis que sobravam (a quarta mancha do mesh e um
+placeholder) — o manual não tem azul.
+
+Duas cores derivadas, que o manual não tem e existem por medição:
+`--brand-gold-deep #8A6B32`, porque o dourado oficial sobre o Cream Quartz
+dá **1,9:1** e não pode carregar texto no tema claro (no Ônix dá 9,3:1, e
+aí pode); e `--brand-reverse #372E25`, o tal pixel medido.
+
+### Tipografia
+
+Fraunces e Instrument Serif eram escolha nossa, de antes do manual, e
+saíram. Entraram as do manual:
+
+- **Cormorant SC** — só o "TRÍADE" da assinatura, caixa alta e tracking
+  amplo, como o manual especifica. Não é fonte de título.
+- **Playfair Display** — títulos, destaques e citações. "Usar sempre
+  Playfair Display" está entre as regras fixas do manual.
+- **Inter** — textos informativos, datas, locais. Já era a fonte de texto;
+  o manual confirmou o papel.
+
+A quarta fonte, **Slight** (o "conecta" da assinatura), **não entrou** e
+está documentado o porquê: é comercial (Up Up Creative), e a licença que a
+marca tem — Desktop — cobre "logo design" e "criação de imagens para
+sites", ou seja, **a logo como desenho**, não `font-family` num site. Isso
+custaria a licença Webfont (~US$27). Como o manual ainda lista "não trocar
+tipografia" entre os usos incorretos, a saída certa é o arquivo oficial da
+logo, não uma fonte parecida. Enquanto ele não vem, o "conecta" está em
+Playfair itálico, **marcado como provisório** no código e nos documentos.
+
+O cliente havia citado **Mont** como segunda fonte de texto; a página 04 do
+manual mostra **Inter** nesse papel. Perguntado, confirmou Inter. Registrado
+em `docs/MANUAL-DE-MARCA.md`.
+
+### Contraste: três defeitos que já existiam
+
+A migração exigiu medir tudo de novo, e a medição **no pixel renderizado**
+(não na conta em cima dos tokens) expôs três reprovações da WCAG que já
+estavam no ar antes desta sessão:
+
+| Onde | Antes | Causa | Agora |
+|---|---|---|---|
+| Rótulo inativo da tab bar | 3,0–4,0:1 | a pílula é translúcida, então o contraste mudava conforme o conteúdo que passava por baixo | `--tab-idle` reforçado nos dois temas |
+| "/mês" do plano em destaque (Pérola) | 1,6:1 | herdava `--ink-70`, que é escuro, num card de fundo escuro | token `--on-dark-70` novo, regra escopada |
+| Rótulo **ativo** da tab bar (Pérola) | 4,3:1 | a pílula clareava demais sobre a página creme | fundo próprio para a pílula, mais escuro e ainda translúcido |
+
+Resultado medido depois, nas cinco telas e nos dois temas: **zero
+reprovações** (era 14 no Ônix e 37 no Pérola quando a medição começou).
+
+### Landing
+
+Mesma paleta, mesmas fontes. Além disso:
+
+- A barra fixa ainda dizia **"19 de setembro"** e o fecho falava em **"85
+  vagas"** — restos do conteúdo mock que escaparam da rodada anterior.
+- Faltava **`<meta viewport>`**. Dentro do artifact o invólucro injeta a
+  dele e escondia o problema; publicada em `/convite.html`, a página
+  montaria a 980px no celular e apareceria reduzida.
+- Artifact republicado no mesmo endereço, com as fotos embutidas em `data:`
+  URI (a CSP do artifact bloqueia imagem externa).
+
+### Nota de método
+
+Duas armadilhas que valem para a próxima sessão, registradas porque as duas
+quase produziram conclusão errada:
+
+1. **O Google Fonts não é alcançável do contêiner** (ERR_CONNECTION_RESET,
+   com ou sem proxy). Toda captura de tela sai em fonte de fallback, e
+   "parece serifada" não é o mesmo que "é a Playfair". A verificação só
+   passou a valer depois de servir os `.woff2` do disco no Playwright.
+2. **`document.fonts.check()` mente** — devolve `true` mesmo quando o
+   navegador só arranjou um fallback. O que não mente é a lista de faces
+   com `status === 'loaded'`.
+
+---
+
 ## v2.6.0 — Landing page de captação (rascunho)
 **Sessão 17 — 27/08/2026**
 

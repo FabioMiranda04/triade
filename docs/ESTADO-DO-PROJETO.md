@@ -3,8 +3,42 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v2.5.0`
-**Última atualização:** 26/08/2026
+**Versão atual:** `v3.0.0`
+**Última atualização:** 31/08/2026
+
+**Última sessão (19, 31/08/2026) — Manual de Marca.** As sócias entregaram
+o manual da marca, e ele passou a ser a **fonte de verdade da camada 1 do
+`tokens.css`**: os hex de marca não são mais escolha nossa. Transcrito em
+**`docs/MANUAL-DE-MARCA.md`** (leia esse, não o PDF); o original está em
+`docs/marca/`.
+
+O que mudou de concreto:
+
+- **Paleta oficial** no lugar da nossa — Dourado `#C9A66B`, Cream Quartz,
+  Almond, Sand, Walnut, Deep Maroon, Burgundy `#65202D`, Olive e Moss. Os
+  dois temas foram remapeados papel a papel; sumiram os dois azuis que
+  sobravam (mesh e placeholder), porque o manual não tem azul.
+- **Tipografia oficial**: Cormorant SC no "TRÍADE" da assinatura, Playfair
+  Display em títulos e citações, Inter nos textos informativos. Fraunces e
+  Instrument Serif saíram — eram escolha nossa, de antes do manual.
+- **Contraste**: três reprovações da WCAG que já existiam foram corrigidas
+  (rótulo da tab bar nos dois temas, "/mês" do plano em destaque no
+  Pérola). Medição no pixel renderizado: de 14 e 37 reprovações para
+  **zero**, nos dois temas.
+- **Landing** com a mesma paleta e as mesmas fontes, artifact republicado.
+
+**Duas coisas ficaram pendentes e dependem de terceiros**, não de código:
+
+1. **Os arquivos oficiais da logomarca** (SVG, ou PNG com transparência).
+   Sem eles, o "conecta" da assinatura está em Playfair itálico como
+   **substituto provisório** — a fonte original, Slight, é comercial, e a
+   licença que a marca tem cobre a logo como desenho, não como
+   `font-family` num site. Alternativa paga: licença Webfont (~US$27).
+2. **O tema padrão.** O manual é uma marca **clara** (a versão principal da
+   logo é dourado sobre claro), mas o app abre no **Ônix** por decisão do
+   cliente nesta mesma sessão — amparada pela versão "clara / uso reverso"
+   que o próprio manual aprova. Não é violação, é escolha; está registrada
+   para não se perder.
 **Última sessão (16, 25/08/2026):** entrou o **tema "Ônix"** (preto,
 branco e detalhes dourados), selecionável em **Configurações → Aparência**
 — pedido a partir de um questionamento de uma das sócias sobre a paleta.
@@ -59,7 +93,8 @@ que existiam como mock **não existem mais** — foram substituídas por
 edições reais (Casa Benedita, Carla Martins, 6ª, 9ª, Maio, 11ª) e pelo
 próximo evento de verdade, o Jantar da Tríade para Casais (30/09/2026).
 Qualquer texto do projeto que ainda cite "3 edições" ou "85+ mulheres" é
-resíduo do mock — inclusive o rascunho em `landing/`.
+resíduo do mock. A `landing/` foi limpa em 31/08/2026 (ela ainda tinha "85
+vagas" no fecho e "19 de setembro" na barra fixa).
 
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
 retrospectiva) concluído no código** — controle Lista/Calendário, card

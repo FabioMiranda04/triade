@@ -5,9 +5,11 @@ aqui, e não em `src/`, de propósito: **não faz parte do app** e não entra
 no build. É um `.html` autocontido — abrir o arquivo no navegador já mostra
 a página inteira, sem servidor, sem `npm install`.
 
-**Status: rascunho aprovado em conceito, pendente de ajustes.** Apresentado
-às sócias em 27/08/2026 e bem recebido; a lista do que falta está no fim
-deste arquivo.
+**Status: alinhado ao Manual de Marca (31/08/2026).** Apresentado às sócias
+em 27/08/2026 e bem recebido; depois disso o manual da marca chegou e a
+página foi refeita nas cores e nas fontes oficiais, e o conteúdo mock deu
+lugar aos dados reais. A lista do que ainda falta está no fim deste
+arquivo.
 
 ## Link de revisão
 
@@ -20,6 +22,20 @@ mecanismo de artifact aceita a URL como destino). Publicar sem informar a
 URL cria um artifact novo, e aí passam a existir duas versões circulando
 entre as sócias — que é exatamente o problema que este arquivo existe para
 evitar.
+
+Duas coisas que já pegaram e vão pegar de novo:
+
+1. **O link compartilhado fica preso numa versão.** Republicar não move
+   sozinho o que as sócias enxergam — quem tem o link continua vendo a
+   versão fixada até alguém mover o "share pin" no menu de compartilhar da
+   página. Publicou e elas dizem que está igual? É isso.
+2. **A CSP do artifact bloqueia imagem externa.** As fotos do Supabase
+   simplesmente não aparecem lá. A versão publicada é gerada a partir deste
+   arquivo com as fotos embutidas em `data:` URI (redimensionadas para
+   ~900px e ~500px, JPEG 78 — o arquivo fica em torno de 650 KB). **Este
+   arquivo aqui continua apontando para as URLs do Supabase**, que é o certo
+   quando ele virar `public/convite.html` na Vercel. Não troque um pelo
+   outro.
 
 ## As decisões que já estão tomadas
 
@@ -38,45 +54,71 @@ nenhum contexto sobre a marca.
   consegue entregar.
 - **A primeira tela se basta**: marca, o que é, data do próximo encontro e o
   botão — sem rolar. Quem desistiu de rolar já teve o essencial.
-- **O roteiro das 5h existe por um motivo**: o medo de quem nunca foi não é
-  o preço, é "vou chegar e não vou saber o que fazer". Mostrar hora a hora
-  resolve isso melhor que texto de venda.
-- **Visual comprometido com o Ônix** (preto quente + dourado), o mesmo tema
-  padrão do app, igual para todo mundo — página de marca não segue o tema
-  do aparelho.
+- **Contar o que acontece num encontro existe por um motivo**: o medo de
+  quem nunca foi não é o preço, é "vou chegar e não vou saber o que fazer".
+  A primeira versão fazia isso com um roteiro hora a hora (14h/15h/17h/
+  18h30) que **eu inventei** — não batia com o formato real. Virou "O que
+  acontece numa edição", que descreve o que de fato acontece, sem fingir
+  precisão que ninguém confirmou.
+- **Visual comprometido com um mundo só** — igual para todo mundo, porque
+  página de marca não segue o tema do aparelho. Esse mundo é a versão
+  **"clara / uso reverso"** que o manual aprova na seção 06: assinatura
+  creme e dourada sobre fundo escuro, o mesmo tema padrão do app. Vale
+  saber que a versão **principal** do manual é o contrário (dourado sobre
+  claro); virar a página para esse lado é trocar `--preto` por `--creme` e
+  `--creme` por `--walnut` nos tokens do topo do arquivo, e mais nada.
+- **Cores e fontes são as oficiais**, não aproximações: Dourado `#C9A66B`,
+  Cream Quartz, Sand, Burgundy, Walnut, Olive; Cormorant SC no "TRÍADE",
+  Playfair Display nos títulos, Inter nos textos informativos. Se for mexer
+  em qualquer uma delas, leia antes `docs/MANUAL-DE-MARCA.md`.
 - **A estrutura é a própria tríade**: as três setas da marca separam as
   seções, os números são três, as idealizadoras são três. É o que faz a
   página parecer dela e não um template.
 
 ## Ajustes pendentes
 
-Levantados com as sócias em 27/08/2026:
+Levantados com as sócias em 27/08/2026. **Riscados = resolvidos em
+31/08/2026**, na rodada do manual de marca.
 
-- [ ] **Padding e formatação** — revisão de espaçamentos em geral.
-- [ ] **Imagens** — as quatro fotos ainda são espaços reservados, mas
-      **o material já existe**: o Módulo 11 fechou em 26/08/2026 e há 11
-      fotos reais no bucket `media` do Supabase Storage, em
-      `media/<slug-da-edição>/foto-N.jpg`. É só apontar as URLs.
-- [ ] **Verossimilhança das informações — os números do rascunho estão
-      DESATUALIZADOS.** O rascunho foi escrito antes do Módulo 11 fechar e
-      usa o conteúdo mock que existia então. Os dados reais já estão em
-      `src/data/seed.ts` desde 26/08/2026:
+- [x] ~~**Padding e formatação**~~ — revisto junto com a troca de fontes.
+      A página foi medida em 375px: zero rolagem lateral.
+- [x] ~~**Imagens**~~ — as três fotos são reais, do bucket `media` do
+      Supabase Storage (edição com Carla Martins, com Geórgia Maia, e a
+      11ª). São capturas de Stories 9:16 com legenda queimada no rodapé;
+      por isso o recorte é `object-position: 50% 28%`, que corta a legenda
+      e mantém os rostos.
+- [x] ~~**Verossimilhança das informações**~~ — os números do mock saíram:
+      próximo encontro é o **Jantar da Tríade para Casais, 30/09/2026**,
+      "11+ edições", e o roteiro inventado das 5h virou "O que acontece
+      numa edição". O "85 vagas" do fecho e o "19 de setembro" da barra
+      fixa também eram restos do mock e foram corrigidos.
+- [x] ~~**Descrição da Cris Miranda**~~ — "Estilo · Contadora e consultora
+      de estilo".
+- [x] **Faltava `<meta viewport>`** (não estava na lista, apareceu na
+      medição): sem ela o celular monta a página num viewport de 980px e
+      mostra tudo reduzido. Dentro do artifact o invólucro injetava a dele
+      e escondia o problema; publicada em `/convite.html` seria visível.
 
-      | No rascunho (errado) | Real |
-      |---|---|
-      | Próximo encontro: 19 de setembro | **Jantar da Tríade para Casais, 30/09/2026** |
-      | "3 edições realizadas" | **11+ edições** |
-      | "85+ mulheres na mesa" | número real a confirmar |
-      | Convidada: — | Geórgia Maia, Carla Martins e outras já passaram |
+Ainda em aberto:
 
-      O roteiro das 5h (14h/15h/17h/18h30) também é suposição minha e
-      precisa bater com o formato real dos encontros.
-- [ ] **Depoimento é fictício.** Precisa ser real, com nome e negócio, ou
-      sair da página.
-- [ ] **Descrição da Cris Miranda** está marcada como pendente no HTML.
+- [ ] **Depoimento.** O fictício saiu e no lugar entrou a frase da própria
+      marca. Um depoimento real, com nome e negócio, é melhor — mas só
+      entra quando existir de verdade.
+- [ ] **Assinatura da marca.** O "TRÍADE" já sai em Cormorant SC, correto.
+      O "conecta" está em Playfair itálico, que é um **substituto
+      provisório**: a fonte original (Slight) é comercial e a licença que a
+      marca tem cobre a logo como desenho, não como fonte em site. Fecha
+      com o arquivo oficial da logomarca (SVG) ou com a licença Webfont
+      (~US$27). Ver `docs/MANUAL-DE-MARCA.md`, seção 4.
 - [ ] **Texto da headline** — proposta minha; vale as sócias lerem em voz
       alta e verem se soa como elas.
 - [ ] **Links do WhatsApp e do Instagram** estão em `href="#"`.
+- [ ] **O QR vai cair num jantar de casais.** O próximo encontro real é o
+      Jantar da Tríade para Casais, e a página inteira promete um encontro
+      de cinco horas entre empreendedoras. Para quem escaneia o outdoor sem
+      conhecer a marca, é uma primeira impressão contraditória. Decisão das
+      sócias: apontar o QR para a próxima edição regular, ou assumir o
+      jantar e ajustar a promessa da página.
 
 ## Quando for para valer
 

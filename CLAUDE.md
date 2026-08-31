@@ -4,9 +4,11 @@
 > deste repositório. Estado atual detalhado: `docs/ESTADO-DO-PROJETO.md`.
 > Histórico: `docs/CHANGELOG.md`. Manual de UI/UX (tokens, pop-ups, ícones,
 > animação, navegação): `docs/DESIGN-SYSTEM.md` — invoque a skill
-> `design-systems` antes de qualquer trabalho de interface. Sessão
-> interrompida no meio do trabalho? Confira `docs/LAST-SESSION.md` antes de
-> perguntar o que estava pendente (regra 15).
+> `design-systems` antes de qualquer trabalho de interface. **Cor de marca
+> ou fonte:** `docs/MANUAL-DE-MARCA.md` é a fonte de verdade e vem antes do
+> design system (regra 16). Sessão interrompida no meio do trabalho?
+> Confira `docs/LAST-SESSION.md` antes de perguntar o que estava pendente
+> (regra 15).
 
 ## 1. O que é
 
@@ -97,9 +99,18 @@ landing/                  # página de captação do QR code do outdoor — NÃO
 └── README.md             #   status, decisões tomadas, ajustes pendentes e link de revisão
 ```
 
+```
+docs/
+├── MANUAL-DE-MARCA.md    # a marca oficial transcrita — cores, fontes,
+│                         #   logo, regras. FONTE DE VERDADE da camada 1
+└── marca/                #   o PDF original do manual (não precisa abrir)
+```
+
 `docs/DESIGN-SYSTEM.md` é o manual de UI/UX (tokens, pop-ups, ícones,
 animação, navegação) — leia antes de mexer em interface, via skill
-`design-systems`.
+`design-systems`. Ele diz **como** as cores viram interface;
+`docs/MANUAL-DE-MARCA.md` diz **quais** são as cores, e ganha quando os
+dois discordam.
 
 ## 5. Regras do projeto (importantes)
 
@@ -155,6 +166,19 @@ animação, navegação) — leia antes de mexer em interface, via skill
     Assim que uma sessão futura retomar esse trabalho e ele for concluído,
     esvazie `docs/LAST-SESSION.md` de volta pro estado "nada pendente" — ele
     registra trabalho **interrompido**, não é mais um changelog.
+16. **Cor de marca e fonte têm dono externo: o Manual de Marca**
+    (`docs/MANUAL-DE-MARCA.md`, original em `docs/marca/`). Os `--brand-*`
+    de `tokens.css` e as famílias tipográficas **não são escolha de
+    design** — se um valor diverge do manual, o código está errado, por
+    mais bonita que a tela fique. Mudou o manual? Atualize
+    `docs/MANUAL-DE-MARCA.md` primeiro, o código depois. Precisa de um tom
+    que o manual não tem (por acessibilidade, por exemplo)? Ele é
+    **derivado**, entra com comentário explicando a medição que o motivou,
+    e é registrado como "decisão nossa" no documento do manual — foi assim
+    que nasceram `--brand-gold-deep` e `--brand-reverse`. E: **fonte
+    comercial não entra como `font-family` sem licença web** — a Slight
+    (o "conecta" da assinatura) é o caso concreto, explicado na seção 4
+    daquele documento.
 
 ## 6. Como adicionar coisas
 
@@ -178,14 +202,15 @@ fonte que a usuária fez no celular. Controle que vive em espaço fixo (tab
 bar, cabeçalho) usa `--fs-chrome-*`. Detalhes: `docs/DESIGN-SYSTEM.md`,
 seção 1.5.
 
-**Nova cor / novo tema:** o app tem dois temas — **Ônix** (padrão,
-preto/branco/dourado, mora no `:root`) e **Pérola** (claro, em
-`[data-theme='perola']`), escolhidos em Configurações → Aparência. Toda cor
-nova vira token **nos dois blocos** de `src/styles/tokens.css` (`:root` e
-`[data-theme='onyx']`) — nunca um seletor de tema dentro do CSS de um
+**Nova cor / novo tema:** o app tem dois temas — **Ônix** (padrão, fundo
+escuro com o dourado da marca, mora no `:root`) e **Pérola** (creme e
+burgundy, em `[data-theme='perola']`), escolhidos em Configurações →
+Aparência. Toda cor nova vira token **nos dois blocos** de
+`src/styles/tokens.css` — nunca um seletor de tema dentro do CSS de um
 componente, e nunca cor de marca gravada em conteúdo (gradiente em
-`seed.ts` usa a escala `--ph-1..5`). Receita completa e como adicionar um
-terceiro tema: `docs/DESIGN-SYSTEM.md`, seção 1.
+`seed.ts` usa a escala `--ph-1..5`). **A camada 1 (`--brand-*`) não se
+inventa**: os valores são os do manual (regra 16). Receita completa e como
+adicionar um terceiro tema: `docs/DESIGN-SYSTEM.md`, seção 1.
 
 **Novo pop-up:** sempre via `<ModalOverlay onClose={onClose}>` por dentro
 — nunca escreva `<div className="modal-overlay">` à mão (quebra
@@ -237,9 +262,16 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   26/08/2026): 11 fotos no bucket `media` do Supabase Storage. O resto das
   "imagens" do app continua sendo gradiente (escala `--ph-1..5`, que
   responde ao tema).
-- **Dois temas existem** (Pérola, padrão, e Ônix), escolhidos em
+- **Dois temas existem** (Ônix, padrão, e Pérola), escolhidos em
   Configurações → Aparência. Não existe seguir o tema do sistema
   (`prefers-color-scheme`) nem agendar por horário — é escolha manual.
+- **Os arquivos oficiais da logomarca não existem no repositório.** A
+  assinatura do cabeçalho é montada em texto: o "TRÍADE" sai correto em
+  Cormorant SC, mas o "conecta" está em Playfair itálico como
+  **substituto provisório** — a fonte original (Slight) é comercial e a
+  licença da marca cobre a logo como desenho, não como fonte em site. Não
+  troque por outra script "parecida": o manual lista "não trocar
+  tipografia" como uso incorreto. Ver `docs/MANUAL-DE-MARCA.md`, seção 4.
 - Sem pagamento. Escolher plano só grava a escolha localmente.
 - Sem painel administrativo de verdade (a UI de edição acima não conta —
   falta o backend com permissão real, ver Módulo 5).
