@@ -104,12 +104,11 @@ Ainda em aberto:
 - [ ] **Depoimento.** O fictício saiu e no lugar entrou a frase da própria
       marca. Um depoimento real, com nome e negócio, é melhor — mas só
       entra quando existir de verdade.
-- [ ] **Assinatura da marca.** O "TRÍADE" já sai em Cormorant SC, correto.
-      O "conecta" está em Playfair itálico, que é um **substituto
-      provisório**: a fonte original (Slight) é comercial e a licença que a
-      marca tem cobre a logo como desenho, não como fonte em site. Fecha
-      com o arquivo oficial da logomarca (SVG) ou com a licença Webfont
-      (~US$27). Ver `docs/MANUAL-DE-MARCA.md`, seção 4.
+- [x] **Assinatura da marca** — resolvida em 31/08/2026. "TRÍADE" em
+      Cormorant SC e "conecta" com o traço original da logomarca, recortado
+      do manual e embutido como máscara (a cor sai do CSS, então ele
+      acompanha a paleta). Não precisou comprar a licença da Slight. Ver
+      `docs/MANUAL-DE-MARCA.md`, seção 4.
 - [ ] **Texto da headline** — proposta minha; vale as sócias lerem em voz
       alta e verem se soa como elas.
 - [ ] **Links do WhatsApp e do Instagram** estão em `href="#"`.

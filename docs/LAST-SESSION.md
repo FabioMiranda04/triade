@@ -17,13 +17,16 @@ Manual de Marca — app e landing — e a documentação foi atualizada junto
 Duas pendências reais, mas **nenhuma delas é código travado** — as duas
 dependem de alguém de fora:
 
-1. **Arquivos oficiais da logomarca.** Faltam o SVG (ou PNG com
-   transparência) das versões que o manual aprova. Sem eles, o "conecta" da
-   assinatura está em Playfair itálico, marcado como provisório no código,
-   no `DESIGN-SYSTEM.md` (§1.8) e no `MANUAL-DE-MARCA.md` (§4). Não resolva
-   isso trocando por outra fonte script parecida: o manual lista "não trocar
-   tipografia" como uso incorreto da logo. Se as sócias preferirem texto
-   vivo em vez de imagem, o caminho é a licença Webfont da Slight (~US$27).
+1. **Um erro no próprio manual, para as sócias levarem a quem o produziu.**
+   Na página 03, o item "1. LOGOMARCA PRINCIPAL" traz a palavra escrita
+   **"coneecta"**, com dois "e". As versões da página 06 estão corretas.
+   Não afeta o código (a máscara do "conecta" foi tirada da página 06), mas
+   afeta qualquer material que alguém produza copiando aquela página.
+
+   *(A pendência da fonte Slight, que estava aqui, foi resolvida: o
+   "conecta" virou desenho — máscara alfa em `public/marca/conecta.png`,
+   recortada da própria logomarca. Não precisou comprar licença. Se um dia
+   aparecer o SVG oficial, ele melhora o uso em tamanho grande, só isso.)*
 2. **O QR do outdoor vai cair num jantar de casais.** O próximo encontro
    real é o Jantar da Tríade para Casais (30/09), e a landing inteira
    promete um encontro de cinco horas entre empreendedoras. Para quem

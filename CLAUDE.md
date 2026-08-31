@@ -265,13 +265,14 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 - **Dois temas existem** (Ônix, padrão, e Pérola), escolhidos em
   Configurações → Aparência. Não existe seguir o tema do sistema
   (`prefers-color-scheme`) nem agendar por horário — é escolha manual.
-- **Os arquivos oficiais da logomarca não existem no repositório.** A
-  assinatura do cabeçalho é montada em texto: o "TRÍADE" sai correto em
-  Cormorant SC, mas o "conecta" está em Playfair itálico como
-  **substituto provisório** — a fonte original (Slight) é comercial e a
-  licença da marca cobre a logo como desenho, não como fonte em site. Não
-  troque por outra script "parecida": o manual lista "não trocar
-  tipografia" como uso incorreto. Ver `docs/MANUAL-DE-MARCA.md`, seção 4.
+- **Não existe SVG oficial da logomarca no repositório** — e não faz falta
+  hoje. A assinatura do cabeçalho está correta: "TRÍADE" em Cormorant SC
+  (a fonte real, do Google Fonts) e "conecta" como **máscara alfa** em
+  `public/marca/conecta.png`, recortada da logomarca do manual, colorida
+  por `currentColor` para acompanhar o tema. Um SVG só seria melhor para
+  uso em tamanho grande. **Não troque a máscara por uma fonte script
+  "parecida"**: "não trocar tipografia" está na lista de usos incorretos do
+  manual. Detalhes em `docs/MANUAL-DE-MARCA.md`, seção 4.
 - Sem pagamento. Escolher plano só grava a escolha localmente.
 - Sem painel administrativo de verdade (a UI de edição acima não conta —
   falta o backend com permissão real, ver Módulo 5).

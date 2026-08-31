@@ -161,6 +161,16 @@ body.modal-open .mesh span {
    é metade do que faz a palavra ler como a logo e não como um h1 qualquer.
    O `padding-right` compensa o espaço que o tracking adiciona depois da
    última letra, senão o "conecta" parece deslocado. */
+/* A assinatura empilha "conecta" sob "TRÍADE", como o lockup do manual.
+   Antes isso acontecia por quebra de linha acidental (o `.tag` virou
+   inline-block com largura e transbordou) — o que funcionava e podia
+   deixar de funcionar a qualquer ajuste de largura. Aqui é explícito. */
+.brand-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
 .brand .name {
   font-family: var(--font-brand);
   font-size: var(--fs-chrome-lg);
@@ -168,13 +178,34 @@ body.modal-open .mesh span {
   letter-spacing: 0.13em;
   padding-right: 0.13em;
 }
+/* O "conecta" é DESENHO, não texto — a fonte dele (Slight) é do logotipo e
+   não pode virar `font-family` num site (MANUAL-DE-MARCA.md, §4). Então
+   aqui entra o traço original, recortado da própria logomarca do manual,
+   como MÁSCARA: a cor vem de `currentColor`, então ele acompanha o tema
+   sem existirem duas imagens.
+
+   O texto continua no DOM. Sem suporte a `mask`, o bloco `@supports` não
+   se aplica e ele aparece como texto, em Playfair itálico — que é a fonte
+   que o manual autoriza para texto. */
 .brand .tag {
   font-family: var(--font-script);
   font-style: italic;
   color: var(--accent);
   font-size: var(--fs-chrome-md);
-  /* sem esse respiro "TRÍADEconecta" lê como uma palavra só */
-  margin-left: 5px;
+}
+@supports ((mask-image: url('')) or (-webkit-mask-image: url(''))) {
+  .brand .tag {
+    display: inline-block;
+    vertical-align: -0.06em;
+    /* medidas em cima do token, não em `em`: o `font-size: 0` que esconde
+       o texto de fallback zeraria qualquer `em` daqui */
+    width: calc(var(--fs-chrome-md) * 5.05);
+    height: calc(var(--fs-chrome-md) * 0.96);
+    font-size: 0;
+    background-color: currentColor;
+    -webkit-mask: url('/marca/conecta.png') no-repeat center / contain;
+    mask: url('/marca/conecta.png') no-repeat center / contain;
+  }
 }
 .top-actions {
   display: flex;
@@ -245,13 +276,12 @@ body.modal-open .mesh span {
     display: inline;
   }
 }
-@media (max-width: 389px) {
-  /* a assinatura sai; o nome e o símbolo seguem identificando a marca, e
-     "conecta" continua por extenso na tela Sobre */
-  .brand .tag {
-    display: none;
-  }
-}
+/* Aqui existia uma regra que escondia o "conecta" abaixo de 390px: com as
+   duas palavras lado a lado, a assinatura media ~165px e disputava espaço
+   com o CTA. Empilhada, ela mede a largura do "TRÍADE" (~110px) e o
+   "conecta", com 66px, cabe embaixo de graça. A regra saiu, e a assinatura
+   completa voltou para as telas pequenas — medido em 360 e 375px, a folga
+   até o bloco de ações não mudou. */
 
 .app-main {
   flex: 1 1 auto;

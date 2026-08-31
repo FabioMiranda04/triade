@@ -237,11 +237,23 @@ só uso pessoal, o que não cobre a Tríade. Some-se a isso que o manual lista
 "não trocar tipografia" como uso incorreto da logo: a saída certa não é
 achar uma parecida, é a assinatura ser o arquivo oficial da marca.
 
-**Estado atual:** o "TRÍADE" já sai em Cormorant SC (idêntico ao manual).
-O "conecta" está em Playfair Display itálico como **substituto provisório**
-— não é a Slight e não pretende ser. Fechar isso é trocar o par
-`.brand .name` + `.brand .tag` pelo arquivo oficial da logo (SVG de
-preferência), ou comprar a licença Webfont.
+**Como o "conecta" é feito, então.** Ele é **desenho**: o traço original,
+recortado da logomarca do manual a 400 dpi e guardado como máscara alfa em
+`public/marca/conecta.png`. O CSS aplica `mask-image` com
+`background-color: currentColor`, então ele **acompanha o tema** — dourado
+no Ônix, burgundy no Pérola — sem existirem duas imagens. Na landing a
+mesma máscara vai embutida em `data:` URI, porque aquele arquivo é
+autocontido.
+
+O texto "conecta" continua no DOM, dentro de um `@supports (mask-image)`:
+onde `mask` não existe, sobra o texto em Playfair itálico. **Não troque a
+máscara por uma fonte script "parecida"** — "não trocar tipografia" está na
+lista de usos incorretos da logo.
+
+O par `.brand .name` + `.brand .tag` vive dentro de `.brand-lockup`, que
+empilha as duas palavras como o lockup do manual. O empilhamento é
+explícito (flex column), não quebra de linha: já aconteceu de funcionar por
+acidente, e acidente não sobrevive ao próximo ajuste de largura.
 
 ---
 

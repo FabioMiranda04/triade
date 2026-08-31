@@ -19,7 +19,7 @@ export function TopBar() {
       <div className="sheen" />
       <button className="brand" onClick={() => navigate('/')} aria-label="Ir para o início">
         <Mark size={28} />
-        <span>
+        <span className="brand-lockup">
           <span className="name">TRÍADE</span>
           <span className="tag">conecta</span>
         </span>

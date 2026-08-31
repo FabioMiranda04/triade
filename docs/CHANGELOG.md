@@ -63,14 +63,25 @@ saíram. Entraram as do manual:
 - **Inter** — textos informativos, datas, locais. Já era a fonte de texto;
   o manual confirmou o papel.
 
-A quarta fonte, **Slight** (o "conecta" da assinatura), **não entrou** e
-está documentado o porquê: é comercial (Up Up Creative), e a licença que a
-marca tem — Desktop — cobre "logo design" e "criação de imagens para
-sites", ou seja, **a logo como desenho**, não `font-family` num site. Isso
-custaria a licença Webfont (~US$27). Como o manual ainda lista "não trocar
-tipografia" entre os usos incorretos, a saída certa é o arquivo oficial da
-logo, não uma fonte parecida. Enquanto ele não vem, o "conecta" está em
-Playfair itálico, **marcado como provisório** no código e nos documentos.
+A quarta fonte, **Slight** (o "conecta" da assinatura), **não entrou como
+fonte** — e não precisava. Ela é comercial (Up Up Creative), e a licença
+que a marca tem, Desktop, cobre "logo design" e "criação de imagens para
+sites": **a logo como desenho**, não `font-family` num site (isso seria a
+licença Webfont, ~US$27). Some-se "não trocar tipografia" estar entre os
+usos incorretos, e a saída era tratar a assinatura como o que ela é.
+
+Então o "conecta" virou **desenho**: o traço original, recortado da
+logomarca da página 06 do manual a 400 dpi, guardado como máscara alfa em
+`public/marca/conecta.png` (300×57, 10 KB) e aplicado com `mask-image` +
+`background-color: currentColor` — por isso ele muda de cor com o tema,
+dourado no Ônix e burgundy no Pérola, sem existirem duas imagens. O texto
+segue no DOM dentro de um `@supports (mask-image)`, como reserva.
+
+Efeito colateral bom: empilhada como o lockup do manual, a assinatura mede
+a largura do "TRÍADE" (~110px) em vez dos ~165px que media lado a lado.
+Com isso caiu a regra que escondia o "conecta" abaixo de 390px — a
+assinatura completa voltou para as telas pequenas, e a folga do cabeçalho
+não mudou (medido em 360, 375, 390 e 430px).
 
 O cliente havia citado **Mont** como segunda fonte de texto; a página 04 do
 manual mostra **Inter** nesse papel. Perguntado, confirmou Inter. Registrado
@@ -102,6 +113,13 @@ Mesma paleta, mesmas fontes. Além disso:
   montaria a 980px no celular e apareceria reduzida.
 - Artifact republicado no mesmo endereço, com as fotos embutidas em `data:`
   URI (a CSP do artifact bloqueia imagem externa).
+
+### Erro achado no manual
+
+A página 03, no item **"1. LOGOMARCA PRINCIPAL"** — justamente a arte que
+um designer copiaria —, traz a palavra escrita **"coneecta"**, com dois
+"e". As versões da página 06 estão corretas, e foi de lá que a máscara
+saiu. Registrado para as sócias corrigirem com quem produziu o manual.
 
 ### Nota de método
 

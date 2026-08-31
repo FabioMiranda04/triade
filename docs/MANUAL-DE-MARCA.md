@@ -106,26 +106,49 @@ A página 04 do manual não cita a Mont — nesse papel ela mostra a **Inter**.
 Perguntado, o cliente confirmou **Inter**. A Mont (Fontfabric) é comercial e
 não está no Google Fonts; se um dia entrar, exige os arquivos licenciados.
 
-### O caso da Slight
+### O caso da Slight — resolvido sem comprar fonte
 
 A Slight é da **Up Up Creative**, vendida no Creative Market em licenças
 separadas por uso: Desktop ~US$32, **Webfont ~US$27**, E-pub, App. Os sites
 que a distribuem "de graça" liberam **apenas uso pessoal**, o que não cobre
-a Tríade.
+a Tríade. E "uso pessoal" não existe para webfont em site público: o
+arquivo é entregue a cada visitante, o que é redistribuição por definição.
 
-A licença Desktop — que é a que provavelmente foi usada para desenhar a
-logo — cobre *"logo design"* e *"creation of images for websites"*. Ou seja:
-**a logo como desenho já está licenciada; a fonte como `font-family` num
-site, não.**
+Mas a licença Desktop — a que foi usada para desenhar a logo — cobre
+*"logo design"* e *"creation of images for websites"*. Ou seja: **a logo
+como desenho já está licenciada.** Somado a "não trocar tipografia" estar
+na lista de usos incorretos, a saída não era comprar fonte nem achar uma
+parecida: era tratar a assinatura como o que ela é, **desenho**.
 
-Somado a "não trocar tipografia" estar na lista de usos incorretos, a
-conclusão é que a assinatura deve ser o **arquivo oficial da marca**
-(SVG de preferência), não texto renderizado com uma fonte parecida.
+**Como está no código:** o `conecta` é o traço original, recortado da
+própria logomarca do manual (página 06, "1. Logo principal", a 400 dpi) e
+guardado como **máscara alfa** em `public/marca/conecta.png` (300×57,
+10 KB). O CSS aplica `mask-image` com `background-color: currentColor` —
+por isso ele muda de cor junto com o tema, dourado no Ônix e burgundy no
+Pérola, sem existirem duas imagens. Na `landing/convite.html` a mesma
+máscara vai embutida em `data:` URI, porque aquele arquivo precisa
+funcionar sozinho.
 
-**Estado no código:** `TRÍADE` já sai em Cormorant SC, idêntico ao manual.
-O `conecta` está em **Playfair Display itálico, como substituto provisório**
-— não é a Slight e não finge ser. Para fechar: ou o arquivo oficial da logo,
-ou a licença Webfont.
+O texto "conecta" continua no DOM. O bloco é um `@supports (mask-image)`;
+onde `mask` não existe, sobra o texto em Playfair itálico, que é fonte que
+o manual autoriza para texto.
+
+O `TRÍADE` sai em Cormorant SC, que é a fonte real e está no Google Fonts.
+Então a assinatura inteira está correta hoje, sem pendência de licença.
+
+**O que ainda ajudaria:** os arquivos vetoriais oficiais. A máscara é
+raster, tirada de um JPEG de 300 dpi — ótima nos tamanhos em que a
+assinatura aparece (66×12 px no cabeçalho), mas um SVG seria melhor para
+um uso grande, tipo material impresso ou uma tela de abertura.
+
+### Erro encontrado no manual
+
+A página 03, no item **"1. LOGOMARCA PRINCIPAL"** — justamente a versão que
+um designer copiaria —, traz a palavra escrita **"coneecta"**, com dois
+"e". As versões da página 06 estão corretas ("conecta"), e foi de lá que a
+máscara do código foi tirada. Vale as sócias corrigirem o arquivo com quem
+produziu o manual, senão o erro se propaga para tudo que for feito a partir
+dessa página.
 
 ## 5. Imagens
 
@@ -146,13 +169,17 @@ desfocado. Nada saturado, nada azul.
 | Paleta (seção 3) | `src/styles/tokens.css`, camada 1 (`--brand-*`) |
 | Tipografia (seção 4) | `src/styles/tokens.css` (`--font-brand`, `--font-display`, `--font-ui`) + `<link>` do Google Fonts em `index.html` |
 | Símbolo da seta tripla | `src/components/Brand.tsx` (`Mark`) e o SVG inline da `landing/convite.html` |
-| Assinatura no cabeçalho | `.brand .name` / `.brand .tag` em `src/styles/layout.css` |
+| Assinatura no cabeçalho | `.brand-lockup` / `.brand .name` / `.brand .tag` em `src/styles/layout.css` |
+| O traço do "conecta" | `public/marca/conecta.png` (máscara alfa) e o mesmo arquivo em `data:` URI dentro de `landing/convite.html` |
 | Como as cores viram papéis de interface | `docs/DESIGN-SYSTEM.md`, seções 1.1 a 1.3 |
 
 ## 7. O que ainda falta da marca
 
-- [ ] **Arquivos oficiais da logo** (SVG, ou PNG com transparência) para
-      substituir a assinatura montada em texto. É o que fecha o `conecta`.
+- [ ] **Arquivos vetoriais oficiais da logo** (SVG). Não bloqueiam nada: a
+      assinatura já está correta, com o `TRÍADE` em Cormorant SC e o
+      `conecta` como máscara recortada do manual. Um SVG só seria melhor
+      para uso em tamanho grande.
+- [ ] **Corrigir o "coneecta" da página 03 do manual** com quem o produziu.
 - [ ] Decidir se o **tema claro** volta a ser o padrão. O manual é uma marca
       clara — a versão principal da logo é dourado sobre claro — mas o app
       abre no Ônix por decisão do cliente (31/08/2026), amparada pela versão
