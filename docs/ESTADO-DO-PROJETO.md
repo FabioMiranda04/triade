@@ -3,7 +3,7 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.0.0`
+**Versão atual:** `v3.1.0`
 **Última atualização:** 31/08/2026
 
 **Última sessão (19, 31/08/2026) — Manual de Marca.** As sócias entregaram
@@ -26,6 +26,15 @@ O que mudou de concreto:
   Pérola). Medição no pixel renderizado: de 14 e 37 reprovações para
   **zero**, nos dois temas.
 - **Landing** com a mesma paleta e as mesmas fontes, artifact republicado.
+
+Na segunda metade da sessão (`v3.1.0`) entrou a fila de ajustes de tela
+(respiro no topo, idealizadoras empilhadas e em ordem alfabética, fotos
+reais nas miniaturas das edições), as convidadas reais na lista de
+palestrantes, duas animações (selo de novidade em Eventos, anúncio do post
+em destaque) e **o começo do Módulo 5**: permissão via tabela `admins`,
+upload de foto para o Storage e gravação real de evento. **Para isso sair
+do papel, alguém precisa rodar o `schema.sql` e se marcar como admin** —
+passo a passo em `docs/SUPABASE.md`.
 
 **Duas coisas ficaram pendentes e dependem de terceiros**, não de código:
 

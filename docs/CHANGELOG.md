@@ -11,6 +11,88 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.1.0 — Telas, animação e o começo do Módulo 5
+**Sessão 19 (segunda metade) — 31/08/2026**
+
+Fila de pedidos do usuário, resolvida em quatro commits. Cada mudança foi
+medida depois de aplicada, não só olhada.
+
+### Telas
+
+- **Respiro no topo.** O `.panel` abria colado no cabeçalho. O respiro agora
+  mora nele (15px), e a prop `first` do `SectionHead` — que injetava um
+  `margin-top` inline em cada tela — saiu, substituída por
+  `.panel > .sec-head:first-child { margin-top: 0 }`. Sem essa segunda
+  regra os dois espaços somavam e o topo virava 37px.
+- **Idealizadoras empilhadas.** Eram uma faixa com rolagem lateral: em
+  375px cabiam duas e meia, e a Cris ficava fora da tela. São três pessoas
+  fixas — cabem todas. Acima de 560px viram grade de três colunas.
+- **Ordem alfabética** nos nomes, com `byName()` em `lib/format.ts`. Usa
+  `localeCompare` pt-BR: a comparação binária colocaria "Lívia" antes de
+  "Lia", porque o "í" cai depois de qualquer letra sem acento.
+- **Fotos reais nas miniaturas das edições anteriores.** As seis edições já
+  tinham foto no Storage desde o Módulo 11. Tentei tirar a pílula de trás
+  das etiquetas deixando só um véu: não fecha, sobre foto quase branca a
+  data caía para 2,67:1. A pílula voltou, escura e com texto branco nos
+  dois temas — ali o fundo é a fotografia, não a superfície do tema. Pior
+  caso agora: 8,2:1. O rótulo da palestrante, que aparecia truncado como
+  "Idealizador…" em quatro das seis células, agora só aparece quando a
+  edição teve convidada.
+
+### Palestrantes
+
+Entraram **Geórgia Maia** e **Carla Martins**, que o histórico do Módulo 11
+confirma terem conduzido edições e não estavam na lista. Tópico e bio saem
+do que já estava gravado no evento (`theme` e `recapText`). A tela mostra a
+edição que cada uma conduziu, com a ligação saindo do dado que já existe
+(`event.speaker`) em vez de uma coluna nova que sairia de sincronia.
+
+### Animação
+
+- **Selo na aba Eventos**: a estrela de 4 pontas da marca, com brilho de
+  ciclo longo (5,5s, a maior parte em repouso — pulsação contínua vira
+  ruído e o olho aprende a ignorar). Só acende quando existe evento "em
+  breve", então se apaga sozinho quando a agenda esvazia.
+- **Post em destaque se anuncia na abertura**: sobe 12px e um brilho
+  atravessa o card uma vez. Uma vez por carga da página, não a cada visita
+  ao Início — trocar de aba remonta a tela, e um estado de componente faria
+  a animação tocar de novo toda vez.
+- As duas usam só `translate`/`opacity`/`rotate`. Nada de `scale`: as duas
+  vivem dentro de elementos com `backdrop-filter` (§9 do design system).
+
+### Módulo 5 — começado
+
+O app passou a poder gravar conteúdo e subir foto. A escrita não foi
+"liberada": ganhou dono.
+
+- **`admins`**, tabela separada de `profiles` porque a política de
+  `profiles` é `for all` sobre a própria linha — uma coluna `is_admin` ali
+  seria gravável pela própria dona, e qualquer pessoa se promoveria com um
+  update. A tabela nova não tem política de escrita: entra quem for
+  inserido pelo SQL Editor.
+- **`e_admin()`** é `security definer` com `search_path` fixo e `stable`.
+  As políticas de escrita de events/speakers/plans e do bucket `media`
+  chamam ela. As de leitura pública não foram tocadas.
+- **`GaleriaEditor`**, componente novo: o arquivo sobe assim que é
+  escolhido, não no "Salvar" — segurar tudo para enviar de uma vez deixaria
+  a usuária olhando um botão travado sem saber se são 2s ou 40s. Cada foto
+  tem seu estado, e um erro em uma não derruba as outras. A miniatura
+  durante o envio é a prévia local `blob:`, revogada ao desmontar.
+- **O formulário diz onde vai salvar antes de a pessoa digitar**, e o toast
+  diz onde salvou.
+
+Falta palestrante, plano e post — hoje só evento tem gravação real.
+
+### Decisão registrada: o rótulo da aba
+
+"Palestrantes" **não cabe** na navegação. Medido: célula de 59px em 375px
+contra 72px que a palavra pede em 12px; não entra nem a 11px, e alargar a
+pílula ao máximo ainda deixa 4px faltando. As saídas reais (tirar "Sobre"
+da barra, ou voltar à barra fixa) foram apresentadas ao usuário, que
+escolheu manter "Palestras". O título da tela continua "Palestrantes".
+
+---
+
 ## v3.0.0 — Manual de Marca oficial: app e landing espelham a marca
 **Sessão 19 — 31/08/2026**
 
