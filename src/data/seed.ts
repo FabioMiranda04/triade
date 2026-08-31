@@ -16,6 +16,15 @@ import type { Founder, Plan, Post, Speaker, TriadeEvent } from '@/types';
  * número de edição explícito, o título não afirma um — evita numeração
  * inventada num histórico que é público.
  */
+/**
+ * Quem "palestra" numa edição conduzida pelas próprias idealizadoras.
+ * É constante, e não literal solto, porque a interface precisa distinguir
+ * "teve convidada" de "foi a casa": na miniatura da grade de edições, o
+ * nome da convidada é informação e este aqui não é — todas as edições sem
+ * convidada mostrariam o mesmo rótulo, truncado.
+ */
+export const ANFITRIA_TRIADE = 'Idealizadoras da Tríade';
+
 export const events: TriadeEvent[] = [
   {
     id: 'ed-set25',
@@ -69,7 +78,7 @@ export const events: TriadeEvent[] = [
     date: '2025-11-17',
     status: 'realizado',
     location: 'Goiânia, GO',
-    speaker: 'Idealizadoras da Tríade',
+    speaker: ANFITRIA_TRIADE,
     theme: 'Acolher, inspirar e impulsionar mulheres — fechando o ano com chave de ouro',
     recapText:
       'Casa cheia para encerrar o ano: a 6ª edição reuniu quem já acredita no movimento criado por Lívia, Lia e Cris para acolher, inspirar e impulsionar mulheres, gerando conexões autênticas.',
@@ -92,7 +101,7 @@ export const events: TriadeEvent[] = [
     date: '2026-03-31',
     status: 'realizado',
     location: 'Goiânia, GO',
-    speaker: 'Idealizadoras da Tríade',
+    speaker: ANFITRIA_TRIADE,
     theme: 'Conexão, aprendizado e fortalecimento de vínculos',
     recapText:
       'A 9ª edição chegou com a mesma proposta desde o início: mesas que levam quem participa a um próximo nível, num ambiente feito pra conectar, aprender e fortalecer vínculos.',
@@ -110,7 +119,7 @@ export const events: TriadeEvent[] = [
     date: '2026-05-12',
     status: 'realizado',
     location: 'Goiânia, GO',
-    speaker: 'Idealizadoras da Tríade',
+    speaker: ANFITRIA_TRIADE,
     theme: 'Conexões reais entre mulheres empreendedoras',
     recapText:
       'Mais uma tarde de conexões reais, com Lívia, Lia e Cris recebendo o grupo pessoalmente — prova de que o movimento que começou pequeno continua crescendo edição após edição.',
@@ -133,7 +142,7 @@ export const events: TriadeEvent[] = [
     date: '2026-08-11',
     status: 'realizado',
     location: 'Goiânia, GO',
-    speaker: 'Idealizadoras da Tríade',
+    speaker: ANFITRIA_TRIADE,
     theme: 'Conexões que geram oportunidades, crescimento e pertencimento',
     recapText:
       'A 11ª edição da Tríade Conecta reuniu quem já entendeu que crescer sozinha é mais lento — mais um encontro pra criar conexões reais e fortalecer negócios ao lado de quem compartilha do mesmo propósito.',
@@ -156,7 +165,7 @@ export const events: TriadeEvent[] = [
     date: '2026-09-30',
     status: 'em breve',
     location: 'Goiânia, GO',
-    speaker: 'Idealizadoras da Tríade',
+    speaker: ANFITRIA_TRIADE,
     theme: 'Uma noite para sair da rotina e se reconectar, às 19h',
   },
 ];

@@ -10,6 +10,7 @@ import { useToast } from '@/components/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { useInfiniteReveal } from '@/hooks/useInfiniteReveal';
+import { ANFITRIA_TRIADE } from '@/data/seed';
 import { db } from '@/lib/db';
 import { applyEventEdits } from '@/lib/db/localContent';
 import { firstName, formatEventDate, formatEventShortDate } from '@/lib/format';
@@ -112,9 +113,7 @@ export default function Eventos() {
 
   return (
     <section className="panel">
-      <SectionHead
-        first
-        eyebrow="Agenda Tríade"
+      <SectionHead eyebrow="Agenda Tríade"
         title="Eventos"
         description="Encontros presenciais mensais de 5h, com especialista convidada."
       />
@@ -169,17 +168,25 @@ export default function Eventos() {
               ) : (
                 <>
                   <div className="event-grid">
-                    {visiblePast.map((event) => (
-                      <button
-                        key={event.id}
-                        className="event-cell"
-                        onClick={() => setRecapEvent(event)}
-                        aria-label={`Ver retrospectiva de ${event.title}`}
-                      >
-                        <span className="date">{formatEventShortDate(event.date)}</span>
-                        <span className="nm">{firstName(event.speaker)}</span>
-                      </button>
-                    ))}
+                    {visiblePast.map((event) => {
+                      // a primeira foto da retrospectiva vira a capa da
+                      // célula; edição sem foto continua no gradiente
+                      const capa = event.recapMedia?.find((m) => m.tipo === 'foto');
+                      return (
+                        <button
+                          key={event.id}
+                          className={`event-cell${capa ? ' has-foto' : ''}`}
+                          onClick={() => setRecapEvent(event)}
+                          aria-label={`Ver retrospectiva de ${event.title}`}
+                        >
+                          {capa && <img className="capa" src={capa.url} alt="" loading="lazy" />}
+                          <span className="date">{formatEventShortDate(event.date)}</span>
+                          {event.speaker !== ANFITRIA_TRIADE && (
+                            <span className="nm">{firstName(event.speaker)}</span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {visibleCount < filteredPast.length && <div ref={sentinelRef} className="scroll-sentinel" />}

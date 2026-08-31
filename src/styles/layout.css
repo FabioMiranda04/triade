@@ -291,7 +291,12 @@ body.modal-open .mesh span {
   scroll-behavior: smooth;
 }
 .panel {
-  padding: 0 16px 28px;
+  /* O respiro do topo mora aqui, e não em cada tela. Antes o `.panel`
+     abria colado no cabeçalho e quem precisava de ar pedia um
+     `<SectionHead first>`, que injetava `margin-top: 14` inline — as telas
+     que não começam com um SectionHead (Início, Sobre) ficavam sem nada, e
+     o card encostava na barra de cima. */
+  padding: 15px 16px 28px;
   max-width: 640px;
   margin: 0 auto;
   animation: panelin 0.28s ease;

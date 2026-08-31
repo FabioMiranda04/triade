@@ -8,7 +8,7 @@ import { useToast } from '@/components/Toast';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { db } from '@/lib/db';
 import { applySpeakerEdits } from '@/lib/db/localContent';
-import { firstName } from '@/lib/format';
+import { byName, firstName } from '@/lib/format';
 import type { Speaker } from '@/types';
 
 /** Tela Palestrantes — grade 3 colunas; tocar num quadro abre a bio. */
@@ -32,9 +32,7 @@ export default function Palestrantes() {
 
   return (
     <section className="panel">
-      <SectionHead
-        first
-        eyebrow="Conteúdo com intencionalidade"
+      <SectionHead eyebrow="Conteúdo com intencionalidade"
         title="Palestrantes"
         description="Toque num quadro para ver a bio."
       />
@@ -43,7 +41,7 @@ export default function Palestrantes() {
         <Skeleton rows={1} height={110} />
       ) : (
         <div className="pal-grid">
-          {speakers.map((s) => (
+          {[...speakers].sort(byName).map((s) => (
             <button
               key={s.id}
               className="pal-cell"

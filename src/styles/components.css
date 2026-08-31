@@ -48,6 +48,11 @@
 
 /* ---------- cabeçalhos de seção ---------- */
 .sec-head { margin: 22px 0 12px; }
+/* Os 22px separam uma seção da anterior. No primeiro título da tela não há
+   seção anterior — o que existe acima é o respiro do `.panel`, e somar os
+   dois dava 37px de topo contra os 15px do Início. Isto substitui a antiga
+   prop `first`, que fazia o mesmo por style inline em cada tela. */
+.panel > .sec-head:first-child { margin-top: 0; }
 .sec-head h2 { font-size: var(--fs-3xl); margin-top: 6px; }
 .sec-head p { color: var(--ink-70); font-size: var(--fs-md); margin-top: 6px; }
 
@@ -156,20 +161,35 @@
 .profile-stats .num { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--accent); }
 .profile-stats .lbl { font-size: var(--fs-3xs); color: var(--ink-45); margin-top: 2px; }
 
+/* As três idealizadoras ficam EMPILHADAS, não numa faixa que rola para o
+   lado. Rolagem lateral aqui custava caro: em 375px cabiam duas e meia, e
+   a terceira — a Cris — ficava fora da tela. Quem não arrastasse nunca
+   saberia que a Tríade tem três. São três pessoas fixas, não uma lista que
+   cresce; cabem todas. */
 .founder-row {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
+  flex-direction: column;
+  gap: 10px;
   padding: 4px 0 8px;
-  scrollbar-width: none;
 }
-.founder-row::-webkit-scrollbar { display: none; }
-.founder-chip { flex-shrink: 0; width: 150px; padding: 16px; text-align: center; }
+.founder-chip {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  /* `align-content: center` em vez de `align-items`: sem isso as três
+     linhas de texto viram três faixas do mesmo tamanho e o card estica,
+     com nome, cargo e frase soltos um do outro. */
+  align-content: center;
+  column-gap: 14px;
+  row-gap: 0;
+  padding: 14px 16px;
+}
 .founder-chip .av {
+  /* ocupa a coluna inteira ao lado das três linhas de texto */
+  grid-row: 1 / -1;
+  align-self: center;
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  margin: 0 auto 8px;
   background: var(--ph-grad);
   display: flex;
   align-items: center;
@@ -177,7 +197,21 @@
   font-family: var(--font-display);
   color: var(--ph-fg);
 }
-.founder-chip .n { font-family: var(--font-script); font-style: italic; font-size: var(--fs-lg); }
+/* o avatar é a primeira coluna; nome, papel e frase empilham na segunda */
+.founder-chip .n,
+.founder-chip .r,
+.founder-chip p {
+  grid-column: 2;
+}
+/* line-height apertado: a Playfair itálica tem ascendente e descendente
+   generosos, e no 1.55 do corpo o nome abria uma faixa de 28px que
+   afastava visualmente o nome do cargo */
+.founder-chip .n {
+  font-family: var(--font-script);
+  font-style: italic;
+  font-size: var(--fs-lg);
+  line-height: 1.2;
+}
 .founder-chip .r {
   font-size: var(--fs-3xs);
   color: var(--accent);
@@ -186,7 +220,23 @@
   letter-spacing: 0.04em;
   margin-top: 2px;
 }
-.founder-chip p { font-size: var(--fs-2xs); color: var(--ink-70); margin-top: 8px; }
+.founder-chip p { font-size: var(--fs-2xs); color: var(--ink-70); margin-top: 5px; }
+/* Onde sobra largura, as três voltam a ficar lado a lado — mas em grade de
+   três colunas iguais, que cabe inteira, e não numa faixa rolável. */
+@media (min-width: 560px) {
+  .founder-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .founder-chip {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    row-gap: 2px;
+    padding: 16px;
+  }
+  .founder-chip .av { grid-row: auto; margin-bottom: 6px; }
+  .founder-chip .n,
+  .founder-chip .r,
+  .founder-chip p { grid-column: 1; }
+}
 
 /* card de texto simples reutilizável (trajetória, blocos internos) */
 .soft-card { padding: 16px; margin-bottom: 10px; }
@@ -284,6 +334,8 @@
 /* grade 3 colunas das edições anteriores */
 .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .event-cell {
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 1 / 1;
   border-radius: var(--r-md);
   background: var(--ph-grad);
@@ -300,6 +352,47 @@
   transition: transform 0.15s ease;
 }
 .event-cell:active { transform: scale(0.96); }
+/* A capa da edição. As fotos vêm de Stories 9:16 com legenda queimada no
+   rodapé, então o recorte ancora no terço superior: corta a legenda e
+   mantém os rostos. */
+.event-cell .capa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+/* Véu de profundidade sobre a foto. Ele NÃO é o que garante a leitura —
+   tentei isso e não fecha: sobre uma foto quase branca a etiqueta media
+   2,67:1, contra os 4,5:1 exigidos. O véu só assenta a imagem; quem
+   sustenta o contraste é a pílula atrás do texto, logo abaixo. */
+.event-cell.has-foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.34),
+    rgba(0, 0, 0, 0.08) 40%,
+    rgba(0, 0, 0, 0.08) 60%,
+    rgba(0, 0, 0, 0.44)
+  );
+}
+/* Sobre foto a etiqueta é escura e o texto é branco nos DOIS temas — o
+   fundo aqui é a fotografia, não a superfície do tema, então seguir
+   `--tile-chip-bg` (que é claro no Pérola) deixaria branco sobre branco.
+   Pior caso, foto totalmente branca: 5,3:1. */
+.event-cell.has-foto .date,
+.event-cell.has-foto .nm {
+  background: rgba(0, 0, 0, 0.58);
+  color: #fff;
+}
+.event-cell .date,
+.event-cell .nm {
+  position: relative;
+  z-index: 1;
+}
 .event-cell .date,
 .event-cell .nm {
   color: var(--tile-chip-fg);
@@ -1058,7 +1151,6 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 
 /* ---------- responsivo ---------- */
 @media (max-width: 360px) {
-  .founder-chip { width: 130px; }
   .post-actions { gap: 10px; }
 }
 

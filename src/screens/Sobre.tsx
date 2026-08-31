@@ -1,6 +1,7 @@
 import { Mark } from '@/components/Brand';
 import { SectionHead } from '@/components/SectionHead';
 import { founders, timeline } from '@/data/seed';
+import { byName } from '@/lib/format';
 
 const STATS = [
   { num: '3', lbl: 'idealizadoras' },
@@ -41,7 +42,7 @@ export default function Sobre() {
 
       <SectionHead eyebrow="Idealizadoras" title="Quem está por trás" />
       <div className="founder-row">
-        {founders.map((f) => (
+        {[...founders].sort(byName).map((f) => (
           <div className="founder-chip glass" key={f.id}>
             <div className="av">{f.initials}</div>
             <div className="n">{f.name}</div>

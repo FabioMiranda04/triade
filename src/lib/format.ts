@@ -33,3 +33,15 @@ export function statusClass(status: string): string {
 export function firstName(fullName: string): string {
   return fullName.split(' ')[0];
 }
+
+/**
+ * Comparador de nomes em português, para `Array.sort`.
+ *
+ * `localeCompare` com 'pt-BR' é o que faz "Lia Chaves" vir antes de
+ * "Lívia Duarte": a comparação binária de strings colocaria o "í" (U+00ED)
+ * depois de qualquer letra sem acento, e a ordem sairia errada para
+ * qualquer nome acentuado — que em português é a regra, não a exceção.
+ */
+export function byName<T extends { name: string }>(a: T, b: T): number {
+  return a.name.localeCompare(b.name, 'pt-BR');
+}

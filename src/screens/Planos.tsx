@@ -29,7 +29,7 @@ export default function Planos() {
 
   return (
     <section className="panel">
-      <SectionHead first eyebrow="Assinatura" title="Planos Tríade" />
+      <SectionHead eyebrow="Assinatura" title="Planos Tríade" />
 
       <div className="card-note glass-strong">
         <Mark size={16} />
