@@ -560,6 +560,30 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 .pal-detail h3 { font-size: var(--fs-lg); margin-top: 8px; padding-right: 30px; }
 .pal-detail p { margin-top: 8px; }
 .pal-detail .kebab { position: absolute; top: 10px; right: 10px; }
+/* As edições que a palestrante conduziu. Só aparece para quem de fato
+   conduziu alguma — quem ainda não passou por uma edição não ganha uma
+   lista vazia, que leria como "nunca foi chamada". */
+.pal-edicoes {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pal-edicoes .tema {
+  display: block;
+  color: var(--ink);
+  font-size: var(--fs-sm);
+}
+.pal-edicoes .quando {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-2xs);
+  color: var(--accent);
+  font-weight: 600;
+}
 
 /* ---------- planos ---------- */
 .plan-card { padding: 22px; margin-bottom: 12px; position: relative; }

@@ -60,7 +60,12 @@ values
   ('sp2', 'Danielle Gouveia', 'Gestão Financeira',
    'Referência em finanças aplicadas ao dia a dia de quem empreende.', 2),
   ('sp3', 'Dani Morais Flor', 'Relações Interpessoais',
-   'Trabalha a escuta, a conexão genuína e o fortalecimento mútuo entre mulheres.', 3)
+   'Trabalha a escuta, a conexão genuína e o fortalecimento mútuo entre mulheres.', 3),
+  -- convidadas confirmadas pelo histórico real de edições (Módulo 11)
+  ('sp4', 'Geórgia Maia', 'Marketing',
+   'Conduziu a conversa sobre marketing da Edição Especial na Casa Benedita, para empreendedoras, profissionais autônomas e comerciantes.', 4),
+  ('sp5', 'Carla Martins', 'Liderança Feminina',
+   'Especialista em liderança feminina. Levou à mesa um tema pedido pelas próprias participantes: dar conta da casa e do negócio sem perder a essência.', 5)
 on conflict (id) do update set
   name = excluded.name,
   topic = excluded.topic,

@@ -189,6 +189,22 @@ export const speakers: Speaker[] = [
     topic: 'Relações Interpessoais',
     bio: 'Trabalha a escuta, a conexão genuína e o fortalecimento mútuo entre mulheres.',
   },
+  /* As duas abaixo entraram em 31/08/2026 e não são projeção: são as
+     convidadas que o histórico reconstruído no Módulo 11 confirma terem
+     conduzido uma edição. Tópico e bio saem do que está gravado no próprio
+     evento (`theme` e `recapText`), não de suposição. */
+  {
+    id: 'sp4',
+    name: 'Geórgia Maia',
+    topic: 'Marketing',
+    bio: 'Conduziu a conversa sobre marketing da Edição Especial na Casa Benedita, para empreendedoras, profissionais autônomas e comerciantes.',
+  },
+  {
+    id: 'sp5',
+    name: 'Carla Martins',
+    topic: 'Liderança Feminina',
+    bio: 'Especialista em liderança feminina. Levou à mesa um tema pedido pelas próprias participantes: dar conta da casa e do negócio sem perder a essência.',
+  },
 ];
 
 export const plans: Plan[] = [

@@ -7,9 +7,9 @@ import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { db } from '@/lib/db';
-import { applySpeakerEdits } from '@/lib/db/localContent';
-import { byName, firstName } from '@/lib/format';
-import type { Speaker } from '@/types';
+import { applyEventEdits, applySpeakerEdits } from '@/lib/db/localContent';
+import { byName, firstName, formatEventDate } from '@/lib/format';
+import type { Speaker, TriadeEvent } from '@/types';
 
 /** Tela Palestrantes — grade 3 colunas; tocar num quadro abre a bio. */
 export default function Palestrantes() {
@@ -20,8 +20,23 @@ export default function Palestrantes() {
     [],
     version,
   );
+  // As edições que cada palestrante conduziu saem da ligação que já existe
+  // no dado — `event.speaker` guarda o nome —, e não de uma coluna nova.
+  // Uma coluna precisaria ser mantida em dois lugares e sairia de sincronia
+  // na primeira vez que alguém corrigisse um nome.
+  const { data: events } = useAsyncData<TriadeEvent[]>(
+    () => db.getEvents().then(applyEventEdits),
+    [],
+  );
   const [selected, setSelected] = useState<Speaker | null>(null);
   const [editing, setEditing] = useState<Speaker | 'new' | null>(null);
+
+  /** Edições conduzidas por esta palestrante, da mais recente para a mais antiga. */
+  function edicoesDe(speaker: Speaker): TriadeEvent[] {
+    return events
+      .filter((e) => e.speaker === speaker.name)
+      .sort((a, b) => b.date.localeCompare(a.date));
+  }
 
   function handleSaved() {
     setEditing(null);
@@ -63,6 +78,18 @@ export default function Palestrantes() {
           <div className="eyebrow">{selected.topic}</div>
           <h3>{selected.name}</h3>
           <p>{selected.bio}</p>
+          {edicoesDe(selected).length > 0 && (
+            <ul className="pal-edicoes">
+              {edicoesDe(selected).map((ev) => (
+                <li key={ev.id}>
+                  <span className="tema">{ev.theme}</span>
+                  <span className="quando">
+                    {ev.title} · {formatEventDate(ev.date)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
           <Kebab
             label="Opções da palestrante"
             actions={[{ label: 'Editar', icon: 'edit', onClick: () => setEditing(selected) }]}
