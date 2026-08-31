@@ -1086,6 +1086,127 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 
 /* ---------- formulários de edição ---------- */
 .edit-fields { display: flex; flex-direction: column; gap: 14px; margin: 16px 0 20px; }
+
+/* Onde este formulário vai salvar. Fica ANTES dos campos de propósito: a
+   pessoa precisa saber que a edição é local antes de digitar, não depois. */
+.edit-aviso {
+  margin: 12px 0 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: var(--accent-fill);
+  border: 1px solid var(--glass-dark-border);
+  color: var(--on-dark-70);
+  font-size: var(--fs-2xs);
+  line-height: var(--lh-normal);
+}
+.edit-erro {
+  margin: 0 0 12px;
+  color: var(--danger);
+  font-size: var(--fs-xs);
+}
+.btn:disabled { opacity: 0.55; cursor: default; }
+
+/* ---------- gerenciador de fotos da edição ---------- */
+.galeria-editor { display: flex; flex-direction: column; gap: 10px; }
+.ge-titulo {
+  font-size: var(--fs-3xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--on-dark-70);
+}
+.ge-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ge-item {
+  display: grid;
+  grid-template-columns: 46px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+.ge-item.erro .ge-thumb { border-color: var(--danger); }
+.ge-thumb {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--ph-grad);
+  border: 1px solid var(--glass-dark-border);
+}
+.ge-thumb img { width: 100%; height: 100%; object-fit: cover; }
+/* Enquanto sobe, a prévia local aparece esmaecida com um giro por cima —
+   a foto certa já na tela diz "recebi", e o giro diz "ainda não terminei". */
+.ge-subindo {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+.ge-subindo::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: gegira 0.7s linear infinite;
+}
+@keyframes gegira {
+  to { transform: rotate(360deg); }
+}
+.ge-meio { min-width: 0; }
+.ge-legenda {
+  width: 100%;
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--on-dark);
+  font-family: inherit;
+  font-size: var(--fs-2xs);
+}
+.ge-legenda:focus { background: var(--field-bg-focus); outline: none; border-color: var(--field-ring); }
+.ge-erro { color: var(--danger); font-size: var(--fs-2xs); }
+.ge-remover {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--on-dark-fill);
+  color: var(--on-dark);
+  cursor: pointer;
+}
+.ge-remover:active { background: var(--fill-strong); }
+/* alvo de toque de 44px sem inchar o desenho de 34px */
+.ge-remover::after { content: ''; position: absolute; inset: -5px; }
+.ge-item { position: relative; }
+
+.ge-solta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 16px 12px;
+  min-height: 44px;
+  border: 1px dashed var(--glass-dark-border);
+  border-radius: 14px;
+  background: none;
+  color: var(--accent-on-dark);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+.ge-solta:active,
+.ge-solta.arrastando { background: var(--accent-fill); border-color: var(--accent); }
+.ge-dica { font-weight: 400; font-size: var(--fs-3xs); color: var(--on-dark-70); }
+.ge-aviso { margin: 0; font-size: var(--fs-2xs); color: var(--on-dark-70); line-height: var(--lh-normal); }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field span {
   font-size: var(--fs-3xs);

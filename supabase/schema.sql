@@ -233,3 +233,98 @@ alter table public.events add column if not exists recap_media jsonb not null de
 
 alter table public.events alter column spots drop not null;
 alter table public.events alter column spots drop default;
+
+-- =============================================================
+--  6. MÓDULO 5 (início, 31/08/2026) — quem pode ESCREVER conteúdo
+--
+--  Até aqui o app lia do banco e nunca escrevia: a edição pelo menu "..."
+--  gravava só no navegador (`localContent.ts`), de propósito. O motivo é
+--  que o front usa a chave `anon`, que é pública — abrir escrita com ela
+--  deixaria qualquer visitante alterar o conteúdo da comunidade e subir
+--  arquivo no Storage.
+--
+--  A permissão nasce aqui, e nasce fora do alcance da usuária.
+-- =============================================================
+
+-- Tabela separada, e não uma coluna `is_admin` em `profiles`, por um
+-- motivo concreto: a política de `profiles` é `for all` sobre a própria
+-- linha, então uma coluna ali seria gravável pela própria dona — qualquer
+-- pessoa se promoveria a admin com uma chamada de update. Aqui não existe
+-- política de escrita nenhuma: entra na lista quem for inserido pelo SQL
+-- Editor do painel (que roda como dono, acima da RLS).
+create table if not exists public.admins (
+  user_id     uuid primary key references auth.users(id) on delete cascade,
+  nota        text,
+  created_at  timestamptz not null default now()
+);
+
+alter table public.admins enable row level security;
+
+-- Leitura só da própria linha: o app precisa saber se mostra a UI de
+-- edição, mas ninguém precisa da lista de quem mais é admin.
+drop policy if exists "cada uma ve se e admin" on public.admins;
+create policy "cada uma ve se e admin"
+  on public.admins for select to authenticated
+  using (user_id = auth.uid());
+
+-- `security definer` porque as políticas abaixo consultam esta tabela: sem
+-- isso a consulta rodaria sob a RLS de quem chamou, que só enxerga a
+-- própria linha — o que por acaso funciona, mas depende de um detalhe
+-- frágil. `stable` deixa o Postgres avaliar uma vez por consulta em vez de
+-- uma vez por linha. `search_path` fixo é obrigatório em `security
+-- definer`: sem ele, um schema malicioso no path poderia sequestrar a
+-- resolução dos nomes.
+create or replace function public.e_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid())
+$$;
+
+revoke all on function public.e_admin() from public;
+grant execute on function public.e_admin() to authenticated;
+
+-- Escrita de conteúdo: só admin. A leitura pública continua como estava —
+-- as políticas de select da seção 2 não são tocadas.
+drop policy if exists "admin escreve eventos" on public.events;
+create policy "admin escreve eventos"
+  on public.events for all to authenticated
+  using (public.e_admin()) with check (public.e_admin());
+
+drop policy if exists "admin escreve palestrantes" on public.speakers;
+create policy "admin escreve palestrantes"
+  on public.speakers for all to authenticated
+  using (public.e_admin()) with check (public.e_admin());
+
+drop policy if exists "admin escreve planos" on public.plans;
+create policy "admin escreve planos"
+  on public.plans for all to authenticated
+  using (public.e_admin()) with check (public.e_admin());
+
+-- Storage: o bucket `media` é público para leitura (foi assim que as fotos
+-- do Módulo 11 entraram no app). A escrita passa a existir, e só para
+-- admin. Se estas linhas falharem com "must be owner of table objects",
+-- rode-as pelo SQL Editor do painel, que tem o dono certo.
+drop policy if exists "admin sobe midia" on storage.objects;
+create policy "admin sobe midia"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'media' and public.e_admin());
+
+drop policy if exists "admin troca midia" on storage.objects;
+create policy "admin troca midia"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'media' and public.e_admin())
+  with check (bucket_id = 'media' and public.e_admin());
+
+drop policy if exists "admin apaga midia" on storage.objects;
+create policy "admin apaga midia"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'media' and public.e_admin());
+
+-- Para virar admin (rode UMA vez, trocando o e-mail):
+--   insert into public.admins (user_id, nota)
+--   select id, 'sócia' from auth.users where email = 'voce@exemplo.com'
+--   on conflict (user_id) do nothing;

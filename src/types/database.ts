@@ -67,6 +67,18 @@ export type ProfileRow = {
   updated_at: string;
 }
 
+/**
+ * Quem pode escrever conteúdo. Tabela separada de `profiles` de propósito:
+ * a política de `profiles` é `for all` sobre a própria linha, então uma
+ * coluna `is_admin` ali seria gravável pela própria dona. Ver a seção 6 do
+ * `supabase/schema.sql`.
+ */
+export type AdminRow = {
+  user_id: string;
+  nota: string | null;
+  created_at: string;
+};
+
 export type RsvpRow = {
   user_id: string;
   event_id: string;
@@ -113,6 +125,12 @@ export interface Database {
         Row: ProfileRow;
         Insert: Partial<ProfileRow> & Pick<ProfileRow, 'id'>;
         Update: Partial<ProfileRow>;
+        Relationships: [];
+      };
+      admins: {
+        Row: AdminRow;
+        Insert: Partial<AdminRow> & Pick<AdminRow, 'user_id'>;
+        Update: Partial<AdminRow>;
         Relationships: [];
       };
       rsvps: {

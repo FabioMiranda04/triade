@@ -254,10 +254,16 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 - **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) vai para o
   Supabase só com usuária logada.** Deslogada (ou sem Supabase configurado)
   continua exatamente como antes: localStorage, por navegador, livre.
-- **Edição de conteúdo pelo app (menu "..." → Editar, criar evento/
-  palestrante) também é só local** — um overlay em cima do conteúdo lido,
-  não grava no Supabase de propósito (sem login, chave de escrita pública
-  seria risco de segurança). Não confunda com um painel administrativo real.
+- **Edição de conteúdo tem dois destinos, e quem decide é a permissão.**
+  Desde 31/08/2026 existe a tabela `admins` no Supabase (seção 6 do
+  `schema.sql`): quem está nela grava **no banco**, e as fotos vão para o
+  Storage. Quem não está — o caso normal, e também quem roda sem Supabase —
+  continua exatamente como antes: overlay local via `localContent.ts`.
+  O formulário **diz qual dos dois está valendo** antes de a pessoa digitar.
+  A lista de admins só muda pelo SQL Editor do painel; não há tela para
+  isso, e é de propósito (o front usa a chave `anon`, que é pública).
+  Ainda **não** é um painel administrativo completo: hoje só evento tem
+  gravação real. Palestrante, plano e post seguem locais.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
   26/08/2026): 11 fotos no bucket `media` do Supabase Storage. O resto das
   "imagens" do app continua sendo gradiente (escala `--ph-1..5`, que
@@ -291,7 +297,7 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
 | 3 | Área de membras logada (feed real, diretório) | ⏳ |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
-| 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ⏳ |
+| 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | 🔸 começado 31/08/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de **evento**. Falta palestrante, plano e post |
 | 6 | Migração de dados localStorage → banco | ⏳ |
 | 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | ⏳ depende do Módulo 2 |
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |

@@ -178,6 +178,79 @@ async function choosePlan(planId: string): Promise<boolean> {
   return !error;
 }
 
+
+/* ---------------- edição de conteúdo (Módulo 5) ---------------- */
+
+/** Bucket público do Storage onde a mídia real do app vive desde o Módulo 11. */
+const BUCKET = 'media';
+
+async function podeEditarConteudo(): Promise<boolean> {
+  const supabase = requireSupabase();
+  const { data: sessao } = await supabase.auth.getUser();
+  if (!sessao.user) return false;
+  // A política de select da tabela devolve só a própria linha, então esta
+  // consulta responde exatamente "eu sou admin?" e nada além disso.
+  const { data, error } = await supabase
+    .from('admins')
+    .select('user_id')
+    .eq('user_id', sessao.user.id)
+    .maybeSingle();
+  if (error) {
+    console.error('[triade] não deu para verificar permissão de edição:', error.message);
+    return false;
+  }
+  return data !== null;
+}
+
+/**
+ * Nome de arquivo seguro e único.
+ *
+ * Sem isto, subir "Foto da Lívia (1).JPG" gera uma chave com espaço,
+ * parêntese e acento — que sobrevive ao upload mas volta escapada na URL
+ * pública e quebra na hora de exibir. O carimbo de tempo evita que duas
+ * fotos com o mesmo nome se sobrescrevam.
+ */
+function nomeSeguro(original: string): string {
+  const ponto = original.lastIndexOf('.');
+  const ext = ponto > 0 ? original.slice(ponto + 1).toLowerCase() : 'jpg';
+  const base = (ponto > 0 ? original.slice(0, ponto) : original)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40) || 'foto';
+  return `${base}-${Date.now()}.${ext.replace(/[^a-z0-9]/g, '') || 'jpg'}`;
+}
+
+async function uploadMedia(arquivo: File, pasta: string): Promise<string> {
+  const supabase = requireSupabase();
+  const caminho = `${pasta}/${nomeSeguro(arquivo.name)}`;
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(caminho, arquivo, { contentType: arquivo.type || 'image/jpeg', upsert: false });
+  if (error) throw new Error(`Falha ao subir a imagem: ${error.message}`);
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(caminho);
+  return data.publicUrl;
+}
+
+async function saveEvent(evento: TriadeEvent): Promise<void> {
+  const supabase = requireSupabase();
+  const { error } = await supabase.from('events').upsert({
+    id: evento.id,
+    title: evento.title,
+    date: evento.date,
+    status: evento.status,
+    location: evento.location,
+    speaker: evento.speaker,
+    theme: evento.theme,
+    spots: evento.spots ?? null,
+    recap_text: evento.recapText ?? null,
+    recap_media: evento.recapMedia ?? [],
+  });
+  if (error) throw new Error(`Falha ao salvar o evento: ${error.message}`);
+}
+
 export const supabaseProvider: DataProvider = {
   name: 'supabase',
 
@@ -229,6 +302,10 @@ export const supabaseProvider: DataProvider = {
   cancelRsvp,
   getChosenPlan,
   choosePlan,
+
+  podeEditarConteudo,
+  uploadMedia,
+  saveEvent,
 };
 
 

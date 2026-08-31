@@ -30,4 +30,28 @@ export interface DataProvider {
   cancelRsvp(eventId: string): Promise<string[]>;
   getChosenPlan(): Promise<string | null>;
   choosePlan(planId: string): Promise<boolean>;
+
+  /* ---- edição de conteúdo (Módulo 5) ----
+     Escrever conteúdo é privilégio, não função de qualquer usuária logada:
+     o front usa a chave `anon`, que é pública. Quem escreve é quem está na
+     tabela `admins` do Supabase, e essa lista só é alterada pelo SQL
+     Editor do painel — ver seção 6 do `supabase/schema.sql`.
+
+     Quando `podeEditarConteudo()` é `false` — sem Supabase, sem login, ou
+     logada mas sem permissão — a UI mantém exatamente o comportamento de
+     sempre: a edição fica no navegador, via `localContent.ts`. */
+
+  /** `true` só para quem está na tabela `admins`. */
+  podeEditarConteudo(): Promise<boolean>;
+
+  /**
+   * Sobe um arquivo para o bucket `media` e devolve a URL pública.
+   * `pasta` agrupa por assunto (ex: o slug da edição).
+   * Lança se não houver permissão — quem chama já deve ter checado
+   * `podeEditarConteudo()`.
+   */
+  uploadMedia(arquivo: File, pasta: string): Promise<string>;
+
+  /** Grava o evento no banco (insert ou update pelo `id`). */
+  saveEvent(evento: TriadeEvent): Promise<void>;
 }

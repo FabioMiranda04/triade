@@ -27,4 +27,16 @@ export const localProvider: DataProvider = {
   cancelRsvp: async (eventId) => engagement.cancelRsvp(eventId),
   getChosenPlan: async () => engagement.getChosenPlan(),
   choosePlan: async (planId) => engagement.choosePlan(planId),
+
+  // Sem backend não há a quem pedir permissão nem para onde subir arquivo.
+  // A UI lê este `false` e mantém a edição no navegador, como sempre foi —
+  // é o que faz `npm run dev` continuar mostrando o app inteiro logo após
+  // o clone (regra 10 do CLAUDE.md).
+  podeEditarConteudo: async () => false,
+  uploadMedia: async () => {
+    throw new Error('Sem Supabase configurado: não há para onde subir a imagem.');
+  },
+  saveEvent: async () => {
+    throw new Error('Sem Supabase configurado: o evento é salvo só neste aparelho.');
+  },
 };

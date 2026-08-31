@@ -84,10 +84,13 @@ export default function Eventos() {
   const { visibleCount, sentinelRef } = useInfiniteReveal(filteredPast.length, 9);
   const visiblePast = filteredPast.slice(0, visibleCount);
 
-  function handleSaved() {
+  function handleSaved(noBanco: boolean) {
     setEditing(null);
     setVersion((v) => v + 1);
-    showToast('Evento salvo neste aparelho ✓');
+    // A mensagem diz onde o dado foi parar. "Salvo ✓" para uma edição que
+    // ficou só no navegador é mentira útil por um segundo e cara depois,
+    // quando a sócia abre no celular dela e não vê nada.
+    showToast(noBanco ? 'Evento publicado para todo mundo ✓' : 'Evento salvo neste aparelho ✓');
   }
 
   function isGoing(id: string) {

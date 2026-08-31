@@ -178,3 +178,65 @@ npx supabase gen types typescript --project-id <ID> > src/types/database.ts
 O banco usa `snake_case` e o app usa `camelCase` — a conversão fica isolada
 nas funções `mapEvent` / `mapSpeaker` / `mapPlan` do
 `src/lib/db/supabaseProvider.ts`.
+
+---
+
+## Dar permissão de edição a alguém (Módulo 5, 31/08/2026)
+
+O app passou a poder **gravar conteúdo no banco** e **subir fotos para o
+Storage** — mas só para quem estiver na tabela `admins`. Todo o resto do
+mundo continua com a edição local de sempre, no próprio navegador.
+
+Isso não é excesso de zelo: o front usa a chave `anon`, que é **pública** e
+vai no bundle. Se a escrita fosse liberada para qualquer usuária logada,
+bastaria criar uma conta para apagar as edições da comunidade ou encher o
+Storage. Por isso a lista de admins **não tem tela** e não é editável pelo
+app — ela só muda por aqui.
+
+### 1. Rodar a migração
+
+No painel do Supabase → **SQL Editor**, rode o `supabase/schema.sql`
+inteiro de novo (ele é idempotente: rodar duas vezes não quebra nada). A
+parte nova é a **seção 6**, que cria a tabela `admins`, a função
+`e_admin()` e as políticas de escrita de `events`, `speakers`, `plans` e do
+bucket `media`.
+
+Se as políticas do Storage falharem com *"must be owner of table objects"*,
+é porque foram rodadas fora do SQL Editor. Rode-as por lá.
+
+### 2. Se marcar como admin
+
+Com a conta já criada no app (entre uma vez pelo app antes), rode:
+
+```sql
+insert into public.admins (user_id, nota)
+select id, 'sócia' from auth.users where email = 'seu-email@exemplo.com'
+on conflict (user_id) do nothing;
+```
+
+Confira:
+
+```sql
+select u.email, a.nota, a.created_at
+from public.admins a join auth.users u on u.id = a.user_id;
+```
+
+### 3. Testar
+
+Abra o app **logada**, vá em Eventos → menu "..." → Editar. No topo do
+formulário tem que aparecer *"Você tem permissão de edição: o que salvar
+aqui vale para todo mundo."* Se aparecer a frase sobre "só neste aparelho",
+a conta não está na lista — confira se o e-mail bate e se você entrou com
+a mesma conta (login com Google e login com e-mail/senha criam usuárias
+diferentes se os e-mails forem diferentes).
+
+Marque o evento como **Realizado** para o bloco de fotos aparecer: a
+galeria só existe para edição que já aconteceu.
+
+### Para tirar a permissão
+
+```sql
+delete from public.admins where user_id = (
+  select id from auth.users where email = 'seu-email@exemplo.com'
+);
+```
