@@ -27,13 +27,40 @@
 
   /* =========================================================
      1. PALETA DE MARCA (constante entre temas)
+
+     Valores oficiais do Manual de Marca Tríade Conecta (seção 03,
+     "Aplicação de cores"). Não são escolha nossa e não se ajustam por
+     gosto: se um destes mudar, muda porque o manual mudou.
+
+     CORES PRINCIPAIS — "o dourado é a assinatura principal da marca;
+     os neutros claros sustentam leveza e sofisticação".
+     CORES DE APOIO — "maroon e oliva entram como acentos de
+     profundidade e personalidade".
      ========================================================= */
-  --wine: #7c2a3d;
-  --wine-deep: #511b29;
-  --gold: #c79a55;
-  --gold-soft: #efdcb8;
-  --plum: #4a2140;
-  --blush: #e7b3a0;
+  --brand-gold: #c9a66b;
+  --brand-cream: #f6f3ee;   /* Cream Quartz */
+  --brand-almond: #eaded0;
+  --brand-sand: #d9b991;    /* "Sand" do manual — não confundir com o
+                               papel semântico --sand, que é o FUNDO */
+  --brand-walnut: #402814;
+  --brand-maroon: #400106;  /* Deep Maroon */
+  --brand-burgundy: #65202d;
+  --brand-olive: #4a5a3a;   /* Olive Green */
+  --brand-moss: #8c916c;
+
+  /* Dourado escurecido para FUNDO CLARO. Não está no manual — é derivado,
+     e existe por medição: o dourado oficial sobre o Cream Quartz dá
+     1,9:1, muito abaixo do mínimo de 4,5:1 da WCAG. Ou seja, no tema
+     claro o dourado só pode ser decoração (fio, moldura, área grande);
+     qualquer coisa que precise ser LIDA usa este tom (4,5:1) ou o
+     Burgundy (10,6:1). No Ônix o problema não existe: dourado oficial
+     sobre o fundo escuro dá 9,3:1. */
+  --brand-gold-deep: #8a6b32;
+
+  /* Superfície escura do "uso reverso" — medida no pixel da página 06 do
+     manual, onde a versão clara da logo aparece sobre fundo escuro. É um
+     marrom quente, não um preto neutro. */
+  --brand-reverse: #372e25;
 
   /* marca de terceiros (uso pontual, ex: botão do WhatsApp) */
   --whatsapp: #25d366;
@@ -55,110 +82,111 @@
      ========================================================= */
 
   /* superfícies e texto */
-  --sand: #0b0a0a;
-  --sand-deep: #171512;
-  --ink: #f7f5f1;
-  --ink-70: rgba(247, 245, 241, 0.78);
-  --ink-45: rgba(247, 245, 241, 0.6);
+  --sand: #0f0a06;
+  --sand-deep: #1d150d;
+  --ink: var(--brand-cream);
+  --ink-70: rgba(246, 243, 238, 0.78);
+  --ink-45: rgba(246, 243, 238, 0.6);
 
   /* acento dourado */
-  --accent: #d9b36c;
-  --accent-deep: #b8934d;
-  --accent-fill: rgba(217, 179, 108, 0.1);
-  --accent-fill-strong: rgba(217, 179, 108, 0.18);
-  --accent-on-dark: #d9b36c;
-  --accent-on-dark-soft: #ebd3a0;
+  --accent: var(--brand-gold);
+  --accent-deep: #a8874f;
+  --accent-fill: rgba(201, 166, 107, 0.1);
+  --accent-fill-strong: rgba(201, 166, 107, 0.18);
+  --accent-on-dark: var(--brand-gold);
+  --accent-on-dark-soft: var(--brand-sand);
 
   /* preenchimentos neutros — invertidos: véu branco sobre preto */
   --fill-weak: rgba(255, 255, 255, 0.06);
   --fill-mid: rgba(255, 255, 255, 0.09);
   --fill-strong: rgba(255, 255, 255, 0.14);
 
-  --on-dark: #f7f5f1;
+  --on-dark: var(--brand-cream);
+  --on-dark-70: rgba(246, 243, 238, 0.78);
   --on-dark-fill: rgba(255, 255, 255, 0.12);
 
   /* vidro */
   --glass: rgba(255, 255, 255, 0.045);
-  --glass-strong: rgba(30, 28, 25, 0.92);
+  --glass-strong: rgba(55, 46, 37, 0.92);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-dark: rgba(32, 28, 23, 0.86);
-  --glass-dark-border: rgba(217, 179, 108, 0.22);
-  --tabbar-float-bg: rgba(30, 26, 21, 0.7);
+  --glass-dark: rgba(55, 46, 37, 0.86);
+  --glass-dark-border: rgba(201, 166, 107, 0.22);
+  --tabbar-float-bg: rgba(55, 46, 37, 0.7);
   --glass-inset: rgba(255, 255, 255, 0.05);
   --glass-shadow: rgba(0, 0, 0, 0.6);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);
-  --featured-border: rgba(217, 179, 108, 0.38);
-  --featured-border-top: rgba(217, 179, 108, 0.38);
+  --featured-border: rgba(201, 166, 107, 0.38);
+  --featured-border-top: rgba(201, 166, 107, 0.38);
   --hairline: rgba(255, 255, 255, 0.07);
   --overlay-scrim: rgba(0, 0, 0, 0.78);
 
   /* Mesh: brasa dourada bem apagada nas bordas. Opacidade baixa de
      propósito — o pedido é "preto com detalhes dourados"; manchas fortes
      lavam a tela inteira de marrom e o preto deixa de ser preto. */
-  --mesh-1: #4a3820;
-  --mesh-2: #5c4520;
+  --mesh-1: #4a3823;
+  --mesh-2: #5c4622;
   --mesh-3: #33251a;
-  --mesh-4: #1c2029;
+  --mesh-4: #2b3323;
   --mesh-op: 0.32;
   --mesh-3-op: 0.3;
   --mesh-4-op: 0.28;
 
   /* placeholders: rampa de grafite morno — leem como "foto ainda não
      entrou", não como bloco colorido */
-  --ph-1: #2f2a20;
-  --ph-2: #241f1a;
+  --ph-1: #2f2920;
+  --ph-2: #241d15;
   --ph-3: #3b2f1c;
-  --ph-4: #1b1a20;
-  --ph-5: #4a3a20;
+  --ph-4: #232a1e;
+  --ph-5: #4a3b23;
   --ph-grad: linear-gradient(150deg, var(--ph-4), var(--ph-1) 55%, var(--ph-5));
   --ph-grad-media: linear-gradient(135deg, var(--ph-4), var(--ph-2) 60%, var(--ph-5));
-  --ph-fg: #d9b36c;
+  --ph-fg: var(--brand-gold);
   --ph-border: rgba(255, 255, 255, 0.09);
-  --ring-grad: conic-gradient(from 210deg, #6f5730, #ebd3a0, #8a6b2e, #6f5730);
+  --ring-grad: conic-gradient(from 210deg, #6f5730, var(--brand-sand), #8a6b2e, #6f5730);
 
   --tile-chip-bg: rgba(0, 0, 0, 0.55);
   --tile-chip-bg-2: rgba(0, 0, 0, 0.55);
-  --tile-chip-fg: #ebd3a0;
+  --tile-chip-fg: var(--brand-sand);
 
   --pill-past-bg: var(--fill-mid);
   --pill-past-fg: var(--ink-70);
-  --pill-soon-bg: rgba(217, 179, 108, 0.16);
-  --pill-soon-fg: #ebd3a0;
+  --pill-soon-bg: rgba(201, 166, 107, 0.16);
+  --pill-soon-fg: var(--brand-sand);
 
   /* botões: dourado como preenchimento, texto preto — o ponto mais claro
      da tela é sempre uma ação */
-  --btn-primary-grad: linear-gradient(155deg, #e3c179, #b8934d);
-  --btn-primary-fg: #0b0a0a;
-  --btn-primary-shadow: 0 12px 24px -12px rgba(217, 179, 108, 0.45);
-  --cta-grad: linear-gradient(135deg, #f0d9a0, #c9a05a);
-  --cta-fg: #0b0a0a;
-  --cta-shadow: 0 10px 22px -10px rgba(217, 179, 108, 0.55);
-  --badge-grad: linear-gradient(155deg, #e3c179, #b8934d);
-  --badge-fg: #0b0a0a;
-  --seg-active-bg: #d9b36c;
-  --seg-active-fg: #0b0a0a;
-  --note-fg: #ebd3a0;
+  --btn-primary-grad: linear-gradient(155deg, var(--brand-sand), #a8874f);
+  --btn-primary-fg: var(--sand);
+  --btn-primary-shadow: 0 12px 24px -12px rgba(201, 166, 107, 0.45);
+  --cta-grad: linear-gradient(135deg, var(--brand-sand), var(--brand-gold));
+  --cta-fg: var(--sand);
+  --cta-shadow: 0 10px 22px -10px rgba(201, 166, 107, 0.55);
+  --badge-grad: linear-gradient(155deg, var(--brand-sand), #a8874f);
+  --badge-fg: var(--sand);
+  --seg-active-bg: var(--brand-gold);
+  --seg-active-fg: var(--sand);
+  --note-fg: var(--brand-sand);
 
   /* curtir = dourado (gesto afetivo); salvar = branco, para os dois
      estados continuarem distinguíveis sem depender de cor de marca */
-  --like-fg: #d9b36c;
-  --save-fg: #f7f5f1;
+  --like-fg: var(--brand-gold);
+  --save-fg: var(--brand-cream);
 
-  --tab-idle: rgba(247, 245, 241, 0.5);
-  --tab-active: #ffffff;
-  --tab-center-grad: linear-gradient(155deg, #e3c179, #a67c33);
-  --tabbar-line: rgba(217, 179, 108, 0.16);
+  --tab-idle: rgba(246, 243, 238, 0.72);
+  --tab-active: var(--brand-cream);
+  --tab-center-grad: linear-gradient(155deg, var(--brand-sand), #a8874f);
+  --tabbar-line: rgba(201, 166, 107, 0.16);
 
-  --cal-day-fg: #d9b36c;
+  --cal-day-fg: var(--brand-gold);
 
   /* campo claro dentro de pop-up preto brigaria com o CTA pela atenção —
      aqui o campo é escuro com anel dourado no foco */
   --field-bg: rgba(255, 255, 255, 0.07);
   --field-bg-focus: rgba(255, 255, 255, 0.12);
   --field-border: rgba(255, 255, 255, 0.14);
-  --field-ring: #d9b36c;
+  --field-ring: var(--brand-gold);
 
-  --wa-btn-bg: linear-gradient(135deg, rgba(217, 179, 108, 0.18), rgba(255, 255, 255, 0.05));
+  --wa-btn-bg: linear-gradient(135deg, rgba(201, 166, 107, 0.18), rgba(255, 255, 255, 0.05));
 
   /* controles nativos do navegador (lista do <select>, botão de limpar da
      busca, barra de rolagem) seguem o tema */
@@ -217,14 +245,14 @@
      escolhe quer ver como o app fica, não uma paleta abstrata.
      Ficam só aqui (não são redefinidas por tema): descrevem o tema, então
      precisam mostrar as mesmas cores independente de qual está ativo. */
-  --preview-perola-bg: #f4eee3;
-  --preview-perola-card: #fffaf2;
-  --preview-perola-ink: #231c1a;
-  --preview-perola-accent: #7c2a3d;
-  --preview-onyx-bg: #0b0a0a;
-  --preview-onyx-card: #201c17;
-  --preview-onyx-ink: #f7f5f1;
-  --preview-onyx-accent: #d9b36c;
+  --preview-perola-bg: #f6f3ee;
+  --preview-perola-card: #fffdfa;
+  --preview-perola-ink: #402814;
+  --preview-perola-accent: #65202d;
+  --preview-onyx-bg: #0f0a06;
+  --preview-onyx-card: #372e25;
+  --preview-onyx-ink: #f6f3ee;
+  --preview-onyx-accent: #c9a66b;
 
   /* raios */
   --r-xl: 28px;
@@ -241,9 +269,28 @@
   --tabbar-float-h: calc(92px + var(--safe-b));
 
 
-  /* tipografia */
-  --font-display: 'Fraunces', serif;
-  --font-script: 'Instrument Serif', serif;
+  /* tipografia — Manual de Marca, seção 04 ("Aplicação de tipografia")
+
+     O manual dá quatro fontes e um papel para cada uma. Duas viram token
+     aqui; as outras duas são caso à parte:
+
+     - Playfair Display → títulos, destaques, frases de impacto e citações.
+       O manual lista "usar sempre Playfair Display" entre as regras fixas.
+       Substituiu a Fraunces, que era escolha nossa e não da marca.
+     - Inter → textos informativos, datas, horários, locais. Já era a fonte
+       de texto do app; o manual confirmou o papel.
+     - Cormorant SC → SÓ o "TRÍADE" da assinatura, em caixa alta e com
+       espaçamento amplo (`--font-brand`). Não é fonte de título: usar em
+       h2 descaracteriza a assinatura.
+     - Slight → o "conecta" da assinatura. NÃO entra aqui: é fonte
+       comercial (Up Up Creative) e a licença que a marca tem cobre a logo
+       como desenho, não `font-family` em site. O "conecta" é desenho, não
+       texto — ver `Brand.tsx`. Onde o app precisa de um itálico
+       expressivo, o papel é da Playfair Display Italic (`--font-script`),
+       que é o que o manual autoriza para texto. */
+  --font-brand: 'Cormorant SC', serif;
+  --font-display: 'Playfair Display', serif;
+  --font-script: 'Playfair Display', serif;
   --font-ui: 'Inter', sans-serif;
 }
 
@@ -259,57 +306,63 @@
    ============================================================= */
 [data-theme='perola'] {
   /* superfícies e texto */
-  --sand: #f4eee3;
-  --sand-deep: #eae1d1;
-  --ink: #231c1a;
-  --ink-70: rgba(35, 28, 26, 0.8);
-  --ink-45: rgba(35, 28, 26, 0.62);
+  --sand: var(--brand-cream);
+  --sand-deep: var(--brand-almond);
+  --ink: var(--brand-walnut);
+  --ink-70: rgba(64, 40, 20, 0.8);
+  --ink-45: rgba(64, 40, 20, 0.7);
 
   /* acento — a cor que carrega marca e ação (eyebrow, preços, links) */
-  --accent: var(--wine);
-  --accent-deep: var(--wine-deep);
-  --accent-fill: rgba(124, 42, 61, 0.06);
-  --accent-fill-strong: rgba(124, 42, 61, 0.1);
+  --accent: var(--brand-burgundy);
+  --accent-deep: var(--brand-maroon);
+  --accent-fill: rgba(101, 32, 45, 0.06);
+  --accent-fill-strong: rgba(101, 32, 45, 0.1);
   /* acento quando o fundo é vidro escuro (tab bar, pop-up, citação) */
-  --accent-on-dark: var(--gold);
-  --accent-on-dark-soft: var(--gold-soft);
+  --accent-on-dark: var(--brand-gold);
+  --accent-on-dark-soft: var(--brand-sand);
 
   /* preenchimentos neutros sobre fundo claro (botão redondo, item ativo) */
-  --fill-weak: rgba(35, 28, 26, 0.06);
-  --fill-mid: rgba(35, 28, 26, 0.08);
-  --fill-strong: rgba(35, 28, 26, 0.12);
+  --fill-weak: rgba(64, 40, 20, 0.06);
+  --fill-mid: rgba(64, 40, 20, 0.08);
+  --fill-strong: rgba(64, 40, 20, 0.12);
 
   /* Sobre vidro escuro. `.glass-dark` é escuro nos DOIS temas, então os
      véus/linhas em `rgba(255,255,255,α)` aplicados sobre ele são
      invariantes de tema — só o texto muda de tom. */
-  --on-dark: #f4eee3;
+  --on-dark: var(--brand-cream);
+  --on-dark-70: rgba(246, 243, 238, 0.78);
   --on-dark-fill: rgba(255, 255, 255, 0.12);
 
   /* vidro */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-dark: rgba(25, 19, 18, 0.72);
+  --glass-dark: rgba(55, 46, 37, 0.72);
   --glass-dark-border: rgba(255, 255, 255, 0.14);
   /* A pílula flutuante ("Padrão 2") é mais translúcida que o resto do
      vidro escuro de propósito: ela existe para deixar ver o conteúdo
      passando por baixo. Pop-up continua opaco — lá o que importa é ler. */
-  --tabbar-float-bg: var(--glass-dark);
+  /* Um pouco mais opaca e mais escura que o vidro escuro comum. Não é
+     capricho: sobre a página creme a pílula clareava a ponto de o rótulo
+     ativo cair para 4,3:1 (medido no pixel). Em 0.82 o rótulo volta a
+     5,7:1 e o conteúdo continua aparecendo por baixo, que é o motivo de a
+     pílula existir. */
+  --tabbar-float-bg: rgba(45, 35, 24, 0.82);
   --glass-inset: rgba(255, 255, 255, 0.7);
-  --glass-shadow: rgba(35, 28, 26, 0.28);
+  --glass-shadow: rgba(64, 40, 20, 0.26);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%);
   /* borda de um card que usa vidro escuro em meio a cards claros (plano
      em destaque) — o topo é separado, ver `.plan-card.glass-dark` */
   --featured-border: var(--glass-border);
   --featured-border-top: var(--glass-dark-border);
   --hairline: rgba(255, 255, 255, 0.5);
-  --overlay-scrim: rgba(20, 14, 13, 0.55);
+  --overlay-scrim: rgba(30, 24, 16, 0.55);
 
   /* fundo mesh (manchas desfocadas) */
-  --mesh-1: var(--blush);
-  --mesh-2: var(--gold-soft);
-  --mesh-3: var(--wine);
-  --mesh-4: var(--plum);
+  --mesh-1: var(--brand-almond);
+  --mesh-2: var(--brand-sand);
+  --mesh-3: var(--brand-burgundy);
+  --mesh-4: var(--brand-olive);
   --mesh-op: 0.55;
   --mesh-3-op: 0.25;
   --mesh-4-op: 0.2;
@@ -322,69 +375,69 @@
      Por isso existe esta escala numerada: o dado referencia `--ph-1..5` em
      vez de cor de marca, e cada tema decide o tom. Sem isso, um
      placeholder claro fica aceso no meio de um tema escuro. */
-  --ph-1: var(--gold-soft);
-  --ph-2: var(--blush);
-  --ph-3: var(--wine);
-  --ph-4: var(--plum);
-  --ph-5: var(--gold);
+  --ph-1: var(--brand-sand);
+  --ph-2: var(--brand-almond);
+  --ph-3: var(--brand-burgundy);
+  --ph-4: var(--brand-olive);
+  --ph-5: var(--brand-gold);
   --ph-grad: linear-gradient(150deg, var(--ph-1), var(--ph-2));
   --ph-grad-media: linear-gradient(135deg, var(--ph-2), var(--ph-1));
-  --ph-fg: var(--wine-deep);
+  --ph-fg: var(--brand-maroon);
   /* Contorno do tile de imagem quando ele fica direto sobre o fundo da
      tela (grades de Eventos/Palestrantes) — num tema escuro, sem isso o
      tile some no fundo. Desenhado com `outline` (não `border`) para não
      alterar a caixa: no tema claro ele é transparente e precisa custar
      zero, inclusive em layout. */
   --ph-border: transparent;
-  --ring-grad: conic-gradient(from 210deg, var(--wine), var(--gold), var(--blush), var(--wine));
+  --ring-grad: conic-gradient(from 210deg, var(--brand-burgundy), var(--brand-gold), var(--brand-almond), var(--brand-burgundy));
 
   /* Etiqueta sobre um tile de imagem. Duas opacidades porque as duas
      grades nasceram com pesos ligeiramente diferentes (Eventos 0.6,
      Palestrantes 0.55) — mantidas como estavam. */
   --tile-chip-bg: rgba(255, 255, 255, 0.6);
   --tile-chip-bg-2: rgba(255, 255, 255, 0.55);
-  --tile-chip-fg: #4a2130;
+  --tile-chip-fg: var(--brand-maroon);
 
   /* pílulas de status do evento */
   --pill-past-bg: var(--fill-mid);
   --pill-past-fg: var(--ink-70);
-  --pill-soon-bg: var(--gold-soft);
-  --pill-soon-fg: var(--wine-deep);
+  --pill-soon-bg: var(--brand-sand);
+  --pill-soon-fg: var(--brand-maroon);
 
   /* botões e chamadas */
-  --btn-primary-grad: linear-gradient(155deg, var(--wine), var(--wine-deep));
+  --btn-primary-grad: linear-gradient(155deg, var(--brand-burgundy), var(--brand-maroon));
   --btn-primary-fg: var(--sand);
-  --btn-primary-shadow: 0 12px 24px -12px rgba(124, 42, 61, 0.65);
-  --cta-grad: linear-gradient(135deg, var(--gold), var(--wine));
+  --btn-primary-shadow: 0 12px 24px -12px rgba(101, 32, 45, 0.65);
+  --cta-grad: linear-gradient(135deg, var(--brand-gold), var(--brand-burgundy));
   --cta-fg: #fff;
-  --cta-shadow: 0 10px 20px -10px rgba(124, 42, 61, 0.6);
-  --badge-grad: linear-gradient(155deg, var(--wine), var(--wine-deep));
+  --cta-shadow: 0 10px 20px -10px rgba(101, 32, 45, 0.6);
+  --badge-grad: linear-gradient(155deg, var(--brand-burgundy), var(--brand-maroon));
   --badge-fg: var(--sand);
   --seg-active-bg: var(--ink);
   --seg-active-fg: var(--sand);
-  --note-fg: var(--wine-deep);
+  --note-fg: var(--brand-maroon);
 
   /* engajamento no feed */
-  --like-fg: var(--wine);
-  --save-fg: var(--gold);
+  --like-fg: var(--brand-burgundy);
+  --save-fg: var(--brand-gold-deep);
 
   /* tab bar (sempre sobre vidro escuro) */
-  --tab-idle: rgba(244, 238, 227, 0.55);
-  --tab-active: #f4eee3;
-  --tab-center-grad: linear-gradient(155deg, var(--wine), var(--gold));
+  --tab-idle: rgba(246, 243, 238, 0.88);
+  --tab-active: var(--brand-cream);
+  --tab-center-grad: linear-gradient(155deg, var(--brand-burgundy), var(--brand-gold));
   --tabbar-line: rgba(255, 255, 255, 0.12);
 
   /* calendário */
-  --cal-day-fg: var(--wine-deep);
+  --cal-day-fg: var(--brand-maroon);
 
   /* formulário (campos dentro do pop-up de vidro escuro) */
   --field-bg: rgba(255, 255, 255, 0.65);
   --field-bg-focus: rgba(255, 255, 255, 0.85);
   --field-border: var(--glass-border);
-  --field-ring: var(--wine);
+  --field-ring: var(--brand-burgundy);
 
   /* card de contato do WhatsApp */
-  --wa-btn-bg: linear-gradient(135deg, rgba(199, 154, 85, 0.22), rgba(124, 42, 61, 0.22));
+  --wa-btn-bg: linear-gradient(135deg, rgba(201, 166, 107, 0.22), rgba(101, 32, 45, 0.22));
 
   color-scheme: light;
 }

@@ -19,8 +19,11 @@ vivem em `src/styles/tokens.css` — nunca em componente.
 
 `tokens.css` é organizado em três camadas, e a ordem importa:
 
-1. **Paleta de marca** — os hex crus da Tríade (`--wine`, `--gold`,
-   `--blush`...). **Não mudam com o tema**: são a identidade visual.
+1. **Paleta de marca** — os hex oficiais da Tríade (`--brand-gold`,
+   `--brand-burgundy`, `--brand-olive`...). **Não mudam com o tema**, e
+   **não são escolha nossa**: vêm do Manual de Marca Tríade Conecta
+   (`docs/MANUAL-DE-MARCA.md`). Mexer num valor da camada 1 sem o manual
+   ter mudado é errado, por mais que a tela fique bonita.
 2. **Papéis semânticos** — o que a cor *faz* na tela (`--accent`,
    `--glass`, `--ph-grad`, `--btn-primary-grad`...). **É só esta camada
    que `layout.css`/`components.css` consomem.**
@@ -44,20 +47,37 @@ componente precisa de um valor diferente por tema, isso vira um token novo
 
 | Token | Papel | Ônix (padrão) | Pérola |
 |---|---|---|---|
-| `--sand` | fundo do app | `#0B0A0A` | `#F4EEE3` |
-| `--sand-deep` | miolo dos stories | `#171512` | `#EAE1D1` |
-| `--ink` | texto principal sobre o fundo | `#F7F5F1` | `#231C1A` |
+| `--sand` | fundo do app | `#0F0A06` | Cream Quartz `#F6F3EE` |
+| `--sand-deep` | segunda superfície | `#1D150D` | Almond `#EADED0` |
+| `--ink` | texto principal sobre o fundo | Cream Quartz `#F6F3EE` | Walnut `#402814` |
 | `--ink-70` / `--ink-45` | texto secundário / terciário | níveis claros de `--ink` | níveis escuros de `--ink` |
-| `--accent` / `--accent-deep` | marca em ação: eyebrow, preço, link, ícone ativo | dourado `#D9B36C` | vinho |
-| `--accent-fill` / `-strong` | véu do acento em `:active` | dourado translúcido | vinho translúcido |
-| `--accent-on-dark` / `-soft` | acento **sobre vidro escuro** (tab bar, citação) | dourado / `#EBD3A0` | `--gold` / `--gold-soft` |
-| `--fill-weak/mid/strong` | véu neutro (botão redondo, item ativo, pílula) | branco translúcido | `--ink` translúcido |
-| `--on-dark` | texto sobre `.glass-dark` | `#F7F5F1` | `#F4EEE3` |
+| `--accent` / `--accent-deep` | marca em ação: eyebrow, preço, link, ícone ativo | Dourado `#C9A66B` | Burgundy `#65202D` |
+| `--accent-fill` / `-strong` | véu do acento em `:active` | dourado translúcido | burgundy translúcido |
+| `--accent-on-dark` / `-soft` | acento **sobre vidro escuro** (tab bar, citação) | Dourado / Sand `#D9B991` | Dourado / Sand |
+| `--fill-weak/mid/strong` | véu neutro (botão redondo, item ativo, pílula) | branco translúcido | Walnut translúcido |
+| `--on-dark` | texto sobre `.glass-dark` | Cream Quartz | Cream Quartz |
 | `--glass` / `-strong` / `-border` | vidro sobre o fundo da tela | véu branco de baixa opacidade | branco translúcido |
-| `--glass-dark` / `-border` | vidro escuro (todo pop-up) | `rgba(32,28,23,.86)` + hairline dourada | `rgba(25,19,18,.72)` |
+| `--glass-dark` / `-border` | vidro escuro (todo pop-up) | `rgba(55,46,37,.86)` + hairline dourada | `rgba(55,46,37,.72)` |
 | `--featured-border` / `-top` | borda do plano em destaque | dourada | igual ao vidro |
 | `--ph-1..5`, `--ph-grad`, `--ph-fg`, `--ph-border` | placeholders de imagem (ver 1.4) | grafite morno + glifo dourado | gradiente da marca |
-| `--btn-primary-*`, `--cta-*`, `--badge-*`, `--seg-active-*` | preenchimentos de ação | dourado, texto preto | vinho, texto claro |
+| `--btn-primary-*`, `--cta-*`, `--badge-*`, `--seg-active-*` | preenchimentos de ação | dourado, texto preto | burgundy, texto claro |
+
+**A regra do dourado, que é a mais fácil de errar.** O manual chama o
+dourado de "assinatura principal da marca", e a leitura ingênua disso é
+"então use dourado no texto em todo lugar". Medido no pixel renderizado:
+
+| Dourado sobre | Contraste | Serve para |
+|---|---|---|
+| fundo Ônix `#0F0A06` | **9,3:1** | qualquer coisa, inclusive texto pequeno |
+| Cream Quartz `#F6F3EE` | **1,9:1** | nada que precise ser lido |
+
+Ou seja: no tema claro o dourado oficial é **decoração** — fio, moldura,
+área grande, ícone puramente ornamental. O que precisa ser lido usa
+Burgundy (10,6:1) ou, quando o papel exige mesmo "ser dourado" (o ícone
+de salvar), o `--brand-gold-deep` `#8A6B32` (4,5:1), que é derivado nosso
+e existe só por causa dessa conta. É também por isso que a versão
+principal da logo no manual é dourada **sobre claro em área grande**, e
+não dourada em corpo de texto.
 | `--like-fg` / `--save-fg` | curtir / salvar no feed | dourado / branco | vinho / dourado |
 | `--tab-idle` / `--tab-active` / `--tab-center-grad` / `--tabbar-line` | tab bar | hairline dourada | hairline branca |
 | `--field-*` | campo de formulário dentro do pop-up | fundo escuro, anel dourado | fundo claro |
@@ -194,13 +214,34 @@ invade a ilha dinâmica ou a barra de gestos do iPhone.
 
 ### 1.8 Famílias tipográficas
 
-| Fonte | Papel |
-|---|---|
-| **Fraunces** (`--font-display`) | títulos, preços, números de estatística |
-| **Instrument Serif** itálico (`--font-script`) | assinatura da marca, nomes das idealizadoras |
-| **Inter** (`--font-ui`) | todo o resto (padrão do `body`) |
+As quatro fontes são as do Manual de Marca, seção 04. Duas viram token de
+uso livre, uma é exclusiva da assinatura e uma não está no código:
 
-Carregadas por `<link>` do Google Fonts no `index.html`.
+| Fonte | Token | Papel (definido pelo manual) |
+|---|---|---|
+| **Cormorant SC** | `--font-brand` | **só** o "TRÍADE" da assinatura, caixa alta e espaçamento amplo. Não é fonte de título — usar em `h2` descaracteriza a marca. |
+| **Playfair Display** | `--font-display` / `--font-script` | títulos, destaques, frases de impacto, citações. O manual lista "usar sempre Playfair Display" entre as regras fixas. O itálico cobre o papel expressivo (nomes das idealizadoras). |
+| **Inter** | `--font-ui` | textos informativos, datas, horários, locais — e o padrão do `body`. |
+| **Slight** | *(nenhum)* | o "conecta" da assinatura. **Não está no CSS de propósito** — ver abaixo. |
+
+Cormorant SC, Playfair Display e Inter são carregadas por `<link>` do
+Google Fonts no `index.html`. A Fraunces e a Instrument Serif saíram: eram
+escolha nossa, de antes do manual existir.
+
+**Por que a Slight não entra como `font-family`.** Ela é comercial (Up Up
+Creative). As licenças são separadas por uso: a Desktop (~US$32) cobre
+"logo design" e "creation of images for websites" — ou seja, cobre a logo
+como **desenho**; incorporar a fonte num site exige a licença Webfont
+(~US$27), que é outra compra. Os sites que a distribuem "de graça" liberam
+só uso pessoal, o que não cobre a Tríade. Some-se a isso que o manual lista
+"não trocar tipografia" como uso incorreto da logo: a saída certa não é
+achar uma parecida, é a assinatura ser o arquivo oficial da marca.
+
+**Estado atual:** o "TRÍADE" já sai em Cormorant SC (idêntico ao manual).
+O "conecta" está em Playfair Display itálico como **substituto provisório**
+— não é a Slight e não pretende ser. Fechar isso é trocar o par
+`.brand .name` + `.brand .tag` pelo arquivo oficial da logo (SVG de
+preferência), ou comprar a licença Webfont.
 
 ---
 

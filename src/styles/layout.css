@@ -156,10 +156,17 @@ body.modal-open .mesh span {
   cursor: pointer;
   color: inherit;
 }
+/* A assinatura segue o Manual de Marca, seção 04: "TRÍADE" é Cormorant SC,
+   em caixa alta e com espaçamento amplo. O `letter-spacing` não é enfeite —
+   é metade do que faz a palavra ler como a logo e não como um h1 qualquer.
+   O `padding-right` compensa o espaço que o tracking adiciona depois da
+   última letra, senão o "conecta" parece deslocado. */
 .brand .name {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--fs-chrome-lg);
   font-weight: 600;
+  letter-spacing: 0.13em;
+  padding-right: 0.13em;
 }
 .brand .tag {
   font-family: var(--font-script);

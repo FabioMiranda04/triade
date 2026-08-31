@@ -502,6 +502,13 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
   font-family: var(--font-ui);
   color: var(--ink-70);
 }
+/* O plano em destaque é o único card com fundo escuro no tema claro, e o
+   "/mês" herdava `--ink-70`, que é escuro — dava 1,7:1 sobre o card. O
+   resto do texto do card já vinha certo por `.glass-dark { color }`; era
+   só este `small`, que sobrescrevia a cor à mão. */
+.plan-card.glass-dark .price small {
+  color: var(--on-dark-70);
+}
 .plan-card ul {
   list-style: none;
   margin: 16px 0 0;

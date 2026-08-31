@@ -1,7 +1,13 @@
 <title>Convite Tríade</title>
+<!-- Sem esta linha o celular monta a página num viewport de 980px e
+     mostra tudo reduzido. Quando o arquivo vive dentro do artifact, o
+     invólucro já injeta a dele; aberto direto no navegador (que é como o
+     README promete que ele funciona) e publicado em /convite.html, é esta
+     aqui que vale. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap">
 
 <style>
   /* =========================================================
@@ -9,24 +15,38 @@
      o mesmo tema padrão do app) para todo mundo, em vez de
      seguir o tema do aparelho. Toda cor é pintada explicitamente.
      ========================================================= */
+  /* Cores e fontes vêm do Manual de Marca Tríade Conecta (seções 03 e 04).
+     Os hex são os oficiais, não aproximações: Dourado #C9A66B, Cream
+     Quartz #F6F3EE, Sand #D9B991, Burgundy #65202D, Deep Maroon #400106,
+     Olive Green #4A5A3A, Walnut #402814.
+
+     A página usa a "versão clara / uso reverso" que o manual aprova na
+     seção 06 — assinatura creme e dourada sobre fundo escuro. O fundo
+     escuro é derivado do Walnut (marrom quente), e a superfície elevada é
+     o #372E25 medido no próprio manual. A versão PRINCIPAL do manual é o
+     oposto (dourado sobre claro): virar a página para o mundo claro é
+     trocar --preto por --creme e --creme por --walnut, mais nada. */
   :root {
-    --preto: #0b0a0a;
-    --preto-2: #131110;
-    --carvao: #1c1917;
-    --linha: rgba(217, 179, 108, 0.16);
+    --preto: #0f0a06;
+    --preto-2: #17100a;
+    --carvao: #372e25;
+    --linha: rgba(201, 166, 107, 0.16);
     --linha-fraca: rgba(255, 255, 255, 0.08);
-    --creme: #f7f5f1;
-    --creme-70: rgba(247, 245, 241, 0.74);
-    --creme-45: rgba(247, 245, 241, 0.52);
-    --ouro: #d9b36c;
-    --ouro-claro: #f0d9a0;
-    --ouro-fundo: #b8934d;
-    --vinho: #7c2a3d;
-    --vinho-fundo: #4a1a26;
+    --creme: #f6f3ee;
+    --creme-70: rgba(246, 243, 238, 0.74);
+    --creme-45: rgba(246, 243, 238, 0.52);
+    --ouro: #c9a66b;
+    --ouro-claro: #d9b991;
+    --ouro-fundo: #a8874f;
+    --vinho: #65202d;
+    --vinho-fundo: #400106;
+    --oliva: #4a5a3a;
+    --walnut: #402814;
     --zap: #25d366;
 
-    --display: 'Fraunces', Georgia, serif;
-    --script: 'Instrument Serif', Georgia, serif;
+    --marca: 'Cormorant SC', Georgia, serif;
+    --display: 'Playfair Display', Georgia, serif;
+    --script: 'Playfair Display', Georgia, serif;
     --ui: 'Inter', system-ui, -apple-system, sans-serif;
 
     --largura: 34rem;
@@ -82,9 +102,12 @@
   .topo > * { position: relative; }
 
   .cabecalho { display: flex; align-items: center; gap: 0.7rem; }
+  /* "TRÍADE" em Cormorant SC, caixa alta e espaçamento amplo — é como o
+     manual (seção 04) define a palavra. O padding-right devolve o espaço
+     que o tracking cria depois do "E", senão o "conecta" nasce torto. */
   .cabecalho .nome {
-    font-family: var(--display); font-size: 1.15rem; font-weight: 700;
-    letter-spacing: 0.06em;
+    font-family: var(--marca); font-size: 1.2rem; font-weight: 600;
+    letter-spacing: 0.14em; padding-right: 0.14em;
   }
   .cabecalho .assin { font-family: var(--script); font-style: italic; color: var(--ouro); font-size: 1.05rem; margin-left: 0.35rem; }
 
@@ -209,20 +232,27 @@
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;
   }
   .foto {
-    aspect-ratio: 1 / 1; border-radius: 14px; position: relative; overflow: hidden;
+    margin: 0; aspect-ratio: 4 / 5; border-radius: 14px; position: relative; overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    display: flex; align-items: flex-end;
+    /* enquanto a imagem não carrega, o bloco já tem cor de fundo — evita
+       o retângulo branco piscando sobre o preto */
+    background: linear-gradient(150deg, #232a1e, #2f2920 55%, #4a3b23);
   }
-  .foto:nth-child(1) { background: linear-gradient(150deg, #1b1a20, #2f2a20 55%, #4a3a20); }
-  .foto:nth-child(2) { background: linear-gradient(150deg, #241f1a, #3b2f1c 60%, #5c4520); }
-  .foto:nth-child(3) { background: linear-gradient(150deg, #2a1d22, #4a1a26 60%, #3b2f1c); }
-  .foto:nth-child(4) { background: linear-gradient(150deg, #1b1a20, #33251a 55%, #4a3a20); }
+  /* a primeira foto ocupa a largura toda: é a mais forte do acervo e é o
+     que dá escala à seção num grid de duas colunas em 375px */
+  .foto.grande { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+  .foto img {
+    width: 100%; height: 100%; display: block; object-fit: cover;
+    /* as fotos vêm de Stories 9:16 com legenda queimada embaixo;
+       ancorar no terço superior corta a legenda e mantém os rostos */
+    object-position: 50% 28%;
+  }
   .foto .cap {
-    width: 100%; padding: 0.7rem 0.8rem;
+    position: absolute; inset: auto 0 0 0;
+    padding: 1.4rem 0.8rem 0.7rem;
     font-size: 0.75rem; color: var(--creme-70);
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   }
-  .nota-foto { margin-top: 0.8rem; font-size: 0.78rem; color: var(--creme-45); text-align: center; }
 
   /* ---------- idealizadoras ---------- */
   .trio { margin-top: 1.8rem; display: flex; flex-direction: column; gap: 0.7rem; }
@@ -234,7 +264,7 @@
   }
   .pessoa .av {
     width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(150deg, #2f2a20, #4a3a20);
+    background: linear-gradient(150deg, #2f2920, #4a3b23);
     border: 1px solid var(--linha);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--display); font-size: 1.05rem; color: var(--ouro);
@@ -331,15 +361,16 @@
     <h1>A mesa onde<br>mulheres de Goiânia<span class="it">fazem negócio.</span></h1>
 
     <p class="chamada">
-      Uma tarde por mês, cinco horas, uma especialista convidada e um grupo
-      pequeno. Sem palestra motivacional, sem cartão trocado no corredor.
+      Encontros presenciais de cinco horas, com uma especialista convidada por
+      edição e um grupo pequeno. Sem palestra motivacional, sem cartão trocado
+      no corredor.
     </p>
 
     <div class="encontro">
       <div class="rot">Próximo encontro</div>
-      <div class="quando">19 de setembro</div>
-      <div class="onde">Sábado, 14h às 19h · Goiânia, GO</div>
-      <div class="vagas"><span class="ponto"></span> 85 vagas · confirmação por WhatsApp</div>
+      <div class="quando">30 de setembro</div>
+      <div class="onde">Jantar da Tríade para Casais · 19h · Goiânia, GO</div>
+      <div class="vagas"><span class="ponto"></span> Vagas limitadas · confirmação por WhatsApp</div>
       <a class="btn btn-ouro" href="#" data-cta="hero">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
         Quero minha vaga
@@ -351,8 +382,8 @@
 
 <div class="env">
   <div class="numeros rev">
-    <div><div class="n">3</div><div class="l">edições realizadas</div></div>
-    <div><div class="n">85+</div><div class="l">mulheres na mesa</div></div>
+    <div><div class="n">11+</div><div class="l">edições realizadas</div></div>
+    <div><div class="n">3</div><div class="l">idealizadoras</div></div>
     <div><div class="n">5h</div><div class="l">por encontro</div></div>
   </div>
 
@@ -367,7 +398,7 @@
   </div>
 
   <section class="rev">
-    <h2 class="titulo-secao">Cinco horas,<span class="it">quatro momentos.</span></h2>
+    <h2 class="titulo-secao">O que acontece<span class="it">numa edição.</span></h2>
     <p class="apoio">
       Você não chega e senta numa plateia. O encontro é desenhado para que
       todas falem — e para que você saia sabendo o nome e o negócio de quem
@@ -376,28 +407,28 @@
 
     <div class="roteiro">
       <div class="etapa">
-        <div class="h">14h</div>
+        <div class="h"><span class="marca"><svg width="18" height="15" viewBox="0 0 140 120"><polygon class="m-cheia" points="6,10 6,110 66,60"></polygon></svg></span></div>
         <div>
-          <div class="t">Chegada e apresentações</div>
-          <div class="d">Cada uma conta em um minuto o que faz e o que está buscando.</div>
+          <div class="t">Uma convidada, um tema prático</div>
+          <div class="d">Marketing com Geórgia Maia, cultura e gestão com Marcela Zaidem, finanças com Danielle Gouveia. Assunto que se aplica ao negócio na segunda-feira.</div>
         </div>
       </div>
       <div class="etapa">
-        <div class="h">15h</div>
-        <div>
-          <div class="t">A convidada</div>
-          <div class="d">Uma especialista por edição, com tema prático — finanças, gestão, cultura.</div>
-        </div>
-      </div>
-      <div class="etapa">
-        <div class="h">17h</div>
+        <div class="h"><span class="marca"><svg width="18" height="15" viewBox="0 0 140 120"><polygon class="m-cheia" points="6,10 6,110 66,60"></polygon></svg></span></div>
         <div>
           <div class="t">Roda de conversa</div>
-          <div class="d">A mesa inteira discute o tema aplicado ao próprio negócio.</div>
+          <div class="d">A mesa inteira discute o tema aplicado ao próprio negócio — empreendedoras, autônomas e comerciantes.</div>
         </div>
       </div>
       <div class="etapa">
-        <div class="h">18h30</div>
+        <div class="h"><span class="marca"><svg width="18" height="15" viewBox="0 0 140 120"><polygon class="m-cheia" points="6,10 6,110 66,60"></polygon></svg></span></div>
+        <div>
+          <div class="t">O cantinho da marca</div>
+          <div class="d">Espaço para registrar a sua presença e mostrar o que você faz.</div>
+        </div>
+      </div>
+      <div class="etapa">
+        <div class="h"><span class="marca"><svg width="18" height="15" viewBox="0 0 140 120"><polygon class="m-cheia" points="6,10 6,110 66,60"></polygon></svg></span></div>
         <div>
           <div class="t">Conexões</div>
           <div class="d">A parte informal, que é onde a maioria das parcerias começa.</div>
@@ -419,12 +450,19 @@
   <section class="rev">
     <h2 class="titulo-secao">Como foi<span class="it">até aqui.</span></h2>
     <div class="galeria">
-      <div class="foto"><div class="cap">1ª edição · abril</div></div>
-      <div class="foto"><div class="cap">A convidada no palco</div></div>
-      <div class="foto"><div class="cap">Roda de conversa</div></div>
-      <div class="foto"><div class="cap">2ª edição · agosto</div></div>
+      <figure class="foto grande">
+        <img src="https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg" alt="Três participantes reunidas em frente ao letreiro da Tríade Conecta" loading="lazy">
+        <figcaption class="cap">Quando mulheres se encontram, tudo muda</figcaption>
+      </figure>
+      <figure class="foto">
+        <img src="https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-1.jpg" alt="Geórgia Maia falando ao microfone para as participantes sentadas às mesas" loading="lazy">
+        <figcaption class="cap">Marketing com Geórgia Maia</figcaption>
+      </figure>
+      <figure class="foto">
+        <img src="https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-1.jpg" alt="Participante em frente ao letreiro da Tríade Conecta" loading="lazy">
+        <figcaption class="cap">11ª edição</figcaption>
+      </figure>
     </div>
-    <p class="nota-foto">Espaços reservados para as fotos reais das edições.</p>
   </section>
 
   <div class="regua" aria-hidden="true">
@@ -462,8 +500,8 @@
         <div class="av">CM</div>
         <div>
           <div class="n">Cris Miranda</div>
-          <div class="f">Idealizadora</div>
-          <div class="d">Descrição a definir com ela.</div>
+          <div class="f">Estilo</div>
+          <div class="d">Contadora e consultora de estilo.</div>
         </div>
       </div>
     </div>
@@ -471,10 +509,10 @@
     <div class="depo">
       <div class="aspas" aria-hidden="true">“</div>
       <p class="q">
-        Saí do primeiro encontro com duas parcerias fechadas e uma sócia. Era
-        exatamente o que eu não estava encontrando em evento de negócios.
+        Conexões verdadeiras não nascem do interesse, mas da presença, da
+        escuta e de um propósito em comum.
       </p>
-      <p class="quem"><b>Nome da participante</b> · segmento do negócio</p>
+      <p class="quem">Tríade Conecta</p>
     </div>
 
     <div class="comunidade">
@@ -488,7 +526,7 @@
 
 <div class="fecho env rev">
   <h2 class="titulo-secao">A próxima cadeira<span class="it">pode ser sua.</span></h2>
-  <p class="apoio">São 85 vagas por edição, e elas costumam acabar antes da data.</p>
+  <p class="apoio">O grupo é pequeno de propósito, e as vagas costumam acabar antes da data.</p>
   <a class="btn btn-ouro" href="#" data-cta="fim">
     <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
     Quero minha vaga
@@ -505,7 +543,7 @@
   <div class="env">
     <a class="btn btn-ouro" href="#" data-cta="fixa">
       <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.74-.86-2-.95-.27-.1-.47-.15-.66.15s-.76.95-.93 1.15c-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.74-.71 1.99-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.79-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.38 9.38 0 0 1-1.44-5.01c0-5.18 4.22-9.4 9.41-9.4a9.35 9.35 0 0 1 6.65 2.76 9.34 9.34 0 0 1 2.75 6.65c0 5.19-4.22 9.41-9.4 9.41zM20.5 3.49A11.32 11.32 0 0 0 12.04 0C5.8 0 .72 5.08.72 11.32c0 1.99.52 3.94 1.51 5.65L.63 24l7.18-1.88a11.3 11.3 0 0 0 5.41 1.38h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.32-8.01z"></path></svg>
-      Quero minha vaga · 19 de setembro
+      Quero minha vaga · 30 de setembro
     </a>
   </div>
 </div>

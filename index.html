@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0"
     />
-    <meta name="theme-color" content="#0B0A0A" />
+    <meta name="theme-color" content="#0F0A06" />
     <!--
       Tema salvo aplicado ANTES do React montar. Sem isso, abrir o app no
       tema alternativo pisca o tema padrão por um quadro a cada
@@ -26,7 +26,7 @@
         var t = JSON.parse(localStorage.getItem('triade_pref_theme'));
         if (t === 'perola') {
           document.documentElement.dataset.theme = 'perola';
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#F4EEE3');
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#F6F3EE');
         }
       } catch (e) {
         /* storage indisponível — segue no tema padrão */
@@ -45,7 +45,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
   </head>

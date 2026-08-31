@@ -18,12 +18,12 @@ export const THEMES: { value: ThemeName; label: string; hint: string }[] = [
   {
     value: 'onyx',
     label: 'Ônix',
-    hint: 'Preto e branco com detalhes dourados.',
+    hint: 'Fundo escuro com o dourado da marca.',
   },
   {
     value: 'perola',
     label: 'Pérola',
-    hint: 'O visual claro original, com vinho e dourado.',
+    hint: 'Creme e burgundy, como no manual da marca.',
   },
 ];
 
