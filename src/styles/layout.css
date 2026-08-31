@@ -316,6 +316,47 @@ body.modal-open .mesh span {
   border-top: 1px solid var(--tabbar-line);
   z-index: 30;
 }
+/* Selo de novidade na aba Eventos: a estrela de 4 pontas da marca, no
+   canto do ícone. A âncora é este wrapper — sem ele o `position: absolute`
+   se penduraria no `.tab` inteiro, que inclui o rótulo, e a estrela
+   flutuaria longe do ícone. */
+.tab-icone {
+  position: relative;
+  display: inline-flex;
+}
+.tab-selo {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  display: inline-flex;
+  color: var(--accent);
+  /* Brilho lento e com descanso: 5,5s de ciclo, dos quais o selo passa a
+     maior parte em repouso. Uma pulsação contínua vira ruído e o olho
+     aprende a ignorar — o que anula o motivo de ela existir.
+     Só opacidade e rotação: nada de `scale` aqui dentro, que a pílula da
+     tab bar tem `backdrop-filter` (DESIGN-SYSTEM.md §9). */
+  animation: selobrilho 5.5s ease-in-out infinite;
+}
+/* a estrela não deve competir com a foto de perfil nem com o ícone ativo */
+.tab.active .tab-selo { color: var(--accent-on-dark-soft); }
+
+@keyframes selobrilho {
+  0%,
+  58%,
+  100% {
+    opacity: 0.5;
+    transform: rotate(0deg);
+  }
+  68% {
+    opacity: 1;
+    transform: rotate(24deg);
+  }
+  80% {
+    opacity: 0.72;
+    transform: rotate(10deg);
+  }
+}
+
 .tab {
   flex: 1;
   display: flex;

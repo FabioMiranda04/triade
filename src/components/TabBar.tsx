@@ -3,6 +3,9 @@ import { Icon } from '@/components/Icon';
 import type { IconName } from '@/components/Icon';
 import { useAuth } from '@/context/AuthContext';
 import { useTabBarStyle } from '@/context/TabBarStyleContext';
+import { useAsyncData } from '@/hooks/useAsyncData';
+import { db } from '@/lib/db';
+import type { TriadeEvent } from '@/types';
 
 interface TabDef {
   to: string;
@@ -21,12 +24,17 @@ interface TabDef {
   icon: IconName;
   /** o item central (Eventos) ganha o badge circular destacado — só no Padrão */
   center?: boolean;
+  /**
+   * Aba que mostra o selo de novidade quando há evento por vir. É uma aba
+   * só, de propósito: selo em tudo é o mesmo que selo em nada.
+   */
+  selo?: boolean;
 }
 
 const TABS: TabDef[] = [
   { to: '/', label: 'Início', icon: 'home' },
   { to: '/sobre', label: 'Sobre', icon: 'heart' },
-  { to: '/eventos', label: 'Eventos', icon: 'calendar', center: true },
+  { to: '/eventos', label: 'Eventos', icon: 'calendar', center: true, selo: true },
   { to: '/palestrantes', label: 'Palestras', icon: 'mic' },
 ];
 
@@ -51,6 +59,12 @@ const TABS: TabDef[] = [
 export function TabBar() {
   const { style } = useTabBarStyle();
   const { profile, openAccount } = useAuth();
+  // O selo só acende quando existe evento por vir. Preso a um dado real, ele
+  // se apaga sozinho quando a agenda esvazia — um selo fixo de "novo" vira
+  // paisagem em uma semana e para de chamar atenção, que é o oposto do
+  // pedido.
+  const { data: eventos } = useAsyncData<TriadeEvent[]>(() => db.getEvents(), []);
+  const temNovidade = eventos.some((e) => e.status === 'em breve');
   const floating = style === 'padrao2';
   const iconSize = floating ? 20 : 22;
   // a foto de perfil fica um pouco maior que os outros ícones — é a usuária, precisa se destacar
@@ -64,13 +78,20 @@ export function TabBar() {
       className={({ isActive }) => `tab${isActive ? ' active' : ''}`}
       aria-label={tab.label}
     >
-      {tab.center && !floating ? (
-        <span className="center-badge">
-          <Icon name={tab.icon} size={18} />
-        </span>
-      ) : (
-        <Icon name={tab.icon} size={iconSize} />
-      )}
+      <span className="tab-icone">
+        {tab.center && !floating ? (
+          <span className="center-badge">
+            <Icon name={tab.icon} size={18} />
+          </span>
+        ) : (
+          <Icon name={tab.icon} size={iconSize} />
+        )}
+        {tab.selo && temNovidade && (
+          <span className="tab-selo" aria-hidden="true">
+            <Icon name="sparkle" size={10} />
+          </span>
+        )}
+      </span>
       <span className="tab-label">{tab.label}</span>
     </NavLink>
   ));

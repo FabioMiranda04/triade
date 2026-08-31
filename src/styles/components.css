@@ -61,6 +61,39 @@
   margin-bottom: 16px;
   overflow: hidden;
 }
+/* O post em destaque se anuncia na abertura do app: sobe 12px enquanto
+   aparece e, logo depois, um brilho atravessa o card uma única vez.
+   Só `translate` e `opacity` — o card é `.glass`, tem `backdrop-filter`, e
+   animar tamanho nele obriga o navegador a recalcular o desfoque quadro a
+   quadro (DESIGN-SYSTEM.md §9). O brilho é um pseudo-elemento, então não
+   entra no fluxo nem intercepta toque. */
+.post-novo {
+  animation: postnovo 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.post-novo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    100deg,
+    transparent 34%,
+    var(--accent-fill-strong) 50%,
+    transparent 66%
+  );
+  animation: postbrilho 1.15s ease-out 0.42s 1 both;
+}
+@keyframes postnovo {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes postbrilho {
+  from { transform: translateX(-100%); opacity: 0; }
+  22% { opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
 .post-head {
   display: flex;
   align-items: center;

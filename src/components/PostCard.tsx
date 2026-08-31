@@ -33,9 +33,14 @@ interface PostCardProps {
   onOpenEvent?: (eventId: string) => void;
   /** presente só no post de evento em destaque — abre o formulário de edição */
   onEdit?: () => void;
+  /**
+   * Marca este post como "chegando agora". Só o Início usa, e só na
+   * primeira montagem da sessão — ver `Home.tsx`.
+   */
+  destaqueNovo?: boolean;
 }
 
-export function PostCard({ post, onOpenEvent, onEdit }: PostCardProps) {
+export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo }: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { liked, saved, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
@@ -56,7 +61,7 @@ export function PostCard({ post, onOpenEvent, onEdit }: PostCardProps) {
   const likes = post.baseLikes + (liked ? 1 : 0);
 
   return (
-    <article className="post glass">
+    <article className={`post glass${destaqueNovo ? ' post-novo' : ''}`}>
       <div className="post-head">
         <div className="post-avatar">{post.authorInitials}</div>
         <div className="post-who">

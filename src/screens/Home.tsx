@@ -13,9 +13,27 @@ import type { TriadeEvent } from '@/types';
 
 const PILLARS = ['Conexão', 'Inspiração', 'Ação'];
 
+/**
+ * A animação de "chegou coisa nova" no post em destaque roda UMA vez por
+ * abertura do app, não a cada vez que a usuária volta para o Início. Trocar
+ * de aba desmonta e remonta esta tela; um estado do componente reiniciaria
+ * junto e a animação tocaria de novo a cada visita — o que deixa de
+ * anunciar novidade e vira tique.
+ *
+ * Módulo, e não `sessionStorage`: o que se quer é "esta carga da página",
+ * que é exatamente o tempo de vida do módulo. E storage passa pelo `db`
+ * (regra 5), o que seria peso demais para uma animação.
+ */
+let jaAnunciouDestaque = false;
+
 /** Tela Início — stories + feed da comunidade. */
 export default function Home() {
   const { showToast } = useToast();
+  const [anunciar] = useState(() => {
+    if (jaAnunciouDestaque) return false;
+    jaAnunciouDestaque = true;
+    return true;
+  });
   const [, forceUpdate] = useState(0);
   const [featured, ...rest] = applyPostEdits(posts);
   const { data: events } = useAsyncData<TriadeEvent[]>(() => db.getEvents().then(applyEventEdits), []);
@@ -31,7 +49,12 @@ export default function Home() {
 
   return (
     <section className="panel">
-      <PostCard post={featured} onOpenEvent={setOpenEventId} onEdit={() => setEditingPost(true)} />
+      <PostCard
+        post={featured}
+        onOpenEvent={setOpenEventId}
+        onEdit={() => setEditingPost(true)}
+        destaqueNovo={anunciar}
+      />
       {openEvent && <EventModal event={openEvent} onClose={() => setOpenEventId(null)} />}
       {editingPost && (
         <PostEditSheet
