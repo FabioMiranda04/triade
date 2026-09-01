@@ -179,6 +179,38 @@ dois discordam.
     comercial não entra como `font-family` sem licença web** — a Slight
     (o "conecta" da assinatura) é o caso concreto, explicado na seção 4
     daquele documento.
+17. **Terminou um plano de implementação? Commit e push, sem perguntar.**
+    A sequência é sempre a mesma: `npm run build` verde → docs da regra 13
+    atualizadas → commit → push na branch de trabalho → e, quando o
+    trabalho está pronto para o público, `git push origin HEAD:main`.
+    **`main` é produção** — a Vercel publica sozinha a cada push. É por
+    isso que o build tem que passar ANTES, não depois. Só segure o push de
+    `main` se o build falhar, se algo ficou pela metade de propósito, ou
+    se o próprio usuário pediu para segurar. Ficar esperando um "pode
+    subir?" a cada entrega é ruído: a autorização é permanente e está aqui.
+18. **Use as skills `caveman` e `ponytail` ativamente** — mas saiba onde
+    cada uma paga. Estão em `.claude/skills/` (versionadas porque o
+    contêiner é efêmero).
+    - **`ponytail` antes de escrever código.** A solução mais preguiçosa
+      que resolve: sem dependência nova, sem abstração especulativa, sem
+      campo "que talvez precise depois". Esta é a que economiza de
+      verdade, e não por comprimir texto: menos código é menos rodada de
+      build, menos verificação e menos conversa — e é a conversa que
+      custa.
+    - **`caveman` para prosa longa.** Medido na sessão 20: o texto visível
+      do assistente foi ~23 mil tokens de 1,53 milhão de tokens de saída,
+      e a saída foi 9% da conta. Comprimir tudo mexeria em ~0,1% do custo,
+      menos do que as próprias regras do caveman custam relidas a cada
+      turno. Então: use em resposta longa, não como modo permanente.
+    - **Onde o dinheiro realmente está: o contexto relido.** 91% da conta
+      foi cache de contexto, ~375 mil tokens reenviados a cada chamada. O
+      que baixa isso é ter menos coisa no contexto — principalmente
+      **captura de tela**: cada uma custa ~1.100 tokens e continua sendo
+      cobrada em toda chamada seguinte até o fim da sessão. Tire só as
+      capturas que vão mudar uma decisão, e recorte antes de olhar.
+    - **Exceção de idioma**: texto de UI, commit e documentação continuam
+      em português normal e completo (regra 12). Comprimir ali economiza
+      centavos e custa clareza para quem lê depois.
 
 ## 6. Como adicionar coisas
 
