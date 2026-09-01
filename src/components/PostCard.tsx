@@ -48,7 +48,7 @@ interface PostCardProps {
 export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { liked, saved, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
+  const { liked, saved, curtidas, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
   const [bursting, setBursting] = useState(false);
   const burstTimer = useRef<number | undefined>(undefined);
 
@@ -62,8 +62,6 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: 
       burstTimer.current = window.setTimeout(() => setBursting(false), 800);
     });
   });
-
-  const likes = post.baseLikes + (liked ? 1 : 0);
 
   return (
     <article
@@ -142,7 +140,13 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: 
               <Icon name={saved ? 'bookmarkFill' : 'bookmark'} />
             </button>
           </div>
-          <div className="post-likes">{likes} curtidas</div>
+          {/* zero curtidas não vira "0 curtidas": a linha some, como em
+              qualquer feed. Ninguém precisa ver o placar vazio. */}
+          {curtidas > 0 && (
+            <div className="post-likes">
+              {curtidas} {curtidas === 1 ? 'curtida' : 'curtidas'}
+            </div>
+          )}
         </>
       )}
 

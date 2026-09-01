@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { useInfiniteReveal } from '@/hooks/useInfiniteReveal';
 import { ANFITRIA_TRIADE } from '@/data/seed';
 import { db } from '@/lib/db';
@@ -34,6 +35,7 @@ export default function Eventos() {
   const { requireAuth } = useAuth();
   const [mode, setMode] = useState<Mode>('lista');
   const [rsvps, setRsvps] = useState<string[]>([]);
+  const podeEditar = usePodeEditar();
   const [editing, setEditing] = useState<TriadeEvent | 'new' | null>(null);
   const [recapEvent, setRecapEvent] = useState<TriadeEvent | null>(null);
   const [query, setQuery] = useState('');
@@ -143,9 +145,11 @@ export default function Eventos() {
         )
       ) : (
         <>
-          <button className="add-tile" onClick={() => setEditing('new')}>
-            <Icon name="plus" size={16} /> Novo evento
-          </button>
+          {podeEditar && (
+            <button className="add-tile" onClick={() => setEditing('new')}>
+              <Icon name="plus" size={16} /> Novo evento
+            </button>
+          )}
 
           {loading ? (
             <Skeleton rows={3} height={92} />
@@ -158,7 +162,7 @@ export default function Eventos() {
                   going={isGoing(nextEvent.id)}
                   onRsvp={handleRsvp}
                   onCancelRsvp={handleCancelRsvp}
-                  onEdit={setEditing}
+                  onEdit={podeEditar ? setEditing : undefined}
                 />
               ) : (
                 <p className="empty-state">Nenhuma edição agendada no momento.</p>

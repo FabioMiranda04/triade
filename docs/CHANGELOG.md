@@ -11,6 +11,67 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.3.0 — Curtida de verdade, edição só para quem pode, e recorte de foto
+**Sessão 20 (segunda metade) — 01/09/2026**
+
+### As curtidas pararam de ser enfeite
+
+`baseLikes` saiu do `seed.ts` e do tipo `Post`. Eram números escritos à
+mão (168, 141, 98) que só subiam +1 quando você mesma curtia — placar de
+demonstração numa tela que vende plano.
+
+O total agora vem do banco. O caminho não é óbvio e vale registrar:
+`post_engagements` é **privada por usuária** (a RLS devolve só a própria
+linha), o que é o certo — ninguém precisa saber quem curtiu o quê — mas
+torna impossível contar do cliente. Abrir o `select` resolveria e vazaria
+a lista. A saída foi uma função `security definer`,
+`curtidas_do_post(p_post_id)`, que devolve **só o total** e nada mais,
+liberada para `anon` e `authenticated`.
+
+Sem Supabase configurado o total é o desta aba — e **zero não aparece**:
+a linha some, como em qualquer feed. "0 curtidas" é pior que silêncio.
+
+### Editar virou privilégio também na tela
+
+Antes, o "..." → Editar aparecia para todo mundo e salvava no navegador de
+cada uma. Parecia um painel administrativo e não era: a sócia abria no
+celular dela e não via nada.
+
+Agora a UI de edição só existe para quem está na tabela `admins` — post,
+evento, palestrante, "Novo evento" e "Nova palestrante". O gate é um hook
+único, `usePodeEditar()`, que substituiu as duas cópias do mesmo
+`useEffect` que já existiam dentro dos formulários. A permissão de verdade
+sempre esteve na RLS; o que faltava era a tela contar a mesma história.
+
+### Início: um post, não um feed
+
+A primeira tela mostrava três cards de post competindo entre si. Três
+coisas de importância igual não têm chamariz. Ficou **um**: o do próximo
+evento, escolhido sozinho pela data. Os pilares, a citação e o resto
+continuam abaixo dele.
+
+### Recorte antes de subir
+
+O acervo é Stories 9:16 e o bloco do post é 4:3 — o `object-fit: cover`
+decidia o corte sozinho e às vezes decapitava alguém. Entrou o
+`RecorteFoto`: arrasta para enquadrar, controle para aproximar, e sai um
+JPEG 1200×900 pronto. Sem biblioteca — `<input type="range">`, eventos de
+ponteiro e `canvas.toBlob()` (regra 7).
+
+Só a foto única (a do post) passa por ele. Numa galeria de várias,
+recortar uma a uma seria castigo; ali o `cover` resolve.
+
+Conferido de ponta a ponta com permissão forçada num build descartável:
+recorte abre com a geometria do `cover`, arrastar e aproximar mexem no
+enquadramento, e o arquivo gerado tem exatamente 1200×900. Sem permissão,
+nenhuma das três telas mostra controle de edição.
+
+### O admin da casa
+
+`fabiomirandago@gmail.com` entra em `public.admins` pelo próprio
+`schema.sql` (insert idempotente, por e-mail). **Ainda precisa rodar o
+`schema.sql` no SQL Editor** — é lá que a permissão passa a valer.
+
 ## v3.2.0 — Foto de verdade no feed, e o destaque que se corrige sozinho
 **Sessão 20 — 01/09/2026**
 

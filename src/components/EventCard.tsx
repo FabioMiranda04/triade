@@ -10,7 +10,8 @@ interface EventCardProps {
   going: boolean;
   onRsvp: (id: string) => void;
   onCancelRsvp: (id: string) => void;
-  onEdit: (event: TriadeEvent) => void;
+  /** ausente = quem está vendo não pode editar; o "..." não aparece */
+  onEdit?: (event: TriadeEvent) => void;
   /** 'featured' = card grande do próximo evento (tela Eventos, modo Lista) */
   variant?: 'default' | 'featured';
 }
@@ -49,10 +50,12 @@ export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit, variant 
               </span>
             )}
           </div>
-          <Kebab
-            label="Opções do evento"
-            actions={[{ label: 'Editar', icon: 'edit', onClick: () => onEdit(event) }]}
-          />
+          {onEdit && (
+            <Kebab
+              label="Opções do evento"
+              actions={[{ label: 'Editar', icon: 'edit', onClick: () => onEdit(event) }]}
+            />
+          )}
         </div>
       </div>
 

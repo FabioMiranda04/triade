@@ -19,6 +19,9 @@ export const localProvider: DataProvider = {
   // Sem Supabase configurado não há autenticação possível — engajamento
   // é sempre local, só embrulhado em Promise para bater com a interface.
   isLiked: async (postId) => engagement.isLiked(postId),
+  // Sem banco não existe "curtida de todo mundo": a única que existe é a
+  // desta aba. Mostrar um número inventado seria pior que mostrar zero.
+  contarCurtidas: async (postId) => (engagement.isLiked(postId) ? 1 : 0),
   toggleLike: async (postId) => engagement.toggleLike(postId),
   isSaved: async (postId) => engagement.isSaved(postId),
   toggleSave: async (postId) => engagement.toggleSave(postId),

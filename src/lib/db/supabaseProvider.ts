@@ -96,6 +96,15 @@ async function isLiked(postId: string): Promise<boolean> {
   return !!data;
 }
 
+async function contarCurtidas(postId: string): Promise<number> {
+  const { data, error } = await requireSupabase().rpc('curtidas_do_post', { p_post_id: postId });
+  if (error) {
+    console.error('[triade] não deu para contar as curtidas:', error.message);
+    return 0;
+  }
+  return data ?? 0;
+}
+
 async function toggleLike(postId: string): Promise<boolean> {
   const uid = await getUserId();
   if (!uid) return engagement.toggleLike(postId);
@@ -296,6 +305,7 @@ export const supabaseProvider: DataProvider = {
     ),
 
   isLiked,
+  contarCurtidas,
   toggleLike,
   isSaved,
   toggleSave,

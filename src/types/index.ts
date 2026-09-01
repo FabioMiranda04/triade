@@ -66,8 +66,6 @@ export interface Post {
   authorInitials: string;
   subtitle: string;
   caption: string;
-  /** curtidas base (mock) — a curtida da usuária é somada em cima */
-  baseLikes: number;
   /**
    * Foto do post. Quando existe, é ELA que aparece na área de imagem.
    * Sem ela, o card cai no gradiente com a seta tripla — que é um

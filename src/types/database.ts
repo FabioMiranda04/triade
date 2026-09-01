@@ -155,7 +155,13 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      /** total de curtidas de um post — ver seção final do `schema.sql` */
+      curtidas_do_post: {
+        Args: { p_post_id: string };
+        Returns: number;
+      };
+    };
     Enums: Record<string, never>;
   };
 }

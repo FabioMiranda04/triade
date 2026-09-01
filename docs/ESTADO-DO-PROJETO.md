@@ -3,10 +3,25 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.2.0`
+**Versão atual:** `v3.3.0`
 **Última atualização:** 01/09/2026
 
-**Última sessão (20, 01/09/2026) — o feed com fotografia de verdade.**
+**Última sessão (20, 01/09/2026) — o feed com fotografia de verdade, e o
+fim do que era demonstração.**
+
+- **Curtidas reais.** `baseLikes` (números escritos à mão no `seed.ts`)
+  saiu. O total vem da função `curtidas_do_post()` — `post_engagements` é
+  privada por usuária, então contar do cliente é impossível e uma função
+  `security definer` devolve só o total. Zero não aparece.
+- **Edição só para admin, também na tela.** O "..." → Editar aparecia para
+  todo mundo e salvava no navegador de cada uma. Agora é o hook
+  `usePodeEditar()` que decide se o controle existe.
+- **Início mostra um post**, o do próximo evento, com o resto abaixo.
+- **Recorte de foto antes do upload** (`RecorteFoto`): arrastar, aproximar,
+  sai um JPEG 1200×900. Sem biblioteca.
+- **`fabiomirandago@gmail.com` entra em `admins`** pelo próprio
+  `schema.sql`. Falta rodar o arquivo no SQL Editor.
+
 
 - **Eventos corrigidos pelo Instagram.** A **Feira de Negócios Tríade**
   (11 e 12/09, Decorado Bambuí) não existia no app, e a primeira tela

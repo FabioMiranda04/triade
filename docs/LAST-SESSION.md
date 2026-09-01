@@ -13,19 +13,21 @@ código — estão logo abaixo.
 
 ## Três coisas que só você pode fazer
 
-### 1. Rodar a migração e se marcar como admin
+### 1. Rodar o `schema.sql` no SQL Editor
 
-Sem isso, a parte nova de edição existe mas fica inerte: o app continua
-salvando só no navegador, como sempre fez. **Não é bug** — é o padrão para
-quem não tem permissão.
+**É o único passo que falta.** O `fabiomirandago@gmail.com` já está no
+arquivo: o final do `supabase/schema.sql` insere essa conta em
+`public.admins` sozinho, por e-mail, de forma idempotente. Não precisa
+escrever SQL — é copiar o arquivo inteiro no SQL Editor e rodar.
 
-O passo a passo está em `docs/SUPABASE.md`, na seção "Dar permissão de
-edição a alguém". Em resumo: rodar o `supabase/schema.sql` de novo no SQL
-Editor (é idempotente; a parte nova é a seção 6) e depois inserir a própria
-conta em `public.admins`.
+O mesmo arquivo cria a função `curtidas_do_post()`, que é o que faz o
+número de curtidas do feed existir. Enquanto ele não rodar, o app mostra
+zero curtidas e nenhuma UI de edição — **não é bug**, é o padrão de quem
+não tem permissão.
 
-Como saber se funcionou: abrir o app logada, Eventos → "..." → Editar. No
-topo do formulário tem que aparecer *"Você tem permissão de edição"*.
+Como saber se funcionou: abrir o app **logado com essa conta**. O "..."
+tem que aparecer no post do Início e no card do próximo evento — sem
+permissão ele nem existe mais.
 
 ### 2. Corrigir o manual com quem o produziu
 

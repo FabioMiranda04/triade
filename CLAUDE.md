@@ -258,6 +258,11 @@ em `supabaseProvider.ts` → valor em `src/data/seed.ts` (para o modo local) →
 leitura via `db`. Os cinco passos, sempre — pular um deixa os dois providers
 fora de sincronia.
 
+**Nova UI de edição de conteúdo:** esconda atrás de `usePodeEditar()`
+(`src/hooks/usePodeEditar.ts`) — `false` = não renderize o controle. Não
+escreva outra chamada a `db.podeEditarConteudo()`: o hook já existe e é o
+mesmo em todas as telas.
+
 **Nova ação que exige login:** chame `useAuth().requireAuth()` no início do
 handler — `true` = pode seguir (já logada, ou app rodando sem Supabase, caso
 em que não existe login possível e a ação sempre segue livre); `false` = já
@@ -286,6 +291,12 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
 - **Engajamento (curtir, salvar, RSVP/cancelar, plano escolhido) vai para o
   Supabase só com usuária logada.** Deslogada (ou sem Supabase configurado)
   continua exatamente como antes: localStorage, por navegador, livre.
+  **A contagem de curtidas é real** desde 01/09/2026 — vem da função
+  `curtidas_do_post()` do `schema.sql`, não de um número no `seed.ts`.
+  `post_engagements` é privada por usuária (ninguém lê quem curtiu o quê),
+  então contar do cliente é impossível: a função `security definer` devolve
+  só o total. Sem Supabase o total é o desta aba, e **zero não aparece** —
+  a linha some, como em qualquer feed.
 - **Edição de conteúdo tem dois destinos, e quem decide é a permissão.**
   Desde 31/08/2026 existe a tabela `admins` no Supabase (seção 6 do
   `schema.sql`): quem está nela grava **no banco**, e as fotos vão para o
@@ -294,6 +305,9 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   O formulário **diz qual dos dois está valendo** antes de a pessoa digitar.
   A lista de admins só muda pelo SQL Editor do painel; não há tela para
   isso, e é de propósito (o front usa a chave `anon`, que é pública).
+  **Desde 01/09/2026 a UI de edição só existe para admin** — sem permissão
+  não há "..." → Editar, nem "Novo evento", nem "Nova palestrante". O gate é
+  o hook `usePodeEditar()`; use ele, não uma checagem nova.
   Ainda **não** é um painel administrativo completo: hoje só evento tem
   gravação real. Palestrante, plano e post seguem locais.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,

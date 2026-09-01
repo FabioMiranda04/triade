@@ -22,6 +22,8 @@ export interface DataProvider {
      Sem login (ou sem Supabase configurado), cada método cai exatamente no
      mesmo comportamento local de antes — ver `prefs.ts` (`engagement`). */
   isLiked(postId: string): Promise<boolean>;
+  /** Total de curtidas do post, de todo mundo. 0 sem Supabase configurado. */
+  contarCurtidas(postId: string): Promise<number>;
   toggleLike(postId: string): Promise<boolean>;
   isSaved(postId: string): Promise<boolean>;
   toggleSave(postId: string): Promise<boolean>;

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@/components/Icon';
+import { RecorteFoto } from '@/components/RecorteFoto';
 import { db } from '@/lib/db';
 import type { EventRecapMedia } from '@/types';
 
@@ -56,6 +57,8 @@ export function GaleriaEditor({
 }: GaleriaEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [arrastando, setArrastando] = useState(false);
+  // foto única passa pelo recorte antes de subir — ver `RecorteFoto`
+  const [recortando, setRecortando] = useState<File | null>(null);
   // as URLs `blob:` precisam ser liberadas na mão, senão o arquivo fica
   // preso na memória da aba até a página recarregar
   const previas = useRef<string[]>([]);
@@ -64,12 +67,12 @@ export function GaleriaEditor({
     return () => criadas.forEach((u) => URL.revokeObjectURL(u));
   }, []);
 
-  async function receber(arquivos: FileList | null) {
-    if (!arquivos || arquivos.length === 0) return;
+  async function receber(arquivos: File[]) {
+    if (arquivos.length === 0) return;
     // com `max = 1`, escolher um arquivo novo troca a foto em vez de
     // empilhar — é o que a pessoa espera de um campo de foto única
     const anteriores = max === 1 ? [] : fotos;
-    const escolhidos = Array.from(arquivos).slice(0, max - anteriores.length);
+    const escolhidos = arquivos.slice(0, max - anteriores.length);
     const novos: FotoEmEdicao[] = [];
     for (const arquivo of escolhidos) {
       if (!arquivo.type.startsWith('image/')) {
@@ -111,6 +114,17 @@ export function GaleriaEditor({
     }
   }
 
+  /**
+   * Uma foto só (o post) passa pelo recorte: é ela que precisa caber num
+   * 4:3 sem cortar cabeça. Numa galeria de várias, recortar uma a uma seria
+   * castigo — ali o `cover` resolve.
+   */
+  function escolher(arquivos: File[]) {
+    const so = arquivos[0];
+    if (max === 1 && so?.type.startsWith('image/')) setRecortando(so);
+    else void receber(arquivos);
+  }
+
   function remover(indice: number) {
     onChange(fotos.filter((_, i) => i !== indice));
   }
@@ -121,6 +135,16 @@ export function GaleriaEditor({
 
   return (
     <div className="galeria-editor">
+      {recortando && (
+        <RecorteFoto
+          arquivo={recortando}
+          onCancel={() => setRecortando(null)}
+          onPronto={(recortado) => {
+            setRecortando(null);
+            void receber([recortado]);
+          }}
+        />
+      )}
       <span className="ge-titulo">{titulo}</span>
 
       {fotos.length > 0 && (
@@ -161,7 +185,9 @@ export function GaleriaEditor({
         </ul>
       )}
 
-      {podeSubir && fotos.length < max ? (
+      {/* em foto única o botão nunca some: ele TROCA. Escondê-lo quando já
+          existe foto obrigaria a remover antes para poder trocar. */}
+      {podeSubir && (fotos.length < max || max === 1) ? (
         <>
           <button
             type="button"
@@ -175,7 +201,7 @@ export function GaleriaEditor({
             onDrop={(e) => {
               e.preventDefault();
               setArrastando(false);
-              void receber(e.dataTransfer.files);
+              void escolher(Array.from(e.dataTransfer.files));
             }}
           >
             <Icon name="plus" size={17} />
@@ -189,7 +215,7 @@ export function GaleriaEditor({
             multiple={max !== 1}
             hidden
             onChange={(e) => {
-              void receber(e.target.files);
+              void escolher(Array.from(e.target.files ?? []));
               // sem isto, escolher o MESMO arquivo de novo não dispara change
               e.target.value = '';
             }}

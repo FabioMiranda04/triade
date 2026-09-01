@@ -337,3 +337,32 @@ create policy "admin apaga midia"
 -- =============================================================
 
 alter table public.events add column if not exists end_date date;
+
+-- =============================================================
+--  Migração (01/09/2026): curtidas de verdade e o admin da casa.
+-- =============================================================
+
+-- `post_engagements` é estritamente privada por usuária: cada uma só lê a
+-- própria linha. Isso é o certo — ninguém precisa saber quem curtiu o quê —
+-- mas torna impossível contar do cliente. Uma função `security definer`
+-- devolve só o total, que é a única parte pública do dado.
+create or replace function public.curtidas_do_post(p_post_id text)
+returns integer
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select count(*)::integer from public.post_engagements
+  where post_id = p_post_id and kind = 'like'
+$$;
+
+revoke all on function public.curtidas_do_post(text) from public;
+grant execute on function public.curtidas_do_post(text) to anon, authenticated;
+
+-- O admin da casa. Idempotente: rodar de novo não duplica.
+insert into public.admins (user_id, nota)
+select id, 'idealizador do app'
+from auth.users
+where email = 'fabiomirandago@gmail.com'
+on conflict (user_id) do nothing;

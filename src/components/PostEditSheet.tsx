@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { EditSheet } from '@/components/EditSheet';
 import { GaleriaEditor } from '@/components/GaleriaEditor';
 import type { FotoEmEdicao } from '@/components/GaleriaEditor';
-import { db } from '@/lib/db';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { savePostEdit } from '@/lib/db/localContent';
 import type { Post, TriadeEvent } from '@/types';
 
@@ -26,23 +26,14 @@ interface PostEditSheetProps {
  * indo para o overlay local do navegador. O aviso no topo diz isso.
  */
 export function PostEditSheet({ post, events, onClose, onSaved }: PostEditSheetProps) {
+  const podeSubir = usePodeEditar();
   const [caption, setCaption] = useState(post.caption);
   const [ctaLabel, setCtaLabel] = useState(post.ctaLabel ?? 'Ver detalhes');
   const [eventId, setEventId] = useState(post.eventId ?? events[0]?.id ?? '');
   const [fotos, setFotos] = useState<FotoEmEdicao[]>(
     post.mediaUrl ? [{ tipo: 'foto', url: post.mediaUrl }] : [],
   );
-  const [podeSubir, setPodeSubir] = useState(false);
 
-  useEffect(() => {
-    let vivo = true;
-    void db.podeEditarConteudo().then((pode) => {
-      if (vivo) setPodeSubir(pode);
-    });
-    return () => {
-      vivo = false;
-    };
-  }, []);
 
   const subindo = fotos.some((f) => f.subindo);
 

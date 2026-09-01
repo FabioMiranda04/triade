@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { EditSheet } from '@/components/EditSheet';
 import { GaleriaEditor } from '@/components/GaleriaEditor';
 import type { FotoEmEdicao } from '@/components/GaleriaEditor';
 import { db } from '@/lib/db';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { createEvent, saveEventEdit } from '@/lib/db/localContent';
 import type { EventStatus, TriadeEvent } from '@/types';
 
@@ -30,6 +31,7 @@ interface EventEditSheetProps {
  * parece publicar e só guarda localmente é pior que um que não existe.
  */
 export function EventEditSheet({ event, onClose, onSaved }: EventEditSheetProps) {
+  const podeEditar = usePodeEditar();
   const [title, setTitle] = useState(event?.title ?? '');
   const [date, setDate] = useState(event?.date ?? '');
   const [status, setStatus] = useState<EventStatus>(event?.status ?? 'em breve');
@@ -40,19 +42,9 @@ export function EventEditSheet({ event, onClose, onSaved }: EventEditSheetProps)
   const [recapText, setRecapText] = useState(event?.recapText ?? '');
   const [fotos, setFotos] = useState<FotoEmEdicao[]>(event?.recapMedia ?? []);
 
-  const [podeEditar, setPodeEditar] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
-  useEffect(() => {
-    let vivo = true;
-    void db.podeEditarConteudo().then((pode) => {
-      if (vivo) setPodeEditar(pode);
-    });
-    return () => {
-      vivo = false;
-    };
-  }, []);
 
   // o id define a pasta do Storage, então precisa existir antes do upload —
   // num evento novo ele é criado aqui e reaproveitado no salvamento

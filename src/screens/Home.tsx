@@ -6,6 +6,7 @@ import { PostEditSheet } from '@/components/PostEditSheet';
 import { Mark } from '@/components/Brand';
 import { posts } from '@/data/seed';
 import { useAsyncData } from '@/hooks/useAsyncData';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { db } from '@/lib/db';
 import { applyEventEdits, applyPostEdits } from '@/lib/db/localContent';
 import { useToast } from '@/components/Toast';
@@ -44,14 +45,18 @@ export default function Home() {
   // lembrar de reordenar o array à mão — foi exatamente assim que a tela
   // ficou anunciando o Jantar de 30/09 com a Feira de 11/09 já marcada.
   // Sem evento por vir (ou sem post correspondente), cai no primeiro post.
-  const [featured, ...rest] = useMemo(() => {
+  //
+  // O Início mostra UM post, não um feed. Uma tela de abertura com três
+  // cards concorrendo entre si não tem chamariz — tem três coisas de
+  // importância igual. Os outros posts continuam existindo no `seed.ts`,
+  // só não disputam a primeira dobra.
+  const featured = useMemo(() => {
     const proximo = [...events]
       .filter((e) => e.status === 'em breve')
       .sort((a, b) => a.date.localeCompare(b.date))[0];
-    const i = proximo ? todosPosts.findIndex((p) => p.eventId === proximo.id) : -1;
-    if (i <= 0) return todosPosts;
-    return [todosPosts[i], ...todosPosts.filter((_, k) => k !== i)];
+    return todosPosts.find((p) => proximo && p.eventId === proximo.id) ?? todosPosts[0];
   }, [events, todosPosts]);
+  const podeEditar = usePodeEditar();
   const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState(false);
   const openEvent = events.find((e) => e.id === openEventId) ?? null;
@@ -67,7 +72,7 @@ export default function Home() {
       <PostCard
         post={featured}
         onOpenEvent={setOpenEventId}
-        onEdit={() => setEditingPost(true)}
+        onEdit={podeEditar ? () => setEditingPost(true) : undefined}
         destaqueNovo={anunciar}
         chamariz={!!featured.eventId}
       />
@@ -98,10 +103,6 @@ export default function Home() {
         </div>
         <div className="script handle">@triade.conecta</div>
       </article>
-
-      {rest.map((post) => (
-        <PostCard key={post.id} post={post} onOpenEvent={setOpenEventId} />
-      ))}
     </section>
   );
 }

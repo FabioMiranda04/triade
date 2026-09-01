@@ -6,6 +6,7 @@ import { SpeakerEditSheet } from '@/components/SpeakerEditSheet';
 import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { useAsyncData } from '@/hooks/useAsyncData';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { db } from '@/lib/db';
 import { applyEventEdits, applySpeakerEdits } from '@/lib/db/localContent';
 import { byName, firstName, formatEventDate } from '@/lib/format';
@@ -28,6 +29,7 @@ export default function Palestrantes() {
     () => db.getEvents().then(applyEventEdits),
     [],
   );
+  const podeEditar = usePodeEditar();
   const [selected, setSelected] = useState<Speaker | null>(null);
   const [editing, setEditing] = useState<Speaker | 'new' | null>(null);
 
@@ -66,10 +68,12 @@ export default function Palestrantes() {
               <span className="nm">{firstName(s.name)}</span>
             </button>
           ))}
-          <button className="pal-add" onClick={() => setEditing('new')} aria-label="Nova palestrante">
-            <Icon name="plus" size={18} />
-            Nova
-          </button>
+          {podeEditar && (
+            <button className="pal-add" onClick={() => setEditing('new')} aria-label="Nova palestrante">
+              <Icon name="plus" size={18} />
+              Nova
+            </button>
+          )}
         </div>
       )}
 
@@ -90,10 +94,12 @@ export default function Palestrantes() {
               ))}
             </ul>
           )}
-          <Kebab
-            label="Opções da palestrante"
-            actions={[{ label: 'Editar', icon: 'edit', onClick: () => setEditing(selected) }]}
-          />
+          {podeEditar && (
+            <Kebab
+              label="Opções da palestrante"
+              actions={[{ label: 'Editar', icon: 'edit', onClick: () => setEditing(selected) }]}
+            />
+          )}
         </div>
       )}
 

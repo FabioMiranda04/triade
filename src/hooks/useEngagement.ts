@@ -16,29 +16,44 @@ export function useEngagement(postId: string) {
   const { requireAuth } = useAuth();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [curtidas, setCurtidas] = useState(0);
 
   useEffect(() => {
     let alive = true;
-    Promise.all([db.isLiked(postId), db.isSaved(postId)]).then(([l, s]) => {
-      if (alive) {
-        setLiked(l);
-        setSaved(s);
-      }
-    });
+    Promise.all([db.isLiked(postId), db.isSaved(postId), db.contarCurtidas(postId)]).then(
+      ([l, s, n]) => {
+        if (alive) {
+          setLiked(l);
+          setSaved(s);
+          setCurtidas(n);
+        }
+      },
+    );
     return () => {
       alive = false;
     };
   }, [postId]);
 
+  // O número anda na hora, sem esperar a rede: o total já está na tela e a
+  // mudança é de exatamente ±1, então dá para calcular em vez de reconsultar.
+  function aplicar(antes: boolean, depois: boolean) {
+    if (antes !== depois) setCurtidas((n) => Math.max(0, n + (depois ? 1 : -1)));
+  }
+
   const toggleLike = useCallback(async () => {
     if (!requireAuth()) return;
-    setLiked(await db.toggleLike(postId));
-  }, [postId, requireAuth]);
+    const next = await db.toggleLike(postId);
+    aplicar(liked, next);
+    setLiked(next);
+  }, [postId, requireAuth, liked]);
 
   /** Curtir sem descurtir — usado pelo duplo toque na imagem. */
   const likeOnly = useCallback(async () => {
     if (!requireAuth()) return;
-    if (!(await db.isLiked(postId))) setLiked(await db.toggleLike(postId));
+    if (await db.isLiked(postId)) return;
+    const next = await db.toggleLike(postId);
+    aplicar(false, next);
+    setLiked(next);
   }, [postId, requireAuth]);
 
   const toggleSave = useCallback(async () => {
@@ -48,5 +63,5 @@ export function useEngagement(postId: string) {
     showToast(next ? 'Salvo na sua coleção' : 'Removido dos salvos');
   }, [postId, requireAuth, showToast]);
 
-  return { liked, saved, toggleLike, likeOnly, toggleSave };
+  return { liked, saved, curtidas, toggleLike, likeOnly, toggleSave };
 }
