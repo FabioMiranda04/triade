@@ -352,4 +352,4 @@ export const timeline = [
   },
 ];
 
-export const seed = { events, speakers, plans };
+export const seed = { events, speakers, plans, posts };

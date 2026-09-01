@@ -104,3 +104,39 @@ on conflict (id) do update set
   featured = excluded.featured,
   perks = excluded.perks,
   sort_order = excluded.sort_order;
+
+
+-- =============================================================
+--  Posts do Início. Mesmo desenho das outras tabelas: idempotente,
+--  o `on conflict` atualiza o que mudou. A ordem (`sort_order`) só
+--  vale como desempate — quem manda no destaque é a data do evento
+--  vinculado, decidida na tela (`Home.tsx`).
+-- =============================================================
+
+insert into public.posts
+  (id, author, author_initials, subtitle, caption, media_url, event_id, cta_label, sort_order)
+values
+  ('post-feira-negocios', 'Tríade Conecta', 'TC', 'Feira de Negócios · 11 e 12 de setembro',
+   'Seu negócio merece ser visto ✨ Seja um expositor da Feira de Negócios Tríade — dois dias de conexões que geram oportunidades e negócios que transformam.
+
+11 e 12 de setembro, no Decorado Bambuí. Moda, beleza, casa e talks reunidos num só lugar, com o público que já é da Tríade.
+
+Como expositora você: conecta-se com novos clientes e parceiros · dá visibilidade à sua marca · fortalece seu network e gera novas parcerias · impulsiona suas vendas e leva sua marca mais longe.
+
+Vagas limitadas. Fale com a gente e garanta a sua.',
+   'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg', 'feira-negocios-set26', 'Ver detalhes', 1),
+  ('post-jantar-casais', 'Tríade Conecta', 'TC', 'Jantar da Tríade para Casais · 30 de setembro',
+   'A pedidos das nossas queridas Tríades, uma noite para sair da rotina e se reconectar — 30 de setembro, às 19h, na Villa América, com talk da terapeuta Valéria Ruiz ✨',
+   'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-1.jpg', 'jantar-casais-set26', 'Ver detalhes', 2),
+  ('post-recap', 'Lívia Duarte', 'LD', 'idealizadora · edição com Carla Martins',
+   'Recordando a edição com Carla Martins, especialista em liderança feminina 🤍',
+   'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg', null, null, 3)
+on conflict (id) do update set
+  author = excluded.author,
+  author_initials = excluded.author_initials,
+  subtitle = excluded.subtitle,
+  caption = excluded.caption,
+  media_url = excluded.media_url,
+  event_id = excluded.event_id,
+  cta_label = excluded.cta_label,
+  sort_order = excluded.sort_order;

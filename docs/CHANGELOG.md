@@ -11,6 +11,48 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.4.0 — O post virou conteúdo de verdade
+**Sessão 20 (terceira parte) — 01/09/2026**
+
+### Por que a foto do post só salvava no aparelho
+
+Não era bug nem falta de permissão: **o post era o único conteúdo sem
+tabela**. Evento, palestrante e plano tinham as suas desde o Módulo 1.5; o
+post vivia no `seed.ts`, e a única escrita possível era o overlay local do
+navegador. A admin trocava a foto, via a mudança, e mais ninguém via.
+
+Agora existe `public.posts`, com o mesmo desenho das outras: leitura
+pública do que está publicado, escrita só para quem está em `admins`. O
+caminho completo dos cinco passos — schema, `database.ts`, tipo de
+domínio, mapeamento no provider, seed — mais `getPosts()` e `savePost()`
+no `DataProvider`, e o `Home` lendo pelo `db` em vez de importar o array.
+
+O `PostEditSheet` ficou igual ao de evento: com permissão grava no banco e
+o aviso diz "vale para todo mundo"; sem permissão, overlay local, como
+antes.
+
+**Armadilha que custou uma rodada:** faltou `Relationships: []` na entrada
+nova de `Tables`. Isso não dá erro onde está escrito — derruba o schema
+inteiro para `never`, e o TypeScript reclama de `plan_selections` e
+`rsvps`, tabelas que ninguém tocou. Ficou registrado na regra do
+`CLAUDE.md`, ao lado do aviso de `type` vs `interface`.
+
+### Notificação fora do caminho da barra
+
+O toast tinha `bottom: 86px` fixo e entrava com `translate(-50%, 140%)`:
+em qualquer aparelho com área de gestos ele parava **em cima** da pílula
+flutuante, e para chegar lá atravessava a barra. Agora nasce quase no
+lugar e sobe 10px aparecendo; a distância é `--tabbar-float-h + 16px`,
+então acompanha a barra se ela mudar de altura. Medido: 18px de folga com
+a barra flutuante, 30px com a fixa. A saída ficou mais lenta que a entrada
+— aparecer é aviso, sumir é despedida.
+
+### Barra flutuante
+
+Já era o padrão desde 26/08/2026 (`getPref('tabbar_style', 'padrao2')`).
+Quem escolheu a fixa antes disso mantém a escolha, de propósito — trocar
+por baixo a preferência de quem decidiu é pior que o padrão errado.
+
 ## v3.3.0 — Curtida de verdade, edição só para quem pode, e recorte de foto
 **Sessão 20 (segunda metade) — 01/09/2026**
 

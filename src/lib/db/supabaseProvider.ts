@@ -1,7 +1,7 @@
 import { requireSupabase } from '@/lib/supabase';
 import { seed } from '@/data/seed';
-import type { Plan, Speaker, TriadeEvent } from '@/types';
-import type { EventRow, PlanRow, SpeakerRow } from '@/types/database';
+import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { EventRow, PlanRow, PostRow, SpeakerRow } from '@/types/database';
 import type { DataProvider } from './types';
 import { engagement } from './prefs';
 
@@ -34,6 +34,22 @@ function mapEvent(row: EventRow): TriadeEvent {
     spots: row.spots || undefined,
     recapText: row.recap_text ?? undefined,
     recapMedia: row.recap_media && row.recap_media.length > 0 ? row.recap_media : undefined,
+  };
+}
+
+function mapPost(row: PostRow): Post {
+  return {
+    id: row.id,
+    author: row.author,
+    authorInitials: row.author_initials,
+    subtitle: row.subtitle,
+    caption: row.caption,
+    mediaUrl: row.media_url ?? undefined,
+    mediaGradient: row.media_gradient ?? undefined,
+    eventId: row.event_id ?? undefined,
+    ctaTab: (row.cta_tab as Post['ctaTab']) ?? undefined,
+    ctaLabel: row.cta_label ?? undefined,
+    showActions: row.show_actions,
   };
 }
 
@@ -244,6 +260,24 @@ async function uploadMedia(arquivo: File, pasta: string): Promise<string> {
   return data.publicUrl;
 }
 
+async function savePost(post: Post): Promise<void> {
+  const supabase = requireSupabase();
+  const { error } = await supabase.from('posts').upsert({
+    id: post.id,
+    author: post.author,
+    author_initials: post.authorInitials,
+    subtitle: post.subtitle,
+    caption: post.caption,
+    media_url: post.mediaUrl ?? null,
+    media_gradient: post.mediaGradient ?? null,
+    event_id: post.eventId ?? null,
+    cta_tab: post.ctaTab ?? null,
+    cta_label: post.ctaLabel ?? null,
+    show_actions: post.showActions,
+  });
+  if (error) throw new Error(`Falha ao salvar o post: ${error.message}`);
+}
+
 async function saveEvent(evento: TriadeEvent): Promise<void> {
   const supabase = requireSupabase();
   const { error } = await supabase.from('events').upsert({
@@ -276,6 +310,19 @@ export const supabaseProvider: DataProvider = {
           .order('sort_order', { ascending: true }),
       mapEvent,
       seed.events,
+    ),
+
+  getPosts: () =>
+    withFallback(
+      'posts',
+      async () =>
+        requireSupabase()
+          .from('posts')
+          .select('*')
+          .eq('published', true)
+          .order('sort_order', { ascending: true }),
+      mapPost,
+      seed.posts,
     ),
 
   getSpeakers: () =>
@@ -318,6 +365,7 @@ export const supabaseProvider: DataProvider = {
   podeEditarConteudo,
   uploadMedia,
   saveEvent,
+  savePost,
 };
 
 

@@ -1,4 +1,4 @@
-import type { Plan, Speaker, TriadeEvent } from '@/types';
+import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
 
 /**
  * Contrato da camada de dados.
@@ -13,6 +13,7 @@ export interface DataProvider {
 
   /* ---- conteúdo (leitura) ---- */
   getEvents(): Promise<TriadeEvent[]>;
+  getPosts(): Promise<Post[]>;
   getSpeakers(): Promise<Speaker[]>;
   getPlans(): Promise<Plan[]>;
 
@@ -56,4 +57,7 @@ export interface DataProvider {
 
   /** Grava o evento no banco (insert ou update pelo `id`). */
   saveEvent(evento: TriadeEvent): Promise<void>;
+
+  /** Grava o post no banco (insert ou update pelo `id`). */
+  savePost(post: Post): Promise<void>;
 }

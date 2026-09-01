@@ -1,5 +1,5 @@
 import { seed } from '@/data/seed';
-import type { Plan, Speaker, TriadeEvent } from '@/types';
+import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
 import type { DataProvider } from './types';
 import { engagement, readCache } from './prefs';
 
@@ -13,6 +13,7 @@ export const localProvider: DataProvider = {
   name: 'local',
 
   getEvents: async (): Promise<TriadeEvent[]> => readCache('events', seed.events),
+  getPosts: async (): Promise<Post[]> => readCache('posts', seed.posts),
   getSpeakers: async (): Promise<Speaker[]> => readCache('speakers', seed.speakers),
   getPlans: async (): Promise<Plan[]> => readCache('plans', seed.plans),
 
@@ -41,5 +42,8 @@ export const localProvider: DataProvider = {
   },
   saveEvent: async () => {
     throw new Error('Sem Supabase configurado: o evento é salvo só neste aparelho.');
+  },
+  savePost: async () => {
+    throw new Error('Sem Supabase configurado: o post é salvo só neste aparelho.');
   },
 };

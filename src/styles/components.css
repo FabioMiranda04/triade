@@ -1367,11 +1367,16 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 .pal-add:active { transform: scale(0.96); background: var(--accent-fill); }
 
 /* ---------- toast ---------- */
+/* Fica ACIMA da barra flutuante, não encostado nela: 86px fixos punham o
+   aviso em cima da pílula em qualquer aparelho com área de gestos. Amarrado
+   ao `--tabbar-float-h`, ele acompanha a barra se ela mudar de altura. A
+   entrada de 140% o fazia atravessar a barra para chegar ao lugar.
+   Agora ele nasce quase no lugar e só sobe 10px, aparecendo. */
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 86px;
-  transform: translate(-50%, 140%);
+  bottom: calc(var(--tabbar-float-h) + 16px);
+  transform: translate(-50%, 10px);
   opacity: 0;
   pointer-events: none;
   padding: 12px 18px;
@@ -1382,10 +1387,15 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.3s ease;
+  /* saída mais lenta que a entrada: aparecer é aviso, sumir é despedida */
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s ease;
   color: var(--ink);
 }
-.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  transition-duration: 0.28s;
+}
 
 /* ---------- responsivo ---------- */
 @media (max-width: 360px) {

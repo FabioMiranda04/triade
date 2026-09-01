@@ -38,6 +38,22 @@ export type EventRow = {
   published: boolean;
 }
 
+export type PostRow = {
+  id: string;
+  author: string;
+  author_initials: string;
+  subtitle: string;
+  caption: string;
+  media_url: string | null;
+  media_gradient: string | null;
+  event_id: string | null;
+  cta_tab: string | null;
+  cta_label: string | null;
+  show_actions: boolean;
+  sort_order: number;
+  published: boolean;
+};
+
 export type SpeakerRow = {
   id: string;
   name: string;
@@ -109,6 +125,12 @@ export interface Database {
         Row: EventRow;
         Insert: Partial<EventRow> & Pick<EventRow, 'id' | 'title' | 'date' | 'status'>;
         Update: Partial<EventRow>;
+        Relationships: [];
+      };
+      posts: {
+        Row: PostRow;
+        Insert: Partial<PostRow> & Pick<PostRow, 'id' | 'author' | 'author_initials' | 'caption'>;
+        Update: Partial<PostRow>;
         Relationships: [];
       };
       speakers: {

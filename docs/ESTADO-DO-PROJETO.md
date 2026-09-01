@@ -3,7 +3,7 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.3.0`
+**Versão atual:** `v3.4.0`
 **Última atualização:** 01/09/2026
 
 **Última sessão (20, 01/09/2026) — o feed com fotografia de verdade, e o
@@ -20,7 +20,11 @@ fim do que era demonstração.**
 - **Recorte de foto antes do upload** (`RecorteFoto`): arrastar, aproximar,
   sai um JPEG 1200×900. Sem biblioteca.
 - **`fabiomirandago@gmail.com` entra em `admins`** pelo próprio
-  `schema.sql`. Falta rodar o arquivo no SQL Editor.
+  `schema.sql`. ✅ rodado em 01/09/2026.
+- **Post virou tabela** (`public.posts`). Era o único conteúdo sem uma, e
+  por isso a edição dele só valia no aparelho de quem editou. Agora admin
+  grava no banco, como já era com evento.
+- **Toast saiu de cima da barra flutuante** e ganhou entrada suave.
 
 
 - **Eventos corrigidos pelo Instagram.** A **Feira de Negócios Tríade**

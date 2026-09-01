@@ -4,6 +4,7 @@ import { EditSheet } from '@/components/EditSheet';
 import { GaleriaEditor } from '@/components/GaleriaEditor';
 import type { FotoEmEdicao } from '@/components/GaleriaEditor';
 import { usePodeEditar } from '@/hooks/usePodeEditar';
+import { db } from '@/lib/db';
 import { savePostEdit } from '@/lib/db/localContent';
 import type { Post, TriadeEvent } from '@/types';
 
@@ -11,7 +12,8 @@ interface PostEditSheetProps {
   post: Post;
   events: TriadeEvent[];
   onClose: () => void;
-  onSaved: () => void;
+  /** `noBanco` diz para a tela qual mensagem mostrar depois de salvar */
+  onSaved: (noBanco: boolean) => void;
 }
 
 /**
@@ -21,9 +23,9 @@ interface PostEditSheetProps {
  * com a marca no meio, que é só um selo de "ainda não tem imagem" — ver
  * `Post.mediaUrl`.
  *
- * O arquivo em si sobe para o Storage do Supabase (real, compartilhado),
- * mas post não tem tabela no banco: o vínculo entre post e foto continua
- * indo para o overlay local do navegador. O aviso no topo diz isso.
+ * Mesmos dois destinos do `EventEditSheet`: com permissão grava na tabela
+ * `posts` e vale para todo mundo; sem permissão fica no overlay local. O
+ * aviso no topo diz qual dos dois está valendo antes de a pessoa digitar.
  */
 export function PostEditSheet({ post, events, onClose, onSaved }: PostEditSheetProps) {
   const podeSubir = usePodeEditar();
@@ -35,23 +37,46 @@ export function PostEditSheet({ post, events, onClose, onSaved }: PostEditSheetP
   );
 
 
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
   const subindo = fotos.some((f) => f.subindo);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (subindo) return;
-    savePostEdit(post.id, { caption, ctaLabel, eventId, mediaUrl: fotos[0]?.url || undefined });
-    onSaved();
+    if (subindo || salvando) return;
+    setErro(null);
+    const patch = { caption, ctaLabel, eventId, mediaUrl: fotos[0]?.url || undefined };
+
+    if (podeSubir) {
+      setSalvando(true);
+      try {
+        await db.savePost({ ...post, ...patch });
+        onSaved(true);
+        return;
+      } catch (falha) {
+        setErro(falha instanceof Error ? falha.message : 'Não deu para salvar.');
+        setSalvando(false);
+        return;
+      }
+    }
+
+    savePostEdit(post.id, patch);
+    onSaved(false);
   }
 
   return (
     <EditSheet
       title="Editar post em destaque"
       onClose={onClose}
-      onSubmit={handleSubmit}
-      submitLabel={subindo ? 'Enviando foto…' : 'Salvar'}
-      submitDisabled={subindo}
-      aviso="O post ainda não grava no banco: o que você mudar aqui fica só neste aparelho."
+      onSubmit={(e) => void handleSubmit(e)}
+      submitLabel={salvando ? 'Salvando…' : subindo ? 'Enviando foto…' : 'Salvar'}
+      submitDisabled={salvando || subindo}
+      aviso={
+        podeSubir
+          ? 'Você tem permissão de edição: o que salvar aqui vale para todo mundo.'
+          : 'Sem permissão de edição — o que você salvar aqui fica só neste aparelho.'
+      }
+      erro={erro}
     >
       <GaleriaEditor
         fotos={fotos}

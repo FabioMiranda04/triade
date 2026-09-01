@@ -366,3 +366,45 @@ select id, 'idealizador do app'
 from auth.users
 where email = 'fabiomirandago@gmail.com'
 on conflict (user_id) do nothing;
+
+-- =============================================================
+--  Migração (01/09/2026): post vira conteúdo de verdade.
+--
+--  Até aqui o post do Início era o único conteúdo que não tinha
+--  tabela: vivia no `seed.ts` e só podia ser editado no overlay
+--  local. Ou seja, a admin trocava a foto e ninguém mais via.
+--  Mesmo desenho das outras tabelas de conteúdo: leitura pública
+--  do que está publicado, escrita só para quem está em `admins`.
+-- =============================================================
+
+create table if not exists public.posts (
+  id               text    primary key,
+  author           text    not null,
+  author_initials  text    not null,
+  subtitle         text    not null default '',
+  caption          text    not null,
+  media_url        text,
+  media_gradient   text,
+  -- `set null` e não `cascade`: apagar um evento não deve apagar o post
+  -- que falava dele; ele vira um post comum.
+  event_id         text    references public.events(id) on delete set null,
+  cta_tab          text,
+  cta_label        text,
+  show_actions     boolean not null default true,
+  sort_order       integer not null default 0,
+  published        boolean not null default true,
+  updated_at       timestamptz not null default now()
+);
+
+alter table public.posts enable row level security;
+
+drop policy if exists "leitura publica de posts" on public.posts;
+create policy "leitura publica de posts"
+  on public.posts for select
+  to anon, authenticated
+  using (published = true);
+
+drop policy if exists "admin escreve posts" on public.posts;
+create policy "admin escreve posts"
+  on public.posts for all to authenticated
+  using (public.e_admin()) with check (public.e_admin());

@@ -4,13 +4,12 @@ import { SectionHead } from '@/components/SectionHead';
 import { EventModal } from '@/components/EventModal';
 import { PostEditSheet } from '@/components/PostEditSheet';
 import { Mark } from '@/components/Brand';
-import { posts } from '@/data/seed';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { db } from '@/lib/db';
 import { applyEventEdits, applyPostEdits } from '@/lib/db/localContent';
 import { useToast } from '@/components/Toast';
-import type { TriadeEvent } from '@/types';
+import type { Post, TriadeEvent } from '@/types';
 
 const PILLARS = ['Conexão', 'Inspiração', 'Ação'];
 
@@ -35,9 +34,17 @@ export default function Home() {
     jaAnunciouDestaque = true;
     return true;
   });
-  const [, forceUpdate] = useState(0);
-  const todosPosts = applyPostEdits(posts);
-  const { data: events } = useAsyncData<TriadeEvent[]>(() => db.getEvents().then(applyEventEdits), []);
+  const [versao, setVersao] = useState(0);
+  const { data: events } = useAsyncData<TriadeEvent[]>(
+    () => db.getEvents().then(applyEventEdits),
+    [],
+    versao,
+  );
+  const { data: todosPosts } = useAsyncData<Post[]>(
+    () => db.getPosts().then(applyPostEdits),
+    [],
+    versao,
+  );
 
   // O chamariz da primeira tela é o post do evento MAIS PRÓXIMO, escolhido
   // aqui e não fixado no `seed.ts`. A diferença aparece quando entra um
@@ -74,10 +81,10 @@ export default function Home() {
     setOpenEventId(eventId);
   }
 
-  function handlePostSaved() {
+  function handlePostSaved(noBanco: boolean) {
     setEditingPost(false);
-    forceUpdate((v) => v + 1);
-    showToast('Post salvo neste aparelho ✓');
+    setVersao((v) => v + 1);
+    showToast(noBanco ? 'Post publicado para todo mundo ✓' : 'Post salvo neste aparelho ✓');
   }
 
   return (

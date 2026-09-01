@@ -278,7 +278,9 @@ em `localProvider.ts`. **Atenção**: toda linha de tabela em
 `src/types/database.ts` precisa ser `type`, nunca `interface` — uma
 `interface` não satisfaz o formato que o `@supabase/supabase-js` espera
 para inferir o schema, e a consulta vira `never` silenciosamente (sem erro
-na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
+na declaração, só no uso). **Pela mesma razão, toda entrada em `Tables`
+precisa de `Relationships: []`** — esquecer essa chave derruba o schema
+INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes em `docs/ARQUITETURA.md`.
 
 ## 7. O que ainda NÃO existe (não presuma)
 
@@ -308,8 +310,9 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   **Desde 01/09/2026 a UI de edição só existe para admin** — sem permissão
   não há "..." → Editar, nem "Novo evento", nem "Nova palestrante". O gate é
   o hook `usePodeEditar()`; use ele, não uma checagem nova.
-  Ainda **não** é um painel administrativo completo: hoje só evento tem
-  gravação real. Palestrante, plano e post seguem locais.
+  Ainda **não** é um painel administrativo completo: **evento e post** têm
+  gravação real (post desde 01/09/2026, tabela `posts`). Palestrante e
+  plano seguem locais.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
   26/08/2026): 11 fotos no bucket `media` do Supabase Storage. Desde
   01/09/2026 elas também ilustram os **posts do Início** (`Post.mediaUrl`)
