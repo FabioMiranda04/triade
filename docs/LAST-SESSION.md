@@ -7,11 +7,11 @@
 > — este registra trabalho **em andamento**, e deve voltar para "nada
 > pendente" assim que for retomado e terminado.
 
-**Status: nada pendente de código.** A sessão 19 (31/08/2026) fechou a fila
-inteira de pedidos. Restam duas coisas que dependem de pessoas, não de
+**Status: nada pendente de código.** A sessão 20 (01/09/2026) fechou a fila
+inteira de pedidos. Restam três coisas que dependem de pessoas, não de
 código — estão logo abaixo.
 
-## Duas coisas que só você pode fazer
+## Três coisas que só você pode fazer
 
 ### 1. Rodar a migração e se marcar como admin
 
@@ -33,6 +33,19 @@ Na página 03 do Manual de Marca, o item **"1. LOGOMARCA PRINCIPAL"** traz a
 palavra escrita **"coneecta"**, com dois "e". As versões da página 06 estão
 certas, e foi de lá que a máscara do app saiu — o código está correto. Mas
 aquela é a página que um designer copiaria.
+
+### 3. Mandar os cartazes do Instagram como arquivo de imagem
+
+O `Instagram.html` chegou sozinho. Salvar uma página completa gera o
+`.html` **e** uma pasta `Instagram_files/` ao lado — é ela que guarda as
+fotos; o HTML só tem os endereços. Sem a pasta, não há como recuperar as
+imagens dos posts a partir do arquivo (as únicas embutidas com endereço
+completo são um anúncio de terceiros e fotos de perfil em 150px).
+
+Enquanto isso, os posts do Início usam fotos do acervo real do Storage.
+Para trocar por um cartaz: mande o **JPG/PNG** direto, ou faça você mesma
+pelo app — Início → "..." no post em destaque → Editar → **Foto do post**
+(exige estar marcada como admin, item 1 acima).
 
 ## O que a sessão 19 entregou
 

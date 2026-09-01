@@ -304,6 +304,8 @@ export const posts: Post[] = [
       'Um novo jeito de viver a Tríade Conecta: dois dias para conectar marcas, pessoas e oportunidades. Moda, beleza, casa e talks, no Decorado Bambuí. Quer expor? Fala com a gente ✨',
     baseLikes: 168,
     eventId: 'feira-negocios-set26',
+    mediaUrl:
+      'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg',
     ctaLabel: 'Ver detalhes',
     showActions: true,
   },
@@ -316,6 +318,8 @@ export const posts: Post[] = [
       'A pedidos das nossas queridas Tríades, uma noite para sair da rotina e se reconectar — 30 de setembro, às 19h, na Villa América, com talk da terapeuta Valéria Ruiz ✨',
     baseLikes: 141,
     eventId: 'jantar-casais-set26',
+    mediaUrl:
+      'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-1.jpg',
     ctaLabel: 'Ver detalhes',
     showActions: true,
   },
@@ -327,7 +331,8 @@ export const posts: Post[] = [
     caption:
       'Recordando a edição com Carla Martins, especialista em liderança feminina 🤍',
     baseLikes: 98,
-    mediaGradient: 'linear-gradient(135deg, var(--ph-1), var(--ph-3))',
+    mediaUrl:
+      'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg',
     showActions: true,
   },
 ];

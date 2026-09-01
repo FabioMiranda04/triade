@@ -164,6 +164,18 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
+/* com foto, o gradiente do placeholder não pinta nada — a imagem cobre
+   tudo. Fica como cor de fundo enquanto ela carrega. */
+.post-media .post-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* as fotos do acervo são Stories 9:16 com legenda queimada embaixo;
+     ancorar no terço superior corta a legenda e mantém os rostos */
+  object-position: 50% 30%;
+}
 .post-media .heart-burst {
   position: absolute;
   color: #fff;
@@ -1206,6 +1218,8 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 }
 .ge-legenda:focus { background: var(--field-bg-focus); outline: none; border-color: var(--field-ring); }
 .ge-erro { color: var(--danger); font-size: var(--fs-2xs); }
+/* foto única (post em destaque): no lugar do campo de legenda, só o estado */
+.ge-estado { color: var(--on-dark-70); font-size: var(--fs-2xs); }
 .ge-remover {
   width: 34px;
   height: 34px;

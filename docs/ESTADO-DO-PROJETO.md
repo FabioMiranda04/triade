@@ -3,10 +3,29 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.1.0`
-**Última atualização:** 31/08/2026
+**Versão atual:** `v3.2.0`
+**Última atualização:** 01/09/2026
 
-**Última sessão (19, 31/08/2026) — Manual de Marca.** As sócias entregaram
+**Última sessão (20, 01/09/2026) — o feed com fotografia de verdade.**
+
+- **Eventos corrigidos pelo Instagram.** A **Feira de Negócios Tríade**
+  (11 e 12/09, Decorado Bambuí) não existia no app, e a primeira tela
+  chamava para o Jantar, que é dia 30. Os dois estão certos agora, o
+  Jantar com local (Villa América) e convidada (Valéria Ruiz). Primeiro
+  evento de dois dias do app: entrou `endDate`.
+- **O chamariz se atualiza sozinho.** O Início escolhe o post do evento
+  mais próximo em vez do primeiro do array — era isso que deixava o
+  destaque envelhecer.
+- **Foto real no feed.** Entrou `Post.mediaUrl`. Os três posts do Início
+  usam fotos do acervo do Storage; o gradiente com a marca voltou a ser o
+  que sempre foi, um template de "sem imagem". O pop-up de edição do post
+  ganhou campo de foto (upload para o Storage, modo de foto única).
+- **Chamariz e barra com mais presença**: moldura dourada e selo no post
+  do próximo encontro, estrela de quatro pontas pulsando na aba Eventos —
+  nos dois estilos de barra.
+- **Skills `caveman` e `ponytail`** versionadas no repositório.
+
+**Sessão 19 (31/08/2026) — Manual de Marca.** As sócias entregaram
 o manual da marca, e ele passou a ser a **fonte de verdade da camada 1 do
 `tokens.css`**: os hex de marca não são mais escolha nossa. Transcrito em
 **`docs/MANUAL-DE-MARCA.md`** (leia esse, não o PDF); o original está em
@@ -38,11 +57,13 @@ passo a passo em `docs/SUPABASE.md`.
 
 **Duas coisas ficaram pendentes e dependem de terceiros**, não de código:
 
-1. **Os arquivos oficiais da logomarca** (SVG, ou PNG com transparência).
-   Sem eles, o "conecta" da assinatura está em Playfair itálico como
-   **substituto provisório** — a fonte original, Slight, é comercial, e a
-   licença que a marca tem cobre a logo como desenho, não como
-   `font-family` num site. Alternativa paga: licença Webfont (~US$27).
+1. **Os arquivos oficiais da logomarca** (SVG). *Deixou de ser bloqueio*:
+   o "conecta" da assinatura é hoje a logomarca de verdade, recortada da
+   página 06 do manual e aplicada como máscara alfa
+   (`public/marca/conecta.png`), colorida por `currentColor` para
+   acompanhar o tema. Um SVG só seria melhor em tamanho grande. A fonte
+   Slight continua fora de questão como `font-family` — é comercial, e a
+   licença da marca cobre a logo como desenho, não como webfont.
 2. **O tema padrão.** O manual é uma marca **clara** (a versão principal da
    logo é dourado sobre claro), mas o app abre no **Ônix** por decisão do
    cliente nesta mesma sessão — amparada pela versão "clara / uso reverso"

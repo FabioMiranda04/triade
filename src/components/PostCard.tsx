@@ -95,14 +95,20 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: 
       </div>
 
       <div
-        className="post-media"
-        style={post.mediaGradient ? { background: post.mediaGradient } : undefined}
+        className={`post-media${post.mediaUrl ? ' com-foto' : ''}`}
+        style={!post.mediaUrl && post.mediaGradient ? { background: post.mediaGradient } : undefined}
         onPointerUp={handleDoubleTap}
         onDoubleClick={likeOnly}
         role="img"
         aria-label={post.caption}
       >
-        <Mark size={46} />
+        {post.mediaUrl ? (
+          <img className="post-foto" src={post.mediaUrl} alt="" />
+        ) : (
+          /* Sem foto, a seta tripla sobre o gradiente segura o lugar. É
+             placeholder, não desenho pretendido — ver `Post.mediaUrl`. */
+          <Mark size={46} />
+        )}
         <span className={`heart-burst${bursting ? ' burst' : ''}`}>
           <Icon name="heartFill" size={86} />
         </span>

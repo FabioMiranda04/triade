@@ -11,6 +11,80 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.2.0 — Foto de verdade no feed, e o destaque que se corrige sozinho
+**Sessão 20 — 01/09/2026**
+
+### Eventos certos, e um destaque que não envelhece mais
+
+O export do Instagram mostrou que o app anunciava o evento errado: a
+**Feira de Negócios Tríade** (11 e 12/09, Decorado Bambuí) não existia no
+app, e a primeira tela chamava para o Jantar, que é só dia 30. O Jantar
+ganhou o que faltava — Villa América e a convidada, a terapeuta **Valéria
+Ruiz**, que também entrou na lista de palestrantes.
+
+A Feira é o primeiro evento de dois dias, o que o `TriadeEvent` não
+modelava: entrou `endDate` pelos cinco passos da regra, com
+`formatEventDateRange()` devolvendo "11 e 12 de set. de 2026" (repetir o
+mês nos dois lados leria como duas datas soltas).
+
+E a causa raiz: **o Início escolhe sozinho o chamariz**, o post do evento
+mais próximo, em vez do primeiro do array. Antes, entrar um evento novo
+não trocava o destaque — era preciso lembrar de reordenar à mão.
+
+### Chamariz e barra com mais presença
+
+- O post do próximo encontro ganhou moldura dourada, anel e o selo
+  "Próximo encontro"; na abertura do app ele entra com um brilho que
+  passa uma vez. Uma vez por carregamento, não a cada volta para o Início:
+  animação que repete vira ruído.
+- A aba Eventos ganhou uma estrela de quatro pontas quando há edição por
+  vir, pulsando devagar — e o ajuste vale para os **dois** estilos de barra
+  inferior, não só o flutuante.
+
+### O feed ganhou fotografia
+
+Os posts do Início mostravam um gradiente com a marca no meio. Aquilo
+nunca foi desenho pretendido — era o selo de "ainda não temos imagem" —,
+mas como todos os posts caíam nele, virou a cara da primeira tela. Entrou
+`Post.mediaUrl`: quando existe, a foto cobre o bloco; quando não existe, o
+gradiente com a marca volta ao papel de template.
+
+As três fotos vieram do acervo real (Storage, Módulo 11), escolhidas por
+conteúdo:
+
+| Post | Foto |
+|---|---|
+| Feira de Negócios | 6ª edição — seis mulheres na parede da marca |
+| Jantar para Casais | edição de maio — grupo misto, que é o público do jantar |
+| Retrospectiva Carla Martins | a própria edição dela, no letreiro TRÍADE conecta |
+
+O recorte precisou de cuidado: o acervo é Stories 9:16 e o bloco do post é
+4:3. Com `object-position: 50% 30%` a faixa visível vai de 17% a 60% da
+altura — pega os rostos e corta a legenda queimada no rodapé, que é onde
+o Instagram assina. Conferido nas três, nos dois temas, em 375px.
+
+**Os cartazes do Instagram não deu para usar.** O `Instagram.html` foi
+enviado sozinho; salvar página completa produz o `.html` **mais** a pasta
+`Instagram_files/`, e é ela que carrega as imagens. Sem a pasta, o HTML só
+tem endereços apontando para arquivos que não vieram. As únicas imagens
+embutidas com URL absoluta no arquivo são um anúncio de terceiros e as
+fotos de perfil em 150px.
+
+### Trocar a foto sem mexer em código
+
+O pop-up de edição do post em destaque passou a ter campo de foto — mesmo
+`GaleriaEditor` do evento, agora com modo de foto única (`max={1}`): sem
+campo de legenda, e escolher um arquivo novo **troca** em vez de empilhar.
+O arquivo sobe para o Storage de verdade; o vínculo entre post e foto
+continua no overlay local, porque post ainda não tem tabela no banco — e o
+aviso no topo do formulário diz isso antes de a pessoa digitar.
+
+### Skills no repositório
+
+`caveman` e `ponytail` entraram via `npx skills add`, com os symlinks e o
+`skills-lock.json` versionados. O contêiner de trabalho é efêmero: o que
+não está no git não sobrevive à sessão.
+
 ## v3.1.0 — Telas, animação e o começo do Módulo 5
 **Sessão 19 (segunda metade) — 31/08/2026**
 

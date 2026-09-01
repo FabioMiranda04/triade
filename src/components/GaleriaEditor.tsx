@@ -24,6 +24,12 @@ interface GaleriaEditorProps {
    * sumir faria parecer que o app não tem a função.
    */
   podeSubir: boolean;
+  /** rótulo do bloco — o padrão serve para a retrospectiva de uma edição */
+  titulo?: string;
+  /** quantas fotos cabem. 1 transforma o bloco em "foto única" */
+  max?: number;
+  /** a legenda por foto só faz sentido numa galeria */
+  comLegenda?: boolean;
 }
 
 /**
@@ -39,7 +45,15 @@ interface GaleriaEditorProps {
  * Enquanto sobe, a miniatura mostrada é a prévia local (`blob:`) — a
  * usuária vê a foto que escolheu no mesmo instante, sem esperar a rede.
  */
-export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEditorProps) {
+export function GaleriaEditor({
+  fotos,
+  onChange,
+  pasta,
+  podeSubir,
+  titulo = 'Fotos da edição',
+  max = Infinity,
+  comLegenda = true,
+}: GaleriaEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [arrastando, setArrastando] = useState(false);
   // as URLs `blob:` precisam ser liberadas na mão, senão o arquivo fica
@@ -52,8 +66,12 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
 
   async function receber(arquivos: FileList | null) {
     if (!arquivos || arquivos.length === 0) return;
+    // com `max = 1`, escolher um arquivo novo troca a foto em vez de
+    // empilhar — é o que a pessoa espera de um campo de foto única
+    const anteriores = max === 1 ? [] : fotos;
+    const escolhidos = Array.from(arquivos).slice(0, max - anteriores.length);
     const novos: FotoEmEdicao[] = [];
-    for (const arquivo of Array.from(arquivos)) {
+    for (const arquivo of escolhidos) {
       if (!arquivo.type.startsWith('image/')) {
         novos.push({ tipo: 'foto', url: '', erro: `"${arquivo.name}" não é uma imagem.` });
         continue;
@@ -71,12 +89,12 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
       novos.push({ tipo: 'foto', url: '', legenda: '', previa, subindo: true });
     }
 
-    const base = [...fotos, ...novos];
+    const base = [...anteriores, ...novos];
     onChange(base);
 
     // sobe uma a uma, atualizando a lista conforme cada uma termina
     let atual = base;
-    const paraSubir = Array.from(arquivos).filter(
+    const paraSubir = escolhidos.filter(
       (a) => a.type.startsWith('image/') && a.size <= TAMANHO_MAX_MB * 1024 * 1024,
     );
     for (const arquivo of paraSubir) {
@@ -103,7 +121,7 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
 
   return (
     <div className="galeria-editor">
-      <span className="ge-titulo">Fotos da edição</span>
+      <span className="ge-titulo">{titulo}</span>
 
       {fotos.length > 0 && (
         <ul className="ge-lista">
@@ -118,6 +136,8 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
               <span className="ge-meio">
                 {foto.erro ? (
                   <span className="ge-erro">{foto.erro}</span>
+                ) : !comLegenda ? (
+                  <span className="ge-estado">{foto.subindo ? 'Enviando…' : 'Foto no ar'}</span>
                 ) : (
                   <input
                     className="ge-legenda"
@@ -141,7 +161,7 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
         </ul>
       )}
 
-      {podeSubir ? (
+      {podeSubir && fotos.length < max ? (
         <>
           <button
             type="button"
@@ -159,14 +179,14 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
             }}
           >
             <Icon name="plus" size={17} />
-            <span>Adicionar foto</span>
+            <span>{fotos.length > 0 && max === 1 ? 'Trocar foto' : 'Adicionar foto'}</span>
             <span className="ge-dica">JPG ou PNG, até {TAMANHO_MAX_MB} MB</span>
           </button>
           <input
             ref={inputRef}
             type="file"
             accept="image/*"
-            multiple
+            multiple={max !== 1}
             hidden
             onChange={(e) => {
               void receber(e.target.files);
@@ -175,7 +195,7 @@ export function GaleriaEditor({ fotos, onChange, pasta, podeSubir }: GaleriaEdit
             }}
           />
         </>
-      ) : (
+      ) : podeSubir ? null : (
         <p className="ge-aviso">
           Enviar fotos exige uma conta com permissão de edição. Sem ela, o que você mudar aqui fica
           salvo só neste aparelho.

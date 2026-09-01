@@ -265,9 +265,12 @@ na declaração, só no uso). Detalhes em `docs/ARQUITETURA.md`.
   Ainda **não** é um painel administrativo completo: hoje só evento tem
   gravação real. Palestrante, plano e post seguem locais.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
-  26/08/2026): 11 fotos no bucket `media` do Supabase Storage. O resto das
-  "imagens" do app continua sendo gradiente (escala `--ph-1..5`, que
-  responde ao tema).
+  26/08/2026): 11 fotos no bucket `media` do Supabase Storage. Desde
+  01/09/2026 elas também ilustram os **posts do Início** (`Post.mediaUrl`)
+  e as miniaturas da grade de edições. Onde não há foto, o gradiente
+  (escala `--ph-1..5`, que responde ao tema) com a marca no meio é
+  **template de "sem imagem"**, não desenho pretendido — não trate como
+  estado final.
 - **Dois temas existem** (Ônix, padrão, e Pérola), escolhidos em
   Configurações → Aparência. Não existe seguir o tema do sistema
   (`prefers-color-scheme`) nem agendar por horário — é escolha manual.

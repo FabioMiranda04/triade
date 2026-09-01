@@ -68,7 +68,14 @@ export interface Post {
   caption: string;
   /** curtidas base (mock) — a curtida da usuária é somada em cima */
   baseLikes: number;
-  /** gradiente CSS opcional para a área de imagem */
+  /**
+   * Foto do post. Quando existe, é ELA que aparece na área de imagem.
+   * Sem ela, o card cai no gradiente com a seta tripla — que é um
+   * PLACEHOLDER, não o desenho pretendido: serve para o post não ficar com
+   * um buraco enquanto não há foto adequada.
+   */
+  mediaUrl?: string;
+  /** gradiente CSS do placeholder, quando não há `mediaUrl` */
   mediaGradient?: string;
   /** aba para onde o CTA leva, se houver (ignorado quando `eventId` existe) */
   ctaTab?: TabId;
