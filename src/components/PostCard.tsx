@@ -38,9 +38,14 @@ interface PostCardProps {
    * primeira montagem da sessão — ver `Home.tsx`.
    */
   destaqueNovo?: boolean;
+  /**
+   * O chamariz da comunidade: o post do próximo encontro, primeiro card da
+   * primeira tela. Ganha moldura dourada e selo. Só um post por vez.
+   */
+  chamariz?: boolean;
 }
 
-export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo }: PostCardProps) {
+export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { liked, saved, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
@@ -61,10 +66,18 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo }: PostCardPr
   const likes = post.baseLikes + (liked ? 1 : 0);
 
   return (
-    <article className={`post glass${destaqueNovo ? ' post-novo' : ''}`}>
+    <article
+      className={`post glass${chamariz ? ' post-chamariz' : ''}${destaqueNovo ? ' post-novo' : ''}`}
+    >
       <div className="post-head">
         <div className="post-avatar">{post.authorInitials}</div>
         <div className="post-who">
+          {chamariz && (
+            <span className="post-selo">
+              <Icon name="sparkle" size={11} />
+              Próximo encontro
+            </span>
+          )}
           <div className="n">{post.author}</div>
           <div className="t">{post.subtitle}</div>
         </div>

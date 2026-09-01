@@ -1,7 +1,7 @@
 import { Icon } from '@/components/Icon';
 import { Kebab } from '@/components/Kebab';
 import { Mark } from '@/components/Brand';
-import { formatEventDate, statusClass } from '@/lib/format';
+import { formatEventDateRange, statusClass } from '@/lib/format';
 import type { TriadeEvent } from '@/types';
 
 interface EventCardProps {
@@ -33,7 +33,7 @@ export function EventCard({ event, going, onRsvp, onCancelRsvp, onEdit, variant 
           {featured && <p className="theme">{event.theme}</p>}
           <div className="meta">
             <span>
-              <Icon name="calendar" size={12} /> {formatEventDate(event.date)}
+              <Icon name="calendar" size={12} /> {formatEventDateRange(event.date, event.endDate)}
             </span>
             <span>
               <Icon name="pin" size={12} /> {event.location}

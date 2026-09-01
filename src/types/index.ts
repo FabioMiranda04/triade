@@ -16,8 +16,10 @@ export interface EventRecapMedia {
 export interface TriadeEvent {
   id: string;
   title: string;
-  /** ISO date, ex: "2026-09-19" */
+  /** ISO date, ex: "2026-09-19". Quando o evento dura mais de um dia, é o PRIMEIRO. */
   date: string;
+  /** último dia, quando o evento dura mais de um (ex: a Feira, 11 e 12/09) */
+  endDate?: string;
   status: EventStatus;
   location: string;
   speaker: string;

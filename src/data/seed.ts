@@ -164,9 +164,19 @@ export const events: TriadeEvent[] = [
     title: 'Jantar da Tríade para Casais',
     date: '2026-09-30',
     status: 'em breve',
-    location: 'Goiânia, GO',
+    location: 'Villa América, Goiânia, GO',
+    speaker: 'Valéria Ruiz',
+    theme: 'Talk com a terapeuta Valéria Ruiz — uma noite para se conectar, conversar e viver uma experiência a dois, às 19h',
+  },
+  {
+    id: 'feira-negocios-set26',
+    title: 'Feira de Negócios Tríade',
+    date: '2026-09-11',
+    endDate: '2026-09-12',
+    status: 'em breve',
+    location: 'Decorado Bambuí, Goiânia, GO',
     speaker: ANFITRIA_TRIADE,
-    theme: 'Uma noite para sair da rotina e se reconectar, às 19h',
+    theme: 'Dois dias para conectar marcas, pessoas e oportunidades — moda, beleza, casa e talks',
   },
 ];
 
@@ -198,6 +208,12 @@ export const speakers: Speaker[] = [
     name: 'Geórgia Maia',
     topic: 'Marketing',
     bio: 'Conduziu a conversa sobre marketing da Edição Especial na Casa Benedita, para empreendedoras, profissionais autônomas e comerciantes.',
+  },
+  {
+    id: 'sp6',
+    name: 'Valéria Ruiz',
+    topic: 'Terapia de Casal',
+    bio: 'Terapeuta. Conduz a talk do Jantar da Tríade para Casais, sobre se conectar e conversar a dois.',
   },
   {
     id: 'sp5',
@@ -276,13 +292,28 @@ export const founders: Founder[] = [
 ];
 
 export const posts: Post[] = [
+  /* Um post por evento por vir. O Início escolhe sozinho qual vira o
+     destaque — o do evento mais próximo (ver `Home.tsx`) —, então acrescentar
+     um evento novo aqui já troca o chamariz da primeira tela. */
+  {
+    id: 'post-feira-negocios',
+    author: 'Tríade Conecta',
+    authorInitials: 'TC',
+    subtitle: 'Feira de Negócios · 11 e 12 de setembro',
+    caption:
+      'Um novo jeito de viver a Tríade Conecta: dois dias para conectar marcas, pessoas e oportunidades. Moda, beleza, casa e talks, no Decorado Bambuí. Quer expor? Fala com a gente ✨',
+    baseLikes: 168,
+    eventId: 'feira-negocios-set26',
+    ctaLabel: 'Ver detalhes',
+    showActions: true,
+  },
   {
     id: 'post-jantar-casais',
     author: 'Tríade Conecta',
     authorInitials: 'TC',
-    subtitle: 'Jantar da Tríade para Casais · em breve',
+    subtitle: 'Jantar da Tríade para Casais · 30 de setembro',
     caption:
-      'A pedidos das nossas queridas Tríades, uma noite para sair da rotina e se reconectar — 30 de setembro, às 19h. Garante sua vaga em Eventos ✨',
+      'A pedidos das nossas queridas Tríades, uma noite para sair da rotina e se reconectar — 30 de setembro, às 19h, na Villa América, com talk da terapeuta Valéria Ruiz ✨',
     baseLikes: 141,
     eventId: 'jantar-casais-set26',
     ctaLabel: 'Ver detalhes',

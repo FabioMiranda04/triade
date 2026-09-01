@@ -13,7 +13,7 @@ import { useInfiniteReveal } from '@/hooks/useInfiniteReveal';
 import { ANFITRIA_TRIADE } from '@/data/seed';
 import { db } from '@/lib/db';
 import { applyEventEdits } from '@/lib/db/localContent';
-import { firstName, formatEventDate, formatEventShortDate } from '@/lib/format';
+import { firstName, formatEventDateRange, formatEventShortDate } from '@/lib/format';
 import type { TriadeEvent } from '@/types';
 
 type Mode = 'lista' | 'calendario';
@@ -77,7 +77,7 @@ export default function Eventos() {
     const q = normalize(query.trim());
     if (!q) return pastEvents;
     return pastEvents.filter((e) =>
-      normalize(`${e.title} ${e.theme} ${e.speaker} ${formatEventDate(e.date)}`).includes(q),
+      normalize(`${e.title} ${e.theme} ${e.speaker} ${formatEventDateRange(e.date, e.endDate)}`).includes(q),
     );
   }, [pastEvents, query]);
 

@@ -13,37 +13,41 @@
 -- export do Instagram. Substituído pelas edições reais abaixo.
 delete from public.events where id in ('ed1', 'ed2', 'ed3');
 
-insert into public.events (id, title, date, status, location, speaker, theme, spots, sort_order, recap_text, recap_media)
+insert into public.events (id, title, date, end_date, status, location, speaker, theme, spots, sort_order, recap_text, recap_media)
 values
-  ('ed-set25', 'Edição Especial — Casa Benedita', '2025-09-15', 'realizado', 'Casa Benedita, Goiânia, GO',
+  ('ed-set25', 'Edição Especial — Casa Benedita', '2025-09-15', null, 'realizado', 'Casa Benedita, Goiânia, GO',
    'Geórgia Maia', 'Conexões verdadeiras, aprendizados compartilhados e um pouco de marketing', null, 1,
    'Um encontro pensado para empreendedoras, profissionais autônomas e comerciantes expandirem sua rede — com direito a uma conversa sobre marketing com Geórgia Maia. A resposta de quem esteve na Casa Benedita confirmou: era isso que fazia falta.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-1.jpg","legenda":"Aprendendo sobre marketing com Geórgia Maia"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-especial-2025-09/foto-2.jpg","legenda":"No cantinho da marca"}]'::jsonb),
-  ('ed-out25', 'Edição com Carla Martins', '2025-10-20', 'realizado', 'Goiânia, GO',
+  ('ed-out25', 'Edição com Carla Martins', '2025-10-20', null, 'realizado', 'Goiânia, GO',
    'Carla Martins', 'Liderança feminina: o primeiro púlpito de uma mulher — sua família, sua casa e seu lar', null, 2,
    'Carla Martins, especialista em liderança feminina, trouxe um tema pedido pelas próprias participantes: será que dá pra ter sucesso também dentro de casa? Um encontro sobre equilibrar pratos e papéis sem perder a essência.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-1.jpg","legenda":"Quando mulheres se encontram, tudo muda"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-carla-martins-2025-10/foto-2.jpg","legenda":"Conectar, aprender e se inspirar"}]'::jsonb),
-  ('ed6-nov25', '6ª Edição', '2025-11-17', 'realizado', 'Goiânia, GO',
+  ('ed6-nov25', '6ª Edição', '2025-11-17', null, 'realizado', 'Goiânia, GO',
    'Idealizadoras da Tríade', 'Acolher, inspirar e impulsionar mulheres — fechando o ano com chave de ouro', null, 3,
    'Casa cheia para encerrar o ano: a 6ª edição reuniu quem já acredita no movimento criado por Lívia, Lia e Cris para acolher, inspirar e impulsionar mulheres, gerando conexões autênticas.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-1.jpg","legenda":"Lívia, Lia e Cris com convidadas"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg","legenda":"A vida é feita de boas conexões"}]'::jsonb),
-  ('ed9-mar26', '9ª Edição', '2026-03-31', 'realizado', 'Goiânia, GO',
+  ('ed9-mar26', '9ª Edição', '2026-03-31', null, 'realizado', 'Goiânia, GO',
    'Idealizadoras da Tríade', 'Conexão, aprendizado e fortalecimento de vínculos', null, 4,
    'A 9ª edição chegou com a mesma proposta desde o início: mesas que levam quem participa a um próximo nível, num ambiente feito pra conectar, aprender e fortalecer vínculos.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/9a-edicao-2026-03/foto-1.jpg","legenda":"Quando mulheres se encontram, tudo muda"}]'::jsonb),
-  ('ed-mai26', 'Edição de Maio', '2026-05-12', 'realizado', 'Goiânia, GO',
+  ('ed-mai26', 'Edição de Maio', '2026-05-12', null, 'realizado', 'Goiânia, GO',
    'Idealizadoras da Tríade', 'Conexões reais entre mulheres empreendedoras', null, 5,
    'Mais uma tarde de conexões reais, com Lívia, Lia e Cris recebendo o grupo pessoalmente — prova de que o movimento que começou pequeno continua crescendo edição após edição.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-1.jpg","legenda":"Lívia, Lia, Cris e convidadas"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/edicao-2026-05/foto-2.jpg","legenda":"No cantinho da marca"}]'::jsonb),
-  ('ed11-ago26', '11ª Edição', '2026-08-11', 'realizado', 'Goiânia, GO',
+  ('ed11-ago26', '11ª Edição', '2026-08-11', null, 'realizado', 'Goiânia, GO',
    'Idealizadoras da Tríade', 'Conexões que geram oportunidades, crescimento e pertencimento', null, 6,
    'A 11ª edição da Tríade Conecta reuniu quem já entendeu que crescer sozinha é mais lento — mais um encontro pra criar conexões reais e fortalecer negócios ao lado de quem compartilha do mesmo propósito.',
    '[{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-1.jpg","legenda":"Roda de conversa"},{"tipo":"foto","url":"https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/11a-edicao-2026-08/foto-2.jpg","legenda":"Lugar à mesa reservado"}]'::jsonb),
-  ('jantar-casais-set26', 'Jantar da Tríade para Casais', '2026-09-30', 'em breve', 'Goiânia, GO',
-   'Idealizadoras da Tríade', 'Uma noite para sair da rotina e se reconectar, às 19h', null, 7, null, '[]'::jsonb)
+  ('jantar-casais-set26', 'Jantar da Tríade para Casais', '2026-09-30', null, 'em breve', 'Villa América, Goiânia, GO',
+   'Valéria Ruiz', 'Talk com a terapeuta Valéria Ruiz — uma noite para se conectar, conversar e viver uma experiência a dois, às 19h', null, 8, null, '[]'::jsonb),
+  -- Feira de Negócios: primeiro evento de dois dias do app (11 E 12/09)
+  ('feira-negocios-set26', 'Feira de Negócios Tríade', '2026-09-11', '2026-09-12', 'em breve', 'Decorado Bambuí, Goiânia, GO',
+   'Idealizadoras da Tríade', 'Dois dias para conectar marcas, pessoas e oportunidades — moda, beleza, casa e talks', null, 7, null, '[]'::jsonb)
 on conflict (id) do update set
   title = excluded.title,
   date = excluded.date,
+  end_date = excluded.end_date,
   status = excluded.status,
   location = excluded.location,
   speaker = excluded.speaker,
@@ -65,7 +69,9 @@ values
   ('sp4', 'Geórgia Maia', 'Marketing',
    'Conduziu a conversa sobre marketing da Edição Especial na Casa Benedita, para empreendedoras, profissionais autônomas e comerciantes.', 4),
   ('sp5', 'Carla Martins', 'Liderança Feminina',
-   'Especialista em liderança feminina. Levou à mesa um tema pedido pelas próprias participantes: dar conta da casa e do negócio sem perder a essência.', 5)
+   'Especialista em liderança feminina. Levou à mesa um tema pedido pelas próprias participantes: dar conta da casa e do negócio sem perder a essência.', 5),
+  ('sp6', 'Valéria Ruiz', 'Terapia de Casal',
+   'Terapeuta. Conduz a talk do Jantar da Tríade para Casais, sobre se conectar e conversar a dois.', 6)
 on conflict (id) do update set
   name = excluded.name,
   topic = excluded.topic,

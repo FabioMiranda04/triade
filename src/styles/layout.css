@@ -326,34 +326,48 @@ body.modal-open .mesh span {
 }
 .tab-selo {
   position: absolute;
-  top: -4px;
-  right: -6px;
+  top: -5px;
+  right: -7px;
   display: inline-flex;
   color: var(--accent);
-  /* Brilho lento e com descanso: 5,5s de ciclo, dos quais o selo passa a
-     maior parte em repouso. Uma pulsação contínua vira ruído e o olho
-     aprende a ignorar — o que anula o motivo de ela existir.
+  /* Um halo atrás da estrela. Sem ele, um glifo dourado de 10px sobre a
+     pílula translúcida quase não se separa do fundo — era o que fazia o
+     selo passar despercebido. */
+  filter: drop-shadow(0 0 5px var(--accent));
+  /* Ciclo de 3,4s com descanso no meio: visível, mas ainda com pausa. Uma
+     pulsação contínua vira ruído e o olho aprende a ignorar, que é o
+     oposto do que o selo serve.
      Só opacidade e rotação: nada de `scale` aqui dentro, que a pílula da
      tab bar tem `backdrop-filter` (DESIGN-SYSTEM.md §9). */
-  animation: selobrilho 5.5s ease-in-out infinite;
+  animation: selobrilho 3.4s ease-in-out infinite;
+}
+/* Na barra FIXA o item Eventos usa `.center-badge`, um disco bem maior que
+   o ícone solto da pílula. Sem este ajuste a estrela cairia sobre o disco
+   em vez de na quina dele. */
+.tabbar:not(.padrao2-wrap) .tab-selo {
+  top: -3px;
+  right: -9px;
 }
 /* a estrela não deve competir com a foto de perfil nem com o ícone ativo */
 .tab.active .tab-selo { color: var(--accent-on-dark-soft); }
 
 @keyframes selobrilho {
   0%,
-  58%,
   100% {
-    opacity: 0.5;
+    opacity: 0.62;
     transform: rotate(0deg);
   }
-  68% {
+  38% {
     opacity: 1;
-    transform: rotate(24deg);
+    transform: rotate(28deg);
   }
-  80% {
-    opacity: 0.72;
-    transform: rotate(10deg);
+  52% {
+    opacity: 0.8;
+    transform: rotate(12deg);
+  }
+  66% {
+    opacity: 1;
+    transform: rotate(20deg);
   }
 }
 

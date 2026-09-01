@@ -1,7 +1,7 @@
 import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { ModalOverlay } from '@/components/ModalOverlay';
-import { formatEventDate, statusClass } from '@/lib/format';
+import { formatEventDateRange, statusClass } from '@/lib/format';
 import type { TriadeEvent } from '@/types';
 
 interface EventRecapModalProps {
@@ -39,7 +39,7 @@ export function EventRecapModal({ event, onClose }: EventRecapModalProps) {
         <p className="modal-theme">{event.theme}</p>
         <div className="modal-meta">
           <span>
-            <Icon name="calendar" size={14} /> {formatEventDate(event.date)}
+            <Icon name="calendar" size={14} /> {formatEventDateRange(event.date, event.endDate)}
           </span>
           <span>
             <Icon name="pin" size={14} /> {event.location}

@@ -3,7 +3,7 @@ import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { ModalOverlay } from '@/components/ModalOverlay';
 import { founders } from '@/data/seed';
-import { firstName, formatEventDate, statusClass } from '@/lib/format';
+import { firstName, formatEventDateRange, statusClass } from '@/lib/format';
 import { buildTicketMessage, buildWhatsAppLink } from '@/lib/whatsapp';
 import type { TriadeEvent } from '@/types';
 
@@ -44,7 +44,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
             <p className="modal-theme">{event.theme}</p>
             <div className="modal-meta">
               <span>
-                <Icon name="calendar" size={14} /> {formatEventDate(event.date)}
+                <Icon name="calendar" size={14} /> {formatEventDateRange(event.date, event.endDate)}
               </span>
               <span>
                 <Icon name="pin" size={14} /> {event.location}

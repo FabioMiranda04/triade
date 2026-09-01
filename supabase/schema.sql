@@ -328,3 +328,12 @@ create policy "admin apaga midia"
 --   insert into public.admins (user_id, nota)
 --   select id, 'sócia' from auth.users where email = 'voce@exemplo.com'
 --   on conflict (user_id) do nothing;
+
+-- =============================================================
+--  Migração (01/09/2026): evento pode durar mais de um dia.
+--  A Feira de Negócios acontece em 11 E 12 de setembro; com um
+--  único `date` a segunda data simplesmente não existia no app.
+--  Nulo = evento de um dia só, que é o caso de todos os outros.
+-- =============================================================
+
+alter table public.events add column if not exists end_date date;

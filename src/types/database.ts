@@ -25,6 +25,8 @@ export type EventRow = {
   id: string;
   title: string;
   date: string;
+  /** último dia, quando o evento dura mais de um; null = um dia só */
+  end_date: string | null;
   status: 'realizado' | 'em breve';
   location: string;
   speaker: string;

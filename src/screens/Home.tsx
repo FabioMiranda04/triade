@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PostCard } from '@/components/PostCard';
 import { SectionHead } from '@/components/SectionHead';
 import { EventModal } from '@/components/EventModal';
@@ -35,8 +35,23 @@ export default function Home() {
     return true;
   });
   const [, forceUpdate] = useState(0);
-  const [featured, ...rest] = applyPostEdits(posts);
+  const todosPosts = applyPostEdits(posts);
   const { data: events } = useAsyncData<TriadeEvent[]>(() => db.getEvents().then(applyEventEdits), []);
+
+  // O chamariz da primeira tela é o post do evento MAIS PRÓXIMO, escolhido
+  // aqui e não fixado no `seed.ts`. A diferença aparece quando entra um
+  // evento novo: antes, o destaque continuava no evento antigo até alguém
+  // lembrar de reordenar o array à mão — foi exatamente assim que a tela
+  // ficou anunciando o Jantar de 30/09 com a Feira de 11/09 já marcada.
+  // Sem evento por vir (ou sem post correspondente), cai no primeiro post.
+  const [featured, ...rest] = useMemo(() => {
+    const proximo = [...events]
+      .filter((e) => e.status === 'em breve')
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+    const i = proximo ? todosPosts.findIndex((p) => p.eventId === proximo.id) : -1;
+    if (i <= 0) return todosPosts;
+    return [todosPosts[i], ...todosPosts.filter((_, k) => k !== i)];
+  }, [events, todosPosts]);
   const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState(false);
   const openEvent = events.find((e) => e.id === openEventId) ?? null;
@@ -54,6 +69,7 @@ export default function Home() {
         onOpenEvent={setOpenEventId}
         onEdit={() => setEditingPost(true)}
         destaqueNovo={anunciar}
+        chamariz={!!featured.eventId}
       />
       {openEvent && <EventModal event={openEvent} onClose={() => setOpenEventId(null)} />}
       {editingPost && (
