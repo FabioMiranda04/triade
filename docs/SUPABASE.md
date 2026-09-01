@@ -155,6 +155,30 @@ Se você vê o conteúdo antigo e não o do banco, é isso. Causas comuns:
 Variável de ambiente é lida na inicialização do Vite — depois de editar
 `.env.local`, **reinicie o servidor**.
 
+## Rodar SQL sem abrir o SQL Editor
+
+O Claude **não consegue** conectar no Postgres a partir do contêiner de
+trabalho: a política de rede de lá libera só HTTPS, e banco é TCP puro
+(a senha do banco, portanto, não resolve nada ali — e não deve ser
+colada em conversa: se for, troque em Settings → Database → Reset
+database password).
+
+O que funciona é a **Management API**, que aceita SQL por HTTPS:
+
+```
+POST https://api.supabase.com/v1/projects/zirrdajydxbydnyaebza/database/query
+Authorization: Bearer sbp_...
+{"query": "..."}
+```
+
+O `sbp_...` é um **Personal Access Token**, criado em
+https://supabase.com/dashboard/account/tokens. Com ele numa sessão, o
+Claude aplica migração sozinho e você não abre mais o SQL Editor.
+
+Duas coisas antes de criar um: o token vale para a **conta inteira**, não
+só este projeto, e ignora RLS (é dono). Trate como senha: passe em uma
+sessão, revogue quando o trabalho terminar.
+
 ## Migrações
 
 Por enquanto, dois arquivos SQL versionados (`schema.sql` + `seed.sql`), ambos
