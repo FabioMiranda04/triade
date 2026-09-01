@@ -46,20 +46,33 @@ export default function Home() {
   // ficou anunciando o Jantar de 30/09 com a Feira de 11/09 já marcada.
   // Sem evento por vir (ou sem post correspondente), cai no primeiro post.
   //
-  // O Início mostra UM post, não um feed. Uma tela de abertura com três
-  // cards concorrendo entre si não tem chamariz — tem três coisas de
-  // importância igual. Os outros posts continuam existindo no `seed.ts`,
-  // só não disputam a primeira dobra.
-  const featured = useMemo(() => {
-    const proximo = [...events]
+  // O Início mostra o que ainda vai acontecer, em ordem de data — nada de
+  // feed com post antigo disputando a primeira dobra. Quando há mais de uma
+  // edição marcada (setembro tem duas: a Feira dia 11 e o Jantar dia 30),
+  // as duas aparecem; a mais próxima é a que ganha moldura e selo.
+  //
+  // Sem nenhum evento por vir, cai no primeiro post do `seed.ts` para a tela
+  // não abrir vazia.
+  const emCartaz = useMemo(() => {
+    const porVir = events
       .filter((e) => e.status === 'em breve')
-      .sort((a, b) => a.date.localeCompare(b.date))[0];
-    return todosPosts.find((p) => proximo && p.eventId === proximo.id) ?? todosPosts[0];
+      .sort((a, b) => a.date.localeCompare(b.date));
+    const posts = porVir
+      .map((e) => todosPosts.find((p) => p.eventId === e.id))
+      .filter((p): p is NonNullable<typeof p> => !!p);
+    return posts.length > 0 ? posts : todosPosts.slice(0, 1);
   }, [events, todosPosts]);
+  const featured = emCartaz[0];
   const podeEditar = usePodeEditar();
   const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState(false);
+  const [passoEvento, setPassoEvento] = useState<'details' | 'contact'>('details');
   const openEvent = events.find((e) => e.id === openEventId) ?? null;
+
+  function abrirEvento(eventId: string, passo: 'details' | 'contact' = 'details') {
+    setPassoEvento(passo);
+    setOpenEventId(eventId);
+  }
 
   function handlePostSaved() {
     setEditingPost(false);
@@ -69,14 +82,24 @@ export default function Home() {
 
   return (
     <section className="panel">
-      <PostCard
-        post={featured}
-        onOpenEvent={setOpenEventId}
-        onEdit={podeEditar ? () => setEditingPost(true) : undefined}
-        destaqueNovo={anunciar}
-        chamariz={!!featured.eventId}
-      />
-      {openEvent && <EventModal event={openEvent} onClose={() => setOpenEventId(null)} />}
+      {emCartaz.map((post, i) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          onOpenEvent={abrirEvento}
+          onEdit={podeEditar && i === 0 ? () => setEditingPost(true) : undefined}
+          destaqueNovo={anunciar && i === 0}
+          chamariz={i === 0 && !!post.eventId}
+          vendendo={!!post.eventId}
+        />
+      ))}
+      {openEvent && (
+        <EventModal
+          event={openEvent}
+          passoInicial={passoEvento}
+          onClose={() => setOpenEventId(null)}
+        />
+      )}
       {editingPost && (
         <PostEditSheet
           post={featured}

@@ -10,6 +10,11 @@ import type { TriadeEvent } from '@/types';
 interface EventModalProps {
   event: TriadeEvent;
   onClose: () => void;
+  /**
+   * Onde o pop-up abre. `contact` pula os detalhes e já mostra as sócias —
+   * é o caminho de quem clicou "Quero participar" no feed e já decidiu.
+   */
+  passoInicial?: 'details' | 'contact';
 }
 
 const sortedFounders = [...founders].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
@@ -18,8 +23,8 @@ const sortedFounders = [...founders].sort((a, b) => a.name.localeCompare(b.name,
  * Pop-up de detalhes do evento. "Quero participar" leva a um segundo passo
  * com as 3 sócias — cada botão abre o WhatsApp com uma mensagem pronta.
  */
-export function EventModal({ event, onClose }: EventModalProps) {
-  const [step, setStep] = useState<'details' | 'contact'>('details');
+export function EventModal({ event, onClose, passoInicial = 'details' }: EventModalProps) {
+  const [step, setStep] = useState<'details' | 'contact'>(passoInicial);
 
   return (
     <ModalOverlay onClose={onClose}>

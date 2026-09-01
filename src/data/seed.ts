@@ -301,7 +301,7 @@ export const posts: Post[] = [
     authorInitials: 'TC',
     subtitle: 'Feira de Negócios · 11 e 12 de setembro',
     caption:
-      'Um novo jeito de viver a Tríade Conecta: dois dias para conectar marcas, pessoas e oportunidades. Moda, beleza, casa e talks, no Decorado Bambuí. Quer expor? Fala com a gente ✨',
+      'Seu negócio merece ser visto ✨ Seja um expositor da Feira de Negócios Tríade — dois dias de conexões que geram oportunidades e negócios que transformam.\n\n11 e 12 de setembro, no Decorado Bambuí. Moda, beleza, casa e talks reunidos num só lugar, com o público que já é da Tríade.\n\nComo expositora você: conecta-se com novos clientes e parceiros · dá visibilidade à sua marca · fortalece seu network e gera novas parcerias · impulsiona suas vendas e leva sua marca mais longe.\n\nVagas limitadas. Fale com a gente e garanta a sua.',
     eventId: 'feira-negocios-set26',
     mediaUrl:
       'https://zirrdajydxbydnyaebza.supabase.co/storage/v1/object/public/media/6a-edicao-2025-11/foto-2.jpg',

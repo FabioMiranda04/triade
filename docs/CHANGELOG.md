@@ -43,12 +43,25 @@ evento, palestrante, "Novo evento" e "Nova palestrante". O gate é um hook
 `useEffect` que já existiam dentro dos formulários. A permissão de verdade
 sempre esteve na RLS; o que faltava era a tela contar a mesma história.
 
-### Início: um post, não um feed
+### Início: só o que ainda vai acontecer
 
-A primeira tela mostrava três cards de post competindo entre si. Três
-coisas de importância igual não têm chamariz. Ficou **um**: o do próximo
-evento, escolhido sozinho pela data. Os pilares, a citação e o resto
-continuam abaixo dele.
+A primeira tela mostrava três cards competindo entre si, um deles uma
+retrospectiva. Agora mostra **os eventos por vir**, em ordem de data —
+setembro tem dois (Feira dia 11, Jantar dia 30) e os dois aparecem. A
+edição mais próxima é a única com moldura, selo e animação de entrada.
+Sem nada marcado, cai no primeiro post para a tela não abrir vazia.
+
+### Dois botões no post de evento
+
+Era um só, "Ver detalhes", e quem já tinha decidido precisava ler a ficha
+do evento inteira antes de achar como falar com alguém. Agora são
+**"Quero participar"** (abre direto no passo das sócias, com a mensagem de
+WhatsApp pronta) e **"Mais detalhes"** ao lado, em vidro. Abaixo de 359px
+os dois empilham. O `EventModal` ganhou `passoInicial` para isso — o passo
+de contato já existia, só não dava para chegar nele direto.
+
+A legenda do post também passou a respeitar parágrafos (`white-space:
+pre-line`), porque a descrição da Feira tem quatro.
 
 ### Recorte antes de subir, no formato do Instagram
 

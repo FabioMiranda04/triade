@@ -30,7 +30,13 @@ const TAB_PATH: Record<TabId, string> = {
 interface PostCardProps {
   post: Post;
   /** chamado no lugar da navegação quando o post tem `eventId` */
-  onOpenEvent?: (eventId: string) => void;
+  onOpenEvent?: (eventId: string, passo?: 'details' | 'contact') => void;
+  /**
+   * Evento ainda por vir: o post ganha o par "Quero participar" + "Mais
+   * detalhes". Quem já decidiu não deveria ter que ler a ficha do evento
+   * antes de conseguir falar com alguém.
+   */
+  vendendo?: boolean;
   /** presente só no post de evento em destaque — abre o formulário de edição */
   onEdit?: () => void;
   /**
@@ -45,7 +51,7 @@ interface PostCardProps {
   chamariz?: boolean;
 }
 
-export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: PostCardProps) {
+export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, vendendo }: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { liked, saved, curtidas, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
@@ -156,14 +162,28 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz }: 
 
       {(post.eventId || post.ctaTab) && (
         <div className="post-cta">
-          <button
-            className="btn btn-primary full"
-            onClick={() =>
-              post.eventId ? onOpenEvent?.(post.eventId) : navigate(TAB_PATH[post.ctaTab!])
-            }
-          >
-            {post.ctaLabel ?? 'Ver mais'} <Icon name="chevronRight" size={15} />
-          </button>
+          {post.eventId && vendendo ? (
+            <div className="cta-par">
+              <button
+                className="btn btn-primary"
+                onClick={() => onOpenEvent?.(post.eventId!, 'contact')}
+              >
+                <Icon name="whatsapp" size={16} /> Quero participar
+              </button>
+              <button className="btn btn-glass" onClick={() => onOpenEvent?.(post.eventId!)}>
+                Mais detalhes
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn btn-primary full"
+              onClick={() =>
+                post.eventId ? onOpenEvent?.(post.eventId) : navigate(TAB_PATH[post.ctaTab!])
+              }
+            >
+              {post.ctaLabel ?? 'Ver mais'} <Icon name="chevronRight" size={15} />
+            </button>
+          )}
         </div>
       )}
     </article>

@@ -222,7 +222,14 @@
 .act-btn.liked { color: var(--like-fg); }
 .act-btn.saved { color: var(--save-fg); }
 .post-likes { padding: 2px 14px 0; font-size: var(--fs-sm); font-weight: 700; }
-.post-caption { padding: 6px 14px 14px; font-size: var(--fs-md); color: var(--ink-70); }
+/* `pre-line` porque a legenda tem parágrafos, como no Instagram: os \n do
+   `seed.ts` viram quebra de linha, e o resto continua quebrando sozinho. */
+.post-caption {
+  padding: 6px 14px 14px;
+  font-size: var(--fs-md);
+  color: var(--ink-70);
+  white-space: pre-line;
+}
 .post-caption b { color: var(--ink); font-weight: 700; }
 .post-cta { margin: 0 14px 14px; }
 
@@ -1441,3 +1448,21 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
   color: var(--on-dark-70);
 }
 .recorte-zoom input { flex: 1; accent-color: var(--accent); }
+
+/* Par de ações do post de evento: decidir e saber mais lado a lado.
+   "Quero participar" pesa mais — é o caminho que fecha venda; "Mais
+   detalhes" fica em vidro, disponível sem competir. */
+.cta-par {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 8px;
+}
+.cta-par .btn {
+  justify-content: center;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+/* abaixo de ~340px de conteúdo os dois rótulos não cabem lado a lado */
+@media (max-width: 359px) {
+  .cta-par { grid-template-columns: 1fr; }
+}
