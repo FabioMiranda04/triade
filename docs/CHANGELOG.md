@@ -50,12 +50,16 @@ coisas de importância igual não têm chamariz. Ficou **um**: o do próximo
 evento, escolhido sozinho pela data. Os pilares, a citação e o resto
 continuam abaixo dele.
 
-### Recorte antes de subir
+### Recorte antes de subir, no formato do Instagram
 
-O acervo é Stories 9:16 e o bloco do post é 4:3 — o `object-fit: cover`
-decidia o corte sozinho e às vezes decapitava alguém. Entrou o
-`RecorteFoto`: arrasta para enquadrar, controle para aproximar, e sai um
-JPEG 1200×900 pronto. Sem biblioteca — `<input type="range">`, eventos de
+O bloco de imagem do post era **4:3 deitado**, e os cartazes da Tríade são
+**4:5 em pé** — o do Jantar perdia a data e o local no corte. O bloco e o
+recorte passaram para 4:5, e o arquivo sai em **1080×1350**, o tamanho
+nativo do post retrato do Instagram.
+
+O acervo é Stories 9:16, então o `object-fit: cover` ainda decide sozinho
+onde cortar quando não há recorte manual — e às vezes decapitava alguém.
+Entrou o `RecorteFoto`: arrasta para enquadrar, controle para aproximar. Sem biblioteca — `<input type="range">`, eventos de
 ponteiro e `canvas.toBlob()` (regra 7).
 
 Só a foto única (a do post) passa por ele. Numa galeria de várias,

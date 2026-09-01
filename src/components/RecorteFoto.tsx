@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { ModalOverlay } from '@/components/ModalOverlay';
 
-/** A mesma proporção do bloco de imagem do post (`.post-media`, 4/3). */
-const PROPORCAO = 4 / 3;
-/** Largura do arquivo gerado. 1200 cobre um iPhone Pro em 3x sem virar peso morto. */
-const LARGURA_FINAL = 1200;
+/** A mesma proporção do bloco de imagem do post (`.post-media`): o retrato 4:5 do Instagram. */
+const PROPORCAO = 4 / 5;
+/** 1080x1350 é o tamanho nativo do post retrato do Instagram — nem estica, nem pesa à toa. */
+const LARGURA_FINAL = 1080;
 
 interface RecorteFotoProps {
   arquivo: File;
@@ -16,8 +16,8 @@ interface RecorteFotoProps {
 /**
  * Recorte antes do upload.
  *
- * O acervo da Tríade é Stories 9:16 e o bloco do post é 4:3 — um `object-fit:
- * cover` decide o corte sozinho e às vezes decapita alguém. Aqui quem escolhe
+ * O acervo da Tríade é Stories 9:16 e os cartazes são 4:5 — um `object-fit:
+ * cover` decide o corte sozinho e às vezes come a data do evento. Aqui quem escolhe
  * é quem está publicando: arrasta para enquadrar, controle para aproximar, e
  * o que sobe já é o quadro final.
  *

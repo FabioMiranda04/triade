@@ -154,7 +154,9 @@
 .post-who .n { font-weight: 700; font-size: var(--fs-md); }
 .post-who .t { font-size: var(--fs-2xs); color: var(--ink-45); }
 .post-media {
-  aspect-ratio: 4 / 3;
+  /* 4:5 é o retrato do feed do Instagram — é a proporção em que os cartazes
+     da Tríade são feitos. Em 4:3 o cartaz do Jantar perdia a data e o local. */
+  aspect-ratio: 4 / 5;
   background: var(--ph-grad-media);
   position: relative;
   display: flex;
@@ -1415,7 +1417,7 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 .recorte-moldura {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 14px;
   background: var(--ph-grad);
