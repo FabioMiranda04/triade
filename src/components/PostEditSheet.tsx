@@ -66,7 +66,7 @@ export function PostEditSheet({ post, events, onClose, onSaved }: PostEditSheetP
 
   return (
     <EditSheet
-      title="Editar post em destaque"
+      title="Editar post"
       onClose={onClose}
       onSubmit={(e) => void handleSubmit(e)}
       submitLabel={salvando ? 'Salvando…' : subindo ? 'Enviando foto…' : 'Salvar'}

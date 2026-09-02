@@ -85,7 +85,7 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, ve
           <div className="n">{post.author}</div>
           <div className="t">{post.subtitle}</div>
         </div>
-        {post.eventId && onEdit ? (
+        {onEdit ? (
           <Kebab label="Opções do post" actions={[{ label: 'Editar', icon: 'edit', onClick: onEdit }]} />
         ) : (
           <button

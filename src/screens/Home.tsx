@@ -69,10 +69,11 @@ export default function Home() {
       .filter((p): p is NonNullable<typeof p> => !!p);
     return posts.length > 0 ? posts : todosPosts.slice(0, 1);
   }, [events, todosPosts]);
-  const featured = emCartaz[0];
   const podeEditar = usePodeEditar();
   const [openEventId, setOpenEventId] = useState<string | null>(null);
-  const [editingPost, setEditingPost] = useState(false);
+  // qual post está sendo editado — não um booleano: a tela mostra mais de
+  // um post, e todos são editáveis por quem tem permissão
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [passoEvento, setPassoEvento] = useState<'details' | 'contact'>('details');
   const openEvent = events.find((e) => e.id === openEventId) ?? null;
 
@@ -82,7 +83,7 @@ export default function Home() {
   }
 
   function handlePostSaved(noBanco: boolean) {
-    setEditingPost(false);
+    setEditingPost(null);
     setVersao((v) => v + 1);
     showToast(noBanco ? 'Post publicado para todo mundo ✓' : 'Post salvo neste aparelho ✓');
   }
@@ -94,7 +95,7 @@ export default function Home() {
           key={post.id}
           post={post}
           onOpenEvent={abrirEvento}
-          onEdit={podeEditar && i === 0 ? () => setEditingPost(true) : undefined}
+          onEdit={podeEditar ? () => setEditingPost(post) : undefined}
           destaqueNovo={anunciar && i === 0}
           chamariz={i === 0 && !!post.eventId}
           vendendo={!!post.eventId}
@@ -109,9 +110,9 @@ export default function Home() {
       )}
       {editingPost && (
         <PostEditSheet
-          post={featured}
+          post={editingPost}
           events={events}
-          onClose={() => setEditingPost(false)}
+          onClose={() => setEditingPost(null)}
           onSaved={handlePostSaved}
         />
       )}
