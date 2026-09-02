@@ -1472,7 +1472,10 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
   padding-inline: 10px;
   white-space: nowrap;
 }
-/* abaixo de ~340px de conteúdo os dois rótulos não cabem lado a lado */
-@media (max-width: 359px) {
+/* Medido: "Quero participar" pede 168px e "Mais detalhes" 125px; com o
+   respiro entre eles são 305px de conteúdo, e um Android de 360px só
+   oferece 298px dentro do card. Empilha até 379px — em 375px caberia por
+   7px, e uma folga dessas quebra no primeiro rótulo que mudar. */
+@media (max-width: 379px) {
   .cta-par { grid-template-columns: 1fr; }
 }
