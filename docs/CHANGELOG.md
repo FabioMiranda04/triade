@@ -136,6 +136,30 @@ não são cores de lá. Passou para Burgundy `#65202D` sobre Cream Quartz
 `#F6F3EE` (regra 16). Isso destrava metade do Módulo 7 — falta o service
 worker.
 
+### A direção de design virou documento
+
+O quadro do calendário foi a primeira peça que o usuário descreveu como
+"muito mais interessante", e o pedido foi transformar isso em direção do
+projeto: **inovar no design mantendo elegância e a proposta premium**.
+
+Virou a **seção 12 do `docs/DESIGN-SYSTEM.md`**, com os cinco princípios
+extraídos do que funcionou — e não uma descrição do quadro:
+
+1. **geometria com direção** (raio assimétrico, canto aberto no superior
+   esquerdo, que é para onde a seta da marca aponta);
+2. **o que informa não se mexe; o que chama, sim** — a primeira versão
+   tinha a borda piscando, e no vale da animação o dia deixava de estar
+   marcado: a animação estava apagando a informação;
+3. **hierarquia entre linhas** — a de fora sempre mais fina, senão lê como
+   borda dupla;
+4. **inovação vem de forma e tempo, não de cor** — a paleta tem dono
+   externo (regra 16), e é essa restrição que segura a elegância;
+5. **movimento caro é movimento proibido** (seção 9).
+
+Mais uma fila de seis ideias candidatas com risco anotado, e um teste de
+quatro perguntas que qualquer proposta precisa passar — a mais útil sendo
+"com a animação zerada, o elemento ainda comunica o mesmo?".
+
 ### Material 3 e Expo, pesquisados a pedido
 
 Não existem como skill instalável, e nenhum dos dois entra aqui como está:

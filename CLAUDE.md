@@ -146,7 +146,14 @@ dois discordam.
     (nova entrada no topo) e `docs/ESTADO-DO-PROJETO.md` (estado atual).
     Protocolo na seção 9 daquele arquivo.
 14. **Qualquer trabalho de UI/UX** (tela, componente visual, pop-up, ícone,
-    animação, navegação) invoca a skill `design-systems` antes de codar —
+    animação, navegação) invoca a skill `design-systems` antes de codar.
+    **Peça visual nova começa pela seção 12 do `docs/DESIGN-SYSTEM.md`** —
+    "Direção de design": os cinco princípios que fazem o app parecer
+    premium (geometria com direção, camada que informa não se mexe,
+    hierarquia entre linhas, inovar em forma e tempo e não em cor,
+    movimento barato) e o teste de quatro perguntas antes de aprovar
+    qualquer ideia nova. Checklist e regras completas em
+    `docs/DESIGN-SYSTEM.md` —
     checklist e regras completas em `docs/DESIGN-SYSTEM.md`. Duas regras de
     lá que já causaram bug real e valem repetir aqui: **todo pop-up passa
     por `ModalOverlay`** (nunca um `<div className="modal-overlay">` cru —

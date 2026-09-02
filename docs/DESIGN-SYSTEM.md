@@ -757,3 +757,82 @@ um componente de pop-up novo, uma regra de animação, um ícone, um padrão
 de navegação — atualize a seção correspondente **na mesma sessão**, junto
 com `docs/CHANGELOG.md` e `docs/ESTADO-DO-PROJETO.md` (protocolo na seção
 9 daquele arquivo). Este arquivo não deve ficar defasado da UI real do app.
+
+---
+
+## 12. Direção de design — inovar sem perder a elegância
+
+> Esta seção nasceu do quadro de dia com evento no calendário (02/09/2026),
+> a primeira peça do app que o usuário descreveu como "muito mais
+> interessante". Ela existe para que o acerto vire **método** em vez de
+> acaso: são os princípios que produziram aquele resultado, escritos para
+> serem aplicados às próximas peças.
+>
+> O objetivo declarado é **inovar no design mantendo elegância e a
+> proposta premium do app**. As duas metades importam: inovar sem a
+> restrição vira enfeite, e restrição sem inovação vira template.
+
+### 12.1 Os cinco princípios
+
+**1. Geometria com direção.** Raio simétrico é o default de todo mundo; um
+raio **assimétrico** — dois cantos abertos, dois fechados — dá ao elemento
+uma diagonal, e a diagonal é o gesto da própria marca (a seta tripla). Foi
+o que tirou o quadro do calendário da cara de "quadradinho de calendário".
+
+*Como aplicar*: `border-radius: A B A B`, com `A` ≈ 3× `B` (hoje `18px 5px`
+num quadro de 45px). O canto aberto vai no **superior esquerdo**, que é
+para onde a seta da marca aponta. Um conjunto de elementos irmãos usa
+sempre a mesma orientação — direções alternadas leem como erro.
+
+**2. O que informa não se mexe; o que chama, sim.** A primeira versão do
+quadro tinha a borda piscando, e no vale da animação o dia **deixava de
+estar marcado**: a animação estava apagando a informação. A versão que
+funcionou separou os papéis — moldura fixa de 2px marca, halo externo
+pulsa e chama.
+
+*Regra geral*: nunca anime a única camada que comunica um estado. Se algo
+precisa pulsar, acrescente uma camada só para isso.
+
+**3. Hierarquia entre linhas.** Duas linhas do mesmo peso lado a lado leem
+como "borda dupla" (defeito), não como "moldura e halo" (intenção). A
+linha de fora é sempre **mais fina** que a de dentro — hoje 1,5px contra
+2px.
+
+**4. A inovação vem de forma e tempo, não de cor.** A paleta tem dono
+externo (regra 16 do `CLAUDE.md`): não há liberdade ali, e é justamente
+essa restrição que mantém tudo elegante. O espaço de invenção é
+**silhueta, camada, ritmo e atraso** — e ele é grande. O quadro do
+calendário não usou nenhuma cor nova.
+
+**5. Movimento caro é movimento proibido.** Continua valendo a seção 9:
+perto de `backdrop-filter`, só `opacity` e `translate`. Isso não é uma
+limitação do que dá para inventar — o halo pulsante, a cascata do painel e
+a revelação de foto são todos opacidade pura.
+
+### 12.2 Onde levar isso (fila de ideias, não compromisso)
+
+Ordenado por retorno visual sobre esforço. Nenhum item aqui foi aprovado —
+são candidatos para quando houver espaço.
+
+| Ideia | O que muda | Risco |
+|---|---|---|
+| Raio direcional nas miniaturas da retrospectiva | a grade de edições ganha a mesma silhueta do calendário; o app começa a ter uma "forma" reconhecível | baixo |
+| Halo no selo "Próximo encontro" | o chamariz do Início passa a respirar como o dia do calendário, em vez de ser só uma pílula | baixo |
+| Raio direcional no avatar do post e do perfil | assina a marca no elemento mais repetido da tela | médio — foto redonda é convenção forte |
+| Estado "novo" por halo em vez de badge | menos ruído textual, mais elegância | médio — halo sem rótulo comunica menos |
+| Cards de plano com o canto aberto apontando para o CTA | usa a direção da forma para conduzir o olho até o botão | médio |
+| Divisor de seção com o vinco diagonal da marca | substitui a régua reta do `.sec-head` | alto — pode virar enfeite |
+
+### 12.3 O teste antes de aprovar qualquer uma
+
+Uma ideia só entra se passar nos quatro:
+
+1. **Sem cor nova.** Se precisa de um hex que o manual não tem, está
+   errada (regra 16).
+2. **Sobrevive em 375px.** O gesto tem que ser legível no alvo real, não
+   só na maquete larga.
+3. **Sobrevive a `prefers-reduced-motion`.** Com a animação zerada, o
+   elemento ainda comunica o mesmo? Se não, a informação estava na
+   animação — ver princípio 2.
+4. **Repetível.** Um gesto que só funciona numa tela é decoração. O que
+   entra aqui precisa valer para uma família inteira de elementos.
