@@ -560,7 +560,14 @@ retorno ao toque.** Ao criar qualquer coisa clicável, o `:active` deixou de
 ser refinamento e passou a ser obrigatório.
 
 Em troca, `:focus-visible` ganhou um anel de 2px na cor `--accent`, também
-global. Ele só aparece para quem navega por teclado (o navegador não o
+global — e `:focus` é zerado antes dele. Isso não é redundância:
+`:focus-visible` sozinho deveria bastar (o navegador não o dispara em
+toque), mas Samsung Internet e várias WebViews do Android deixam o foco no
+botão depois do toque e pintam **o anel azul padrão** em volta. Zerar o
+`:focus` e devolver só no `:focus-visible` garante um anel só, na cor do
+tema, e só para teclado. Pelo mesmo motivo o
+`-webkit-tap-highlight-color: transparent` é repetido em `*`: no `html`
+ele deveria herdar, e nesses navegadores não herda. Ele só aparece para quem navega por teclado (o navegador não o
 dispara em toque), então desligar o realce não custou acessibilidade. Não
 declare `border-radius` junto do anel: ele já acompanha o raio do próprio
 elemento, e um valor fixo deforma botões redondos.

@@ -12,10 +12,21 @@ body {
      componente (manual, seção 7), não esse retângulo. */
   -webkit-tap-highlight-color: transparent;
 }
-/* Tirar o realce de toque NÃO pode tirar o foco de quem navega por
-   teclado: `:focus-visible` só aparece nesse caso (o navegador não o
-   dispara em toque), então isso devolve um anel visível na cor do tema no
-   lugar do padrão azul. */
+/* No `html` a propriedade herda — em tese. O Samsung Internet e algumas
+   WebViews do Android ignoram a herança, então repetimos em tudo. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+/* O anel de foco é NOSSO, em qualquer navegador.
+   `:focus-visible` deveria bastar — o navegador não o dispara em toque —,
+   mas nem todo Android respeita isso: Samsung Internet e várias WebViews
+   deixam o foco no botão depois do toque e pintam o anel azul padrão em
+   volta dele. Zerar o `:focus` primeiro e devolver só no `:focus-visible`
+   é o que garante um anel só, na cor do tema, e só para quem navega por
+   teclado. */
+:focus {
+  outline: none;
+}
 :focus-visible {
   /* sem `border-radius` aqui: o contorno já acompanha o raio do próprio
      elemento, e forçar um valor deformaria os botões redondos */
