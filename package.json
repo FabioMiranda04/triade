@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "auditoria": "node scripts/auditoria.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",

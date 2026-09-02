@@ -85,6 +85,43 @@ dois discordam.
 
 ---
 
+### Auditoria de UI (`npm run auditoria`)
+
+`scripts/auditoria.mjs` sobe o `vite preview` sozinho e varre **5 telas x 2
+temas x 2 larguras** (360 e 375px) procurando quatro defeitos, todos que já
+aconteceram de verdade neste projeto:
+
+| Verificação | O que pega |
+|---|---|
+| `OVERFLOW` | elemento mais largo que o container (o par de botões estourava o card em 360px por 7px) |
+| `TOQUE` | alvo menor que 38px. Campo dentro de `<label>` conta pela área do label — sem essa exceção o campo de busca de Eventos dá falso positivo |
+| `CONTRASTE` | WCAG AA medido **no pixel renderizado**: apaga o texto, fotografa, lê o fundo. Calcular sobre os tokens ignora gradiente, `backdrop-filter` e a barra flutuante por cima |
+| `CONSOLE` | erro de página ou de console (ignora recurso externo que não carrega) |
+
+Sai com código 1 se achar algo → serve em CI.
+
+**Playwright fica fora do `package.json` de propósito** (regra 7): baixa
+~300 MB de navegador, e quem só quer rodar o app não deve pagar isso. O
+script detecta a ausência e imprime o que instalar:
+`npm i -D playwright && npx playwright install chromium`.
+
+`CHROMIUM_BIN=/caminho/do/chrome` cobre ambiente onde o navegador não está
+onde o Playwright espera — é o caso do contêiner remoto do Claude Code.
+`AUDIT_ROTAS=/planos AUDIT_TEMAS=onix` estreita a varredura ao investigar
+um achado, e `AUDIT_DEBUG=1` imprime cor, pixel lido e razão de cada alvo.
+
+**Armadilha que a própria auditoria caiu, e por isso ela espera antes de
+medir:** a cascata de entrada do `.panel` desloca cada peça em
+`translateY(10px)`. Medir durante a animação faz o
+`getBoundingClientRect` devolver a posição animada enquanto a captura já
+saiu do lugar final — 10px de defasagem, e a leitura de contraste cai
+FORA do elemento. Isso produziu 9 reprovações inexistentes na primeira
+rodada. O script espera o `<Skeleton>` sumir e as animações **finitas**
+terminarem (`document.getAnimations()`, filtrando as de `iterations:
+Infinity`, que no app nunca acabam: mesh, halo do calendário, selo da
+aba). Esperar tempo fixo não resolve — o atraso depende de a página vir
+da rede ou do service worker.
+
 ## 2. Como adicionar coisas
 
 **Nova tela/aba:** crie `src/screens/NomeDaTela.tsx` exportando default →

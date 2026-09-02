@@ -36,6 +36,7 @@ npm run dev        # localhost:5173
 npm run build      # typecheck + build em dist/ — é o que a Vercel roda
 npm run preview
 npm run typecheck
+npm run auditoria  # contraste/toque/overflow nas 5 telas x 2 temas (pede Playwright)
 ```
 
 `npm run build` verde ANTES de considerar tarefa concluída. Sempre.
@@ -46,7 +47,7 @@ Fora daqui para não pesar em toda chamada. Leia sob demanda:
 
 | Preciso de… | Arquivo |
 |---|---|
-| mapa de pastas, o que cada arquivo faz | `docs/GUIA-DO-REPO.md` §1 |
+| mapa de pastas, o que cada arquivo faz, **auditoria de UI** | `docs/GUIA-DO-REPO.md` §1 |
 | receita: tela / ícone / cor / campo de dado / pop-up / UI de edição nova | `docs/GUIA-DO-REPO.md` §2 |
 | **o que ainda NÃO existe** (não presuma) | `docs/GUIA-DO-REPO.md` §3 |
 | roadmap e status dos módulos | `docs/GUIA-DO-REPO.md` §4 |
