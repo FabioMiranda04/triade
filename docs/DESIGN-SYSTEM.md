@@ -639,9 +639,26 @@ uma ponte atravessando a grade.
 uma regra `.cal-cell.junta-*` perde para ela e os cantos não somem. As
 regras de emenda precisam do `button` na frente.
 
-O quadro tem **moldura que respira** (`::after`, 2,8s, só opacidade). Só
-opacidade porque a célula vive dentro do `.cal`, que tem `backdrop-filter`
-— animar tamanho ali é o bug de performance da seção 9.
+**Forma e moldura.** O raio é assimétrico — `18px 5px 18px 5px`, dois
+cantos abertos e dois fechados. Isso dá direção ao quadro, conversa com a
+seta tripla da marca e o separa de qualquer quadradinho de calendário
+padrão. O par emendado herda o mesmo desenho (o da esquerda fica com os
+cantos da esquerda, o da direita com os da direita), então **a silhueta de
+um dia e a de dois dias é a mesma** — só muda a largura.
+
+São duas camadas, e a divisão de trabalho é o ponto:
+
+- `::after` — a moldura, 2px, **fixa**. Uma borda que pisca some metade do
+  tempo, e no vale da animação o dia deixaria de estar marcado;
+- `::before` — o halo, 1,5px, 5px para fora, pulsando em opacidade (2,8s).
+  Mais fino que a moldura de propósito: duas linhas do mesmo peso leriam
+  como borda dupla.
+
+Só opacidade porque a célula vive dentro do `.cal`, que tem
+`backdrop-filter` — animar tamanho ali é o bug de performance da seção 9.
+No par emendado o halo precisa **parar na emenda** (`right: 0` /
+`left: 0`): com o `inset` negativo de cada lado, os dois halos se
+sobrepõem e o dourado soma, dando um claro no meio do topo e da base.
 
 ## 8. Componentes de UI (mapa rápido)
 

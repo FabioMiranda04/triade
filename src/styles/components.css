@@ -578,11 +578,19 @@ button.cal-cell:active { transform: scale(0.9); }
    O ponto de 4px embaixo do número não competia com nada na grade — quem
    abria o calendário para achar "quando é o próximo" tinha que caçar. O
    quadro com a foto da edição resolve isso e ainda diz QUAL evento é. */
+/* O raio é assimétrico de propósito: dois cantos abertos e dois fechados
+   dão ao quadro uma direção, que conversa com a seta tripla da marca e o
+   separa de qualquer quadradinho de calendário padrão. Como o par emendado
+   herda o mesmo desenho (o da esquerda fica com os cantos da esquerda, o
+   da direita com os da direita), a silhueta de um dia e a de dois dias são
+   a MESMA — só muda a largura. */
 button.cal-cell.has-event {
-  border-radius: 10px;
-  overflow: hidden;
+  border-radius: 18px 5px 18px 5px;
   width: 100%;
+  /* sem `overflow: hidden`: o halo precisa vazar para fora do quadro. A
+     foto é recortada pelo próprio raio, herdado abaixo. */
 }
+.cal-capa { border-radius: inherit; }
 .cal-capa {
   position: absolute;
   inset: 0;
@@ -617,32 +625,43 @@ button.cal-cell.has-event {
   background: var(--fill-weak);
 }
 
-/* Moldura que respira. Só opacidade — a célula vive dentro do `.cal`, que
-   tem `backdrop-filter`, e animar tamanho ali é o bug de performance da
-   seção 9 do manual. */
+/* Duas camadas, e a divisão de trabalho é o ponto: a moldura é FIXA e
+   forte (2px, sempre visível), e quem pulsa é o halo por fora. Uma borda
+   que pisca some metade do tempo — o dia deixaria de estar marcado no
+   vale da animação. Assim ele está sempre marcado, e o halo é só o
+   chamado. */
 .cal-cell.has-event::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
-  border: 1.5px solid var(--accent);
+  border: 2px solid var(--accent);
   border-radius: inherit;
   pointer-events: none;
-  animation: calmoldura 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 /* No dia dourado a moldura da mesma cor sumiria: ali ela é o vinco escuro
    que o próprio dourado projeta. */
-.cal-cell.por-vir::after { border-color: var(--btn-primary-fg); opacity: 0.35; }
-@keyframes calmoldura {
-  0%,
-  100% { opacity: 0.4; }
-  50% { opacity: 1; }
+.cal-cell.por-vir::after { border-color: var(--btn-primary-fg); opacity: 0.45; }
+
+/* Halo: só opacidade. A célula vive dentro do `.cal`, que tem
+   `backdrop-filter`, e animar tamanho ali é o bug de performance da seção
+   9 do manual. */
+.cal-cell.has-event::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  z-index: 0;
+  /* mais fino que a moldura: a de dentro é a que marca o dia, esta é só o
+     chamado. Duas linhas do mesmo peso leriam como borda dupla. */
+  border: 1.5px solid var(--accent);
+  border-radius: 23px 7px 23px 7px;
+  pointer-events: none;
+  animation: calhalo 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
-.cal-cell.por-vir::after { animation-name: calmolduraclara; }
-@keyframes calmolduraclara {
+@keyframes calhalo {
   0%,
-  100% { opacity: 0.18; }
-  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+  50% { opacity: 0.55; }
 }
 
 /* Evento de vários dias: as células viram um bloco só.
@@ -660,8 +679,20 @@ button.cal-cell.junta-esq {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-.cal-cell.junta-dir::after { border-right: 0; }
-.cal-cell.junta-esq::after { border-left: 0; }
+.cal-cell.junta-dir::after,
+.cal-cell.junta-dir::before { border-right: 0; }
+.cal-cell.junta-esq::after,
+.cal-cell.junta-esq::before { border-left: 0; }
+/* o halo também precisa perder os cantos internos, senão ele desenha uma
+   curva no meio do bloco */
+.cal-cell.junta-dir::before { border-radius: 23px 0 0 7px; }
+.cal-cell.junta-esq::before { border-radius: 0 7px 23px 0; }
+/* e precisa PARAR na emenda. Com o `inset: -4px` de cada lado, os dois
+   halos avançavam 4px um sobre o outro e o dourado se somava ali: dava um
+   claro no meio do topo e da base do bloco. As bordas da célula da
+   esquerda terminam exatamente onde as da direita começam. */
+.cal-cell.junta-dir::before { right: 0; }
+.cal-cell.junta-esq::before { left: 0; }
 
 /* ---------- retrospectiva (EventRecapModal) ---------- */
 .recap-text {
