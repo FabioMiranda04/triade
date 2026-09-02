@@ -27,6 +27,15 @@ O véu escuro por cima da foto não é enfeite: o acervo tem edição em parede
 clara e edição em salão escuro, e sem ele um único valor de cor para o
 número reprovaria numa das duas.
 
+Evento de vários dias vira **um bloco só**: a Feira é 11 e 12, e dois
+quadrados separados leem como dois eventos. `margin` negativa fecha o vão
+e os cantos internos somem, então a moldura contorna o par inteiro. A
+emenda só vale dentro da mesma semana.
+
+E o quadro tem **moldura que respira** — 2,8s, só opacidade, porque a
+célula vive dentro de um elemento com `backdrop-filter` e animar tamanho
+ali é o bug de performance conhecido (seção 9 do manual).
+
 **Bug encontrado no caminho:** o calendário comparava só com `event.date`,
 então a Feira de Negócios (11 **e** 12 de setembro) marcava só o dia 11 —
 o dia 12 ficava em branco. Agora marca o intervalo inteiro.

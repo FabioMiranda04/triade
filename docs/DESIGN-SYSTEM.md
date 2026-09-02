@@ -629,7 +629,19 @@ dia com encontro é um **quadro de ~45px**, nesta ordem de preferência:
    aqui" sem roubar atenção.
 
 Evento de vários dias marca **todos** os dias do intervalo (`date` até
-`endDate`), não só o primeiro.
+`endDate`) e os dias viram **um bloco só**: `margin` negativa fecha o vão
+da grade e os cantos internos são zerados (`.junta-esq` / `.junta-dir`).
+Dois quadrados separados leem como dois eventos. A emenda só vale dentro
+da mesma semana — colar um sábado no domingo da linha de baixo desenharia
+uma ponte atravessando a grade.
+
+**Cuidado de especificidade**: `button.cal-cell.has-event` define o raio;
+uma regra `.cal-cell.junta-*` perde para ela e os cantos não somem. As
+regras de emenda precisam do `button` na frente.
+
+O quadro tem **moldura que respira** (`::after`, 2,8s, só opacidade). Só
+opacidade porque a célula vive dentro do `.cal`, que tem `backdrop-filter`
+— animar tamanho ali é o bug de performance da seção 9.
 
 ## 8. Componentes de UI (mapa rápido)
 

@@ -100,10 +100,25 @@ export function EventCalendar({ events, onSelectEvent }: EventCalendarProps) {
           // vidro (já aconteceu), que ainda lê como "tem coisa aqui".
           const capa = event.recapMedia?.find((m) => m.tipo === 'foto');
           const porVir = event.status === 'em breve';
+          // Evento de vários dias vira UM bloco em vez de quadros soltos: a
+          // Feira é 11 e 12, e dois quadrados separados leem como dois
+          // eventos. A emenda só vale dentro da mesma semana — colar um
+          // sábado num domingo da linha de baixo desenharia uma ponte que
+          // atravessa a grade.
+          const vizinho = (delta: number) => {
+            const d = new Date(day);
+            d.setDate(d.getDate() + delta);
+            return eventOn(d)?.id === event.id;
+          };
+          const juntaEsq = day.getDay() !== 0 && vizinho(-1);
+          const juntaDir = day.getDay() !== 6 && vizinho(1);
           return (
             <button
               key={i}
-              className={`cal-cell has-event${capa ? ' com-foto' : porVir ? ' por-vir' : ''}`}
+              className={
+                `cal-cell has-event${capa ? ' com-foto' : porVir ? ' por-vir' : ''}` +
+                `${juntaEsq ? ' junta-esq' : ''}${juntaDir ? ' junta-dir' : ''}`
+              }
               onClick={() => onSelectEvent(event)}
               aria-label={`${day.getDate()} de ${MONTHS[day.getMonth()]} — ${event.title}`}
             >

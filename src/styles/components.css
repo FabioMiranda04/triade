@@ -550,7 +550,9 @@
   color: var(--ink-45);
   padding-bottom: 6px;
 }
-.cal-grid { row-gap: 4px; }
+/* o vão é token local: a emenda dos eventos de vários dias precisa saber
+   exatamente quanto fechar */
+.cal-grid { --cal-vao: 5px; row-gap: 5px; column-gap: var(--cal-vao); }
 .cal-cell {
   aspect-ratio: 1 / 1;
   display: flex;
@@ -579,8 +581,7 @@ button.cal-cell:active { transform: scale(0.9); }
 button.cal-cell.has-event {
   border-radius: 10px;
   overflow: hidden;
-  outline: 1px solid var(--accent-fill-strong);
-  outline-offset: -1px;
+  width: 100%;
 }
 .cal-capa {
   position: absolute;
@@ -589,38 +590,78 @@ button.cal-cell.has-event {
   height: 100%;
   object-fit: cover;
   /* fotos de retrospectiva são retrato: o terço de cima é onde estão os
-     rostos, e num quadro de ~40px é só isso que dá para ler */
+     rostos, e num quadro de ~45px é só isso que dá para ler */
   object-position: 50% 25%;
+  /* Escurecer a foto inteira em vez de pôr um véu por cima: o acervo tem
+     edição em parede clara e edição em salão escuro, e sem isso um único
+     valor de cor para o número reprovaria numa das duas. Fazendo no
+     próprio `filter`, o `::after` fica livre para a moldura animada. */
+  filter: brightness(0.58);
 }
 .cal-dia {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   line-height: 1;
 }
-/* Sobre a foto o número precisa de piso próprio: o acervo tem edição em
-   parede clara e edição em salão escuro, e um só valor de cor reprova numa
-   das duas. O véu escuro embaixo garante o contraste em qualquer foto. */
 .cal-cell.com-foto .cal-dia {
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
-.cal-cell.com-foto::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55));
-}
-.cal-cell.com-foto .cal-dia { z-index: 2; }
 /* Sem foto: por vir fica no dourado cheio (é o dia que importa), realizado
    fica no vidro — ainda lê como "tem coisa aqui", sem roubar a atenção. */
 .cal-cell.por-vir {
   background: var(--accent);
   color: var(--btn-primary-fg);
-  outline-color: transparent;
 }
 .cal-cell.has-event:not(.com-foto):not(.por-vir) {
   background: var(--fill-weak);
 }
+
+/* Moldura que respira. Só opacidade — a célula vive dentro do `.cal`, que
+   tem `backdrop-filter`, e animar tamanho ali é o bug de performance da
+   seção 9 do manual. */
+.cal-cell.has-event::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1.5px solid var(--accent);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: calmoldura 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+/* No dia dourado a moldura da mesma cor sumiria: ali ela é o vinco escuro
+   que o próprio dourado projeta. */
+.cal-cell.por-vir::after { border-color: var(--btn-primary-fg); opacity: 0.35; }
+@keyframes calmoldura {
+  0%,
+  100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.cal-cell.por-vir::after { animation-name: calmolduraclara; }
+@keyframes calmolduraclara {
+  0%,
+  100% { opacity: 0.18; }
+  50% { opacity: 0.5; }
+}
+
+/* Evento de vários dias: as células viram um bloco só.
+   `margin` negativa fecha o vão da grade e a própria célula cobre o
+   espaço, então a foto atravessa a emenda em vez de haver uma ponte
+   pintada por cima. Os cantos internos somem e a moldura não desenha as
+   bordas de dentro. */
+button.cal-cell.junta-dir {
+  margin-right: calc(var(--cal-vao) * -1);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+button.cal-cell.junta-esq {
+  margin-left: calc(var(--cal-vao) * -1);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.cal-cell.junta-dir::after { border-right: 0; }
+.cal-cell.junta-esq::after { border-left: 0; }
 
 /* ---------- retrospectiva (EventRecapModal) ---------- */
 .recap-text {
