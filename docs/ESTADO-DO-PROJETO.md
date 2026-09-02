@@ -3,10 +3,18 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.4.0`
-**Última atualização:** 01/09/2026
+**Versão atual:** `v3.5.0`
+**Última atualização:** 02/09/2026
 
-**Última sessão (20, 01/09/2026) — o feed com fotografia de verdade, e o
+**Última sessão (21, 02/09/2026) — auditoria de UI/UX e camada de
+movimento.** Cascata na troca de aba, foto que revela em vez de estalar,
+cabeçalho que ganha peso ao rolar. Palestrantes deixou de abrir com meia
+tela vazia (abre na convidada do próximo encontro). Ícones PNG do
+manifesto entraram — metade do Módulo 7 destravada, falta o service
+worker — e o favicon, que usava cores de antes do manual, foi corrigido.
+Detalhes e as medições no `CHANGELOG.md`.
+
+**Sessão 20 (01/09/2026) — o feed com fotografia de verdade, e o
 fim do que era demonstração.**
 
 - **Curtidas reais.** `baseLikes` (números escritos à mão no `seed.ts`)

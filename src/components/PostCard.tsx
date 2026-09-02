@@ -107,7 +107,12 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, ve
         aria-label={post.caption}
       >
         {post.mediaUrl ? (
-          <img className="post-foto" src={post.mediaUrl} alt="" />
+          <img
+            className="post-foto foto-fade"
+            src={post.mediaUrl}
+            alt=""
+            onLoad={(e) => e.currentTarget.classList.add('carregou')}
+          />
         ) : (
           /* Sem foto, a seta tripla sobre o gradiente segura o lugar. É
              placeholder, não desenho pretendido — ver `Post.mediaUrl`. */

@@ -1479,3 +1479,14 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
 @media (max-width: 379px) {
   .cta-par { grid-template-columns: 1fr; }
 }
+
+/* Foto que chega revelando, não estalando.
+   Uma imagem de 1080x1350 que aparece de uma vez é o momento mais barato
+   de qualquer feed — o olho lê como "carregou agora" em vez de "estava
+   ali". O `.carregou` entra no `onLoad`; o gradiente do placeholder fica
+   atrás durante a revelação, então nunca há buraco branco. */
+.foto-fade {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.foto-fade.carregou { opacity: 1; }

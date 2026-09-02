@@ -143,7 +143,15 @@ body.modal-open .mesh span {
      o `gap` é o piso de separação entre a marca e os botões de ação. */
   gap: 18px;
   z-index: 20;
-  border-bottom: 1px solid var(--hairline);
+  /* No topo o cabeçalho é quase só a marca flutuando; a separação só
+     aparece quando há conteúdo passando por baixo dele (`.app.rolando`,
+     ver `App.tsx`). Sem isso, a linha fica lá desenhando uma borda sobre
+     nada. Só cor e sombra mudam — nada de altura, que causaria reflow a
+     cada rolagem. */
+  border-bottom: 1px solid transparent;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .brand {
   display: flex;
@@ -299,11 +307,34 @@ body.modal-open .mesh span {
   padding: 15px 16px 28px;
   max-width: 640px;
   margin: 0 auto;
-  animation: panelin 0.28s ease;
+  /* A tela inteira não entra mais como um bloco só: cada peça entra em
+     cascata, o que dá a leitura de "montando" em vez de "trocou". O atraso
+     é curto de propósito — passar de ~0,2s no último item já parece lento
+     para quem só quis trocar de aba. Curva do sistema (seção 7 do manual);
+     antes era `ease`, que destoava de todo o resto. */
+  animation: panelfade 0.2s ease;
 }
+@keyframes panelfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.panel > * {
+  animation: panelin 0.44s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.panel > :nth-child(1) { animation-delay: 0.03s; }
+.panel > :nth-child(2) { animation-delay: 0.07s; }
+.panel > :nth-child(3) { animation-delay: 0.11s; }
+.panel > :nth-child(4) { animation-delay: 0.15s; }
+.panel > :nth-child(5) { animation-delay: 0.19s; }
+.panel > :nth-child(n + 6) { animation-delay: 0.22s; }
 @keyframes panelin {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.app.rolando .app-top {
+  border-bottom-color: var(--hairline);
+  box-shadow: 0 6px 20px -12px rgba(0, 0, 0, 0.55);
 }
 
 /* ---------- tab bar inferior (estilo Instagram, borda a borda) ---------- */

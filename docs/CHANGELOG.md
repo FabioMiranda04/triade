@@ -11,6 +11,71 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.5.0 — Camada de movimento, ícone de instalação e Palestrantes que abre cheia
+**Sessão 21 — 02/09/2026**
+
+Auditoria de UI/UX medida (360px e 375px, cinco telas), e o que ela
+apontou, resolvido.
+
+### O que a medição achou
+
+- **Par de botões estourava o card em 360px** por 7px. "Quero participar"
+  pede 168px e "Mais detalhes" 125px; um Android de 360px oferece 298px.
+  Empilha até 379px agora — em 375px caberia por 7px, folga que quebra no
+  primeiro rótulo que mudar.
+- **Palestrantes abria com meia tela vazia**: o conteúdo terminava aos
+  407px numa tela de 714px, porque nada aparecia até tocar num nome. Agora
+  abre já na palestrante do **próximo encontro** (ou na primeira, se o
+  próximo evento não tem convidada).
+- **Falso positivo, registrado para não virar "correção" futura:** o campo
+  de busca em Eventos mede 25px de altura, mas está dentro de um `<label>`
+  de 49px — tocar em qualquer ponto da pílula foca o campo. A área real
+  está correta.
+
+### Movimento
+
+Tudo em `translate`/opacidade, na curva do sistema, sem tocar em cor
+(regra 16):
+
+- **Cascata na troca de aba.** A tela deixou de entrar como bloco único: o
+  `.panel` faz um fade curto e cada filho sobe 10px com atraso de 0,03s a
+  0,22s. E a curva virou a do sistema — `.panel` usava `ease`, destoando
+  de todo o resto.
+- **Foto revela em vez de estalar.** `.foto-fade` + `.carregou` no
+  `onLoad`, no post e nas capas da grade. Uma imagem de 1080×1350 que
+  aparece de uma vez lê como "carregou agora"; revelada, lê como "estava
+  ali".
+- **Cabeçalho reage à rolagem.** Parado no topo não tem linha nem sombra;
+  passou de 4px de rolagem, ganha as duas. Só cor e sombra mudam — altura
+  causaria reflow a cada rolagem.
+- **Correção de acessibilidade que a cascata expôs:** a guarda de
+  `prefers-reduced-motion` zerava duração mas **não** o `animation-delay`.
+  Com `fill-mode: backwards`, um item em cascata ficaria invisível durante
+  o atraso. Agora zera os três.
+
+### Instalar na tela de início
+
+O manifesto só tinha ícone SVG, que o Android ignora — quem instalasse
+veria um ícone genérico. Entraram `icon-192`, `icon-512` e um
+`icon-maskable-512` (arte menor, porque o Android recorta em círculo),
+desenhados a partir da própria seta tripla do `favicon.svg`, mais o
+`apple-touch-icon`, que o iOS usa em vez do manifesto.
+
+**E o favicon estava fora do manual**: usava `#7C2A3D` e `#F4EEE3`, que
+não são cores de lá. Passou para Burgundy `#65202D` sobre Cream Quartz
+`#F6F3EE` (regra 16). Isso destrava metade do Módulo 7 — falta o service
+worker.
+
+### Material 3 e Expo, pesquisados a pedido
+
+Não existem como skill instalável, e nenhum dos dois entra aqui como está:
+o **M3** traz paleta e tipografia próprias, que brigam com o Manual de
+Marca (regra 16) — dele valem as *regras* (alvo de toque, camadas de
+estado, escala de duração), não a aparência. **Expo é React Native**:
+trocar significaria reescrever o app e perder o deploy da Vercel, e o
+motivo usual para querê-lo (Módulo 7) se resolve por PWA, que já estava
+quase pronto.
+
 ## v3.4.0 — O post virou conteúdo de verdade
 **Sessão 20 (terceira parte) — 01/09/2026**
 

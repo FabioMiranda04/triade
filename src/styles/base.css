@@ -40,6 +40,10 @@ body {
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+    /* o atraso também: sem isto, um item de cascata com
+       `animation-fill-mode: backwards` fica INVISÍVEL pelo tempo do
+       delay, que a guarda não zerava */
+    animation-delay: 0.001ms !important;
   }
 }
 img {

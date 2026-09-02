@@ -186,7 +186,15 @@ export default function Eventos() {
                           onClick={() => setRecapEvent(event)}
                           aria-label={`Ver retrospectiva de ${event.title}`}
                         >
-                          {capa && <img className="capa" src={capa.url} alt="" loading="lazy" />}
+                          {capa && (
+                            <img
+                              className="capa foto-fade"
+                              src={capa.url}
+                              alt=""
+                              loading="lazy"
+                              onLoad={(e) => e.currentTarget.classList.add('carregou')}
+                            />
+                          )}
                           <span className="date">{formatEventShortDate(event.date)}</span>
                           {event.speaker !== ANFITRIA_TRIADE && (
                             <span className="nm">{firstName(event.speaker)}</span>

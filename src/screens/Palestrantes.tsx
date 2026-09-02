@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { Kebab } from '@/components/Kebab';
 import { SectionHead } from '@/components/SectionHead';
@@ -31,6 +31,18 @@ export default function Palestrantes() {
   );
   const podeEditar = usePodeEditar();
   const [selected, setSelected] = useState<Speaker | null>(null);
+
+  // A tela abria com a metade de baixo vazia: uma fileira de nomes e nada
+  // para ler até tocar em algum. Agora ela já vem aberta na palestrante do
+  // PRÓXIMO encontro — que é a que interessa a quem chegou aqui — e cai na
+  // primeira da lista quando o próximo evento não tem convidada.
+  useEffect(() => {
+    if (selected || speakers.length === 0) return;
+    const proximo = events
+      .filter((e) => e.status === 'em breve')
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+    setSelected(speakers.find((s) => s.name === proximo?.speaker) ?? speakers[0]);
+  }, [speakers, events, selected]);
   const [editing, setEditing] = useState<Speaker | 'new' | null>(null);
 
   /** Edições conduzidas por esta palestrante, da mais recente para a mais antiga. */

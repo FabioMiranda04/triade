@@ -538,7 +538,8 @@ vez de vários componentes animados por pessoas diferentes.
 | `stepin` | `.modal-step` | troca de passo dentro do pop-up: `translateY(8px)` + opacidade |
 | `contactin` | `.wa-btn` | entrada em cascata dos cards de contato (`animation-delay` por `:nth-child`, `animation-fill-mode: backwards`) |
 | `kebabpop` | `.kebab-menu` | popover do menu "...": `scale(0.9)→1` + opacidade — ok usar `scale` aqui, **não tem** `backdrop-filter` |
-| `panelin` | `.panel` | troca de aba: fade + 6px para cima |
+| `panelfade` | `.panel` | troca de aba: fade curto (0,2s) da tela inteira |
+| `panelin` | `.panel > *` | **cascata** dos filhos do painel: `translateY(10px)` + opacidade, `backwards`, atraso de 0,03s a 0,22s por `:nth-child` |
 | `heartpop` | `.heart-burst` | coração do duplo toque no feed |
 | `float1/2/3` | `.mesh span` | manchas de fundo, loops de 20–30s — **pausam** enquanto um pop-up está aberto (seção 9) |
 
@@ -564,10 +565,31 @@ dispara em toque), então desligar o realce não custou acessibilidade. Não
 declare `border-radius` junto do anel: ele já acompanha o raio do próprio
 elemento, e um valor fixo deforma botões redondos.
 
+### Revelação de imagem
+
+Toda foto vinda da rede entra com `.foto-fade`, e o `onLoad` acrescenta
+`.carregou`. Sem isso a imagem estala na tela e o olho lê "carregou agora"
+em vez de "estava ali" — é o momento mais barato de qualquer feed. O
+gradiente de placeholder fica atrás durante a revelação, então nunca há um
+buraco branco. Hoje em `.post-foto` e na capa da grade de edições.
+
+### Cabeçalho que reage à rolagem
+
+Parado no topo, `.app-top` não tem linha nem sombra — a tela lê como
+inteira. Quando `.app-main` passa de 4px de rolagem, o `App.tsx` põe
+`.rolando` no `.app`, e o cabeçalho ganha `--hairline` e uma sombra curta.
+Só **cor e sombra** mudam: altura ou padding causariam reflow a cada
+rolagem. A zona morta de 4px existe porque o quique do scroll do iOS
+ligaria e desligaria a sombra com o dedo já fora da tela.
+
 ### Acessibilidade de movimento
 
-`base.css` já zera **toda** duração de animação/transição sob
-`prefers-reduced-motion: reduce`, globalmente. Uma animação nova não
+`base.css` já zera **toda** duração de animação/transição — **e o
+`animation-delay`** — sob `prefers-reduced-motion: reduce`, globalmente.
+O atraso não estava na guarda até 02/09/2026, e isso importa: um item de
+cascata com `animation-fill-mode: backwards` fica **invisível** durante o
+delay, então zerar só a duração deixaria a tela com buracos para quem pede
+menos movimento. Uma animação nova não
 precisa (e não deve) reimplementar essa guarda — só não entre em conflito
 com ela (ex: não faça a lógica do componente depender de "quando a
 animação termina" via JS sem checar `matchMedia`, já que ela pode terminar
