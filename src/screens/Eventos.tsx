@@ -86,6 +86,22 @@ export default function Eventos() {
   const { visibleCount, sentinelRef } = useInfiniteReveal(filteredPast.length, 9);
   const visiblePast = filteredPast.slice(0, visibleCount);
 
+  // A retrospectiva era uma parede única de quadradinhos: doze edições
+  // seguidas, sem nada dizendo onde um ano termina e o outro começa. Agrupar
+  // por ano dá o eixo que faltava — a lista vira linha do tempo em vez de
+  // grade. O agrupamento é feito sobre o que JÁ está visível, então a
+  // revelação progressiva continua valendo.
+  const porAno = useMemo(() => {
+    const mapa = new Map<string, TriadeEvent[]>();
+    for (const evento of visiblePast) {
+      const ano = evento.date.slice(0, 4);
+      const lista = mapa.get(ano);
+      if (lista) lista.push(evento);
+      else mapa.set(ano, [evento]);
+    }
+    return [...mapa.entries()];
+  }, [visiblePast]);
+
   function handleSaved(noBanco: boolean) {
     setEditing(null);
     setVersion((v) => v + 1);
@@ -174,53 +190,63 @@ export default function Eventos() {
                 <p className="empty-state">Ainda não há edições anteriores.</p>
               ) : (
                 <>
-                  <div className="event-grid">
-                    {visiblePast.map((event) => {
-                      // a primeira foto da retrospectiva vira a capa da
-                      // célula; edição sem foto continua no gradiente
-                      const capa = event.recapMedia?.find((m) => m.tipo === 'foto');
-                      return (
-                        <button
-                          key={event.id}
-                          className={`event-cell${capa ? ' has-foto' : ''}`}
-                          onClick={() => setRecapEvent(event)}
-                          aria-label={`Ver retrospectiva de ${event.title}`}
-                        >
-                          {capa && (
-                            <img
-                              className="capa foto-fade"
-                              src={capa.url}
-                              alt=""
-                              loading="lazy"
-                              onLoad={(e) => e.currentTarget.classList.add('carregou')}
-                            />
-                          )}
-                          <span className="date">{formatEventShortDate(event.date)}</span>
-                          {event.speaker !== ANFITRIA_TRIADE && (
-                            <span className="nm">{firstName(event.speaker)}</span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {visibleCount < filteredPast.length && <div ref={sentinelRef} className="scroll-sentinel" />}
-
-                  {filteredPast.length === 0 && (
-                    <p className="empty-state" style={{ marginTop: 10 }}>
-                      Nenhuma edição encontrada para "{query}".
-                    </p>
-                  )}
-
+                  {/* A busca vinha DEPOIS da grade: para filtrar era preciso
+                      rolar por tudo que se queria filtrar. */}
                   <label className="ev-search glass-strong">
                     <Icon name="search" size={16} />
                     <input
                       type="search"
-                      placeholder="Buscar edição por tema, palestrante ou mês…"
+                      placeholder="Buscar por tema, palestrante ou mês…"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                     />
                   </label>
+
+                  {filteredPast.length === 0 && (
+                    <p className="empty-state">Nenhuma edição encontrada para "{query}".</p>
+                  )}
+
+                  {porAno.map(([ano, doAno]) => (
+                    <div className="ano-bloco" key={ano}>
+                      <div className="ano-cabeca">
+                        <span className="ano">{ano}</span>
+                        <span className="quantas">
+                          {doAno.length} {doAno.length === 1 ? 'edição' : 'edições'}
+                        </span>
+                      </div>
+                      <div className="event-grid">
+                        {doAno.map((event) => {
+                          // a primeira foto da retrospectiva vira a capa da
+                          // célula; edição sem foto continua no gradiente
+                          const capa = event.recapMedia?.find((m) => m.tipo === 'foto');
+                          return (
+                            <button
+                              key={event.id}
+                              className={`event-cell${capa ? ' has-foto' : ''}`}
+                              onClick={() => setRecapEvent(event)}
+                              aria-label={`Ver retrospectiva de ${event.title}`}
+                            >
+                              {capa && (
+                                <img
+                                  className="capa foto-fade"
+                                  src={capa.url}
+                                  alt=""
+                                  loading="lazy"
+                                  onLoad={(e) => e.currentTarget.classList.add('carregou')}
+                                />
+                              )}
+                              <span className="date">{formatEventShortDate(event.date)}</span>
+                              {event.speaker !== ANFITRIA_TRIADE && (
+                                <span className="nm">{firstName(event.speaker)}</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+
+                  {visibleCount < filteredPast.length && <div ref={sentinelRef} className="scroll-sentinel" />}
                 </>
               )}
             </>

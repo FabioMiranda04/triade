@@ -604,6 +604,33 @@ instantaneamente).
 
 ---
 
+### Faixa de ano (`.ano-bloco` / `.ano-cabeca`)
+
+Lista longa de itens datados se agrupa por ano, com uma faixa: o ano em
+`--font-display`, uma régua fina ocupando o vão, e a contagem à direita
+("3 edições"). É o que transforma uma parede de quadradinhos em linha do
+tempo. Usada na retrospectiva de Eventos; vale para qualquer grade que
+passe de ~6 itens datados.
+
+### Dia com evento no calendário
+
+Um ponto de 4px sob o número não compete com nada numa grade de 7 colunas
+— quem abre o calendário para achar "quando é o próximo" tem que caçar. O
+dia com encontro é um **quadro de ~45px**, nesta ordem de preferência:
+
+1. **com foto da edição** — a capa preenche a célula (`object-position:
+   50% 25%`, que é onde ficam os rostos num retrato), com véu escuro e
+   `text-shadow` no número. O véu não é decoração: o acervo tem edição em
+   parede clara e edição em salão escuro, e sem ele um único valor de cor
+   reprova numa das duas;
+2. **por vir, sem foto** — dourado cheio (`--accent`), texto em
+   `--btn-primary-fg`;
+3. **realizada, sem foto** — `--fill-weak`, que ainda lê como "tem coisa
+   aqui" sem roubar atenção.
+
+Evento de vários dias marca **todos** os dias do intervalo (`date` até
+`endDate`), não só o primeiro.
+
 ## 8. Componentes de UI (mapa rápido)
 
 | Classe / Componente | O que é |

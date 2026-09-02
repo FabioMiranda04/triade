@@ -3,7 +3,7 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.5.0`
+**Versão atual:** `v3.6.0`
 **Última atualização:** 02/09/2026
 
 **Última sessão (21, 02/09/2026) — auditoria de UI/UX e camada de

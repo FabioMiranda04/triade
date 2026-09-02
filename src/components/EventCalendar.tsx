@@ -21,6 +21,11 @@ function sameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
+/** `2026-09-11` a partir de um `Date` local, sem passar por UTC (que puxaria um dia). */
+function iso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 /**
  * Mês corrente com um marcador nos dias que têm evento (qualquer status).
  * Tocar num dia com evento aciona `onSelectEvent` — quem decide o que fazer
@@ -44,8 +49,11 @@ export function EventCalendar({ events, onSelectEvent }: EventCalendarProps) {
     return list;
   }, [viewDate]);
 
+  // Evento de dois dias marca os DOIS: a Feira de Negócios acontece em 11 e
+  // 12, e comparar só com `date` deixava o dia 12 em branco no calendário.
   function eventOn(day: Date): TriadeEvent | undefined {
-    return events.find((e) => sameDay(parseIsoDate(e.date), day));
+    const d = iso(day);
+    return events.find((e) => d >= e.date && d <= (e.endDate ?? e.date));
   }
 
   function changeMonth(delta: number) {
@@ -85,15 +93,30 @@ export function EventCalendar({ events, onSelectEvent }: EventCalendarProps) {
               </span>
             );
           }
+          // A foto do evento vira a própria célula. Um ponto de 4px embaixo
+          // do número não competia com mais nada na grade — o dia com
+          // encontro precisa ser a coisa mais forte do mês, não uma nota de
+          // rodapé. Sem foto, o quadro fica no dourado (por vir) ou no
+          // vidro (já aconteceu), que ainda lê como "tem coisa aqui".
+          const capa = event.recapMedia?.find((m) => m.tipo === 'foto');
+          const porVir = event.status === 'em breve';
           return (
             <button
               key={i}
-              className="cal-cell has-event"
+              className={`cal-cell has-event${capa ? ' com-foto' : porVir ? ' por-vir' : ''}`}
               onClick={() => onSelectEvent(event)}
               aria-label={`${day.getDate()} de ${MONTHS[day.getMonth()]} — ${event.title}`}
             >
-              {day.getDate()}
-              <span className="dot" />
+              {capa && (
+                <img
+                  className="cal-capa foto-fade"
+                  src={capa.url}
+                  alt=""
+                  loading="lazy"
+                  onLoad={(e) => e.currentTarget.classList.add('carregou')}
+                />
+              )}
+              <span className="cal-dia">{day.getDate()}</span>
             </button>
           );
         })}

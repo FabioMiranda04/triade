@@ -571,16 +571,55 @@ button.cal-cell {
   font-weight: 800;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-strong); }
-.cal-cell .dot {
+button.cal-cell:active { transform: scale(0.9); }
+/* Dia com encontro é um quadro, não um ponto.
+   O ponto de 4px embaixo do número não competia com nada na grade — quem
+   abria o calendário para achar "quando é o próximo" tinha que caçar. O
+   quadro com a foto da edição resolve isso e ainda diz QUAL evento é. */
+button.cal-cell.has-event {
+  border-radius: 10px;
+  overflow: hidden;
+  outline: 1px solid var(--accent-fill-strong);
+  outline-offset: -1px;
+}
+.cal-capa {
   position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* fotos de retrospectiva são retrato: o terço de cima é onde estão os
+     rostos, e num quadro de ~40px é só isso que dá para ler */
+  object-position: 50% 25%;
+}
+.cal-dia {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+/* Sobre a foto o número precisa de piso próprio: o acervo tem edição em
+   parede clara e edição em salão escuro, e um só valor de cor reprova numa
+   das duas. O véu escuro embaixo garante o contraste em qualquer foto. */
+.cal-cell.com-foto .cal-dia {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+.cal-cell.com-foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55));
+}
+.cal-cell.com-foto .cal-dia { z-index: 2; }
+/* Sem foto: por vir fica no dourado cheio (é o dia que importa), realizado
+   fica no vidro — ainda lê como "tem coisa aqui", sem roubar a atenção. */
+.cal-cell.por-vir {
   background: var(--accent);
+  color: var(--btn-primary-fg);
+  outline-color: transparent;
+}
+.cal-cell.has-event:not(.com-foto):not(.por-vir) {
+  background: var(--fill-weak);
 }
 
 /* ---------- retrospectiva (EventRecapModal) ---------- */
@@ -1490,3 +1529,40 @@ button.cal-cell:active { transform: scale(0.88); background: var(--accent-fill-s
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .foto-fade.carregou { opacity: 1; }
+
+/* ---------- retrospectiva agrupada por ano ---------- */
+/* Doze edições numa parede única de quadradinhos não tinham eixo nenhum:
+   nada dizia onde um ano terminava e o outro começava. A faixa de ano dá
+   à lista a leitura de linha do tempo. */
+.ano-bloco + .ano-bloco { margin-top: 18px; }
+.ano-cabeca {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.ano-cabeca .ano {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+/* a régua ocupa o vão entre o ano e a contagem: separa sem virar mais uma
+   linha cheia atravessando a tela */
+.ano-cabeca .quantas {
+  font-size: var(--fs-3xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+.ano-cabeca::after {
+  content: '';
+  flex: 1;
+  order: 1;
+  height: 1px;
+  background: var(--hairline);
+}
+.ano-cabeca .quantas { order: 2; }

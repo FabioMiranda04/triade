@@ -11,6 +11,38 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.6.0 — Calendário que mostra o evento, e Eventos organizada por ano
+**Sessão 21 (segunda parte) — 02/09/2026**
+
+### O dia com encontro virou um quadro
+
+Era um ponto de 4px embaixo do número, que não competia com nada numa
+grade de sete colunas: quem abria o calendário para achar "quando é o
+próximo" tinha que caçar. Agora o dia é um quadro de 45px, e quando a
+edição tem foto **é a foto** que preenche a célula — o calendário passa a
+dizer *qual* evento é, não só *que existe um*.
+
+Sem foto ele cai no dourado (evento por vir) ou no vidro (já realizado).
+O véu escuro por cima da foto não é enfeite: o acervo tem edição em parede
+clara e edição em salão escuro, e sem ele um único valor de cor para o
+número reprovaria numa das duas.
+
+**Bug encontrado no caminho:** o calendário comparava só com `event.date`,
+então a Feira de Negócios (11 **e** 12 de setembro) marcava só o dia 11 —
+o dia 12 ficava em branco. Agora marca o intervalo inteiro.
+
+### A tela de Eventos parou de ser uma parede
+
+Dois problemas, os dois de ordem:
+
+- **A busca vinha depois da grade.** Para filtrar as edições era preciso
+  rolar por todas as edições que se queria filtrar. Subiu para antes.
+- **A retrospectiva era uma parede única de quadradinhos** — nada dizia
+  onde um ano terminava e o outro começava. Agora as edições são agrupadas
+  por ano, com uma faixa ("2026 · 3 edições"). A grade vira linha do
+  tempo. A revelação progressiva continua valendo: o agrupamento é feito
+  sobre o que já está visível.
+
 ## v3.5.0 — Camada de movimento, ícone de instalação e Palestrantes que abre cheia
 **Sessão 21 — 02/09/2026**
 
