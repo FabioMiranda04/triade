@@ -150,9 +150,9 @@ dois discordam.
     **Peça visual nova começa pela seção 12 do `docs/DESIGN-SYSTEM.md`** —
     "Direção de design": os cinco princípios que fazem o app parecer
     premium (geometria com direção, camada que informa não se mexe,
-    hierarquia entre linhas, inovar em forma e tempo e não em cor,
-    movimento barato) e o teste de quatro perguntas antes de aprovar
-    qualquer ideia nova. Checklist e regras completas em
+    hierarquia entre linhas, inovar em forma e tempo e não em cor, e
+    **ousar na animação** — exagero é permitido, o limite é temático) e o
+    teste de quatro perguntas antes de aprovar qualquer ideia nova. Checklist e regras completas em
     `docs/DESIGN-SYSTEM.md` —
     checklist e regras completas em `docs/DESIGN-SYSTEM.md`. Duas regras de
     lá que já causaram bug real e valem repetir aqui: **todo pop-up passa

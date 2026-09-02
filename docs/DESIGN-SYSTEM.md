@@ -804,10 +804,29 @@ essa restrição que mantém tudo elegante. O espaço de invenção é
 **silhueta, camada, ritmo e atraso** — e ele é grande. O quadro do
 calendário não usou nenhuma cor nova.
 
-**5. Movimento caro é movimento proibido.** Continua valendo a seção 9:
-perto de `backdrop-filter`, só `opacity` e `translate`. Isso não é uma
-limitação do que dá para inventar — o halo pulsante, a cascata do painel e
-a revelação de foto são todos opacidade pura.
+**5. Ouse na animação; o custo de errar é baixo.** *(Decidido pelo usuário
+em 02/09/2026, revisando a versão anterior deste princípio, que pedia
+contenção.)* **Animação exagerada é permitida e bem-vinda** — amplitude
+grande, cascata longa, overshoot, camadas sobrepostas. O único limite é
+**temático**: tem que continuar parecendo a Tríade. Se uma animação não
+combinar, ela é refeita, e ponto — proposta de movimento não precisa
+passar por aprovação prévia.
+
+Duas coisas que **não** são questão de gosto e continuam valendo:
+
+- **`backdrop-filter`.** Num elemento que tem `backdrop-filter` — ou com o
+  `.mesh` animado atrás —, nada de `scale`, resize ou `filter`: só
+  `opacity` e `translate`. Não é contenção estética, é a seção 9: esse
+  exato erro já travou um pop-up neste projeto. Fora desses elementos,
+  `scale` e `rotate` estão liberados (o `kebabpop` já usa).
+- **O princípio 2.** Exagerar no que *chama* é livre; a camada que
+  *informa* continua parada. Ousadia que apaga informação não é ousadia, é
+  bug.
+
+Vale lembrar que "só opacidade e translate" é menos limitante do que
+parece: o halo do calendário, a cascata do painel e a revelação de foto
+são todos opacidade pura, e nada impede uma opacidade de viajar de 0 a 1
+em três camadas com atrasos diferentes.
 
 ### 12.2 Onde levar isso (fila de ideias, não compromisso)
 
@@ -833,6 +852,8 @@ Uma ideia só entra se passar nos quatro:
    só na maquete larga.
 3. **Sobrevive a `prefers-reduced-motion`.** Com a animação zerada, o
    elemento ainda comunica o mesmo? Se não, a informação estava na
-   animação — ver princípio 2.
+   animação — ver princípio 2. Este teste vale **mais** agora que a
+   animação pode ser exagerada: quanto maior o gesto, maior a tentação de
+   pendurar informação nele.
 4. **Repetível.** Um gesto que só funciona numa tela é decoração. O que
    entra aqui precisa valer para uma família inteira de elementos.
