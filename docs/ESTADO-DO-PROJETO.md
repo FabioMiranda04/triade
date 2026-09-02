@@ -9,9 +9,11 @@
 **Última sessão (21, 02/09/2026) — auditoria de UI/UX e camada de
 movimento.** Cascata na troca de aba, foto que revela em vez de estalar,
 cabeçalho que ganha peso ao rolar. Palestrantes deixou de abrir com meia
-tela vazia (abre na convidada do próximo encontro). Ícones PNG do
-manifesto entraram — metade do Módulo 7 destravada, falta o service
-worker — e o favicon, que usava cores de antes do manual, foi corrigido.
+tela vazia (abre na convidada do próximo encontro). **Módulo 7 quase fechado**: manifesto com
+ícones PNG, `apple-touch-icon` e service worker próprio — instalar na tela
+de início funciona, e a visita repetida caiu de 497ms para 292ms numa rede
+de 200ms de latência. Falta só a notificação de evento. O favicon, que
+usava cores de antes do manual, foi corrigido.
 Detalhes e as medições no `CHANGELOG.md`.
 
 **Sessão 20 (01/09/2026) — o feed com fotografia de verdade, e o

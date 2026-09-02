@@ -53,6 +53,35 @@ Tudo em `translate`/opacidade, na curva do sistema, sem tocar em cor
   Com `fill-mode: backwards`, um item em cascata ficaria invisível durante
   o atraso. Agora zera os três.
 
+### Service worker: o app abre do disco
+
+Escrito à mão em `public/sw.js` — sem `vite-plugin-pwa`, sem dependência
+nova (regra 7). Duas estratégias, e a diferença entre elas é o ponto:
+
+- **navegação: rede primeiro.** O `index.html` aponta para o bundle com
+  hash; servido do cache, um deploy novo só apareceria quando o cache
+  expirasse. O cache entra só como rede de segurança quando não há
+  conexão.
+- **assets: cache primeiro.** `index-a1b2c3.js` é imutável por construção
+  — mudou o conteúdo, mudou o nome. Não há o que revalidar.
+
+**Nada do Supabase passa pelo service worker**, de propósito: curtida,
+RSVP e edição precisam do estado real do banco, e servir isso do cache
+mostraria número velho como se fosse atual.
+
+Medido em rede simulada de 200ms de latência, visita repetida: **497ms →
+292ms** (mediana de 3). O que sobra é a ida à rede pelo HTML, que é
+justamente o preço de manter o deploy novo chegando na hora — troca
+consciente.
+
+Offline verificado numa rota interna: `/planos` abre com as cinco abas e o
+conteúdo na tela, sem rede.
+
+**Armadilha registrada no `CLAUDE.md`:** arquivo sem hash no nome (ícone,
+manifesto, a máscara da marca) fica preso no cache primeiro. Trocou um
+desses? Suba o nome do cache em `sw.js` — o `activate` apaga todo cache
+com nome diferente.
+
 ### Instalar na tela de início
 
 O manifesto só tinha ícone SVG, que o Android ignora — quem instalasse

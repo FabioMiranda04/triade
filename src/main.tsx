@@ -7,6 +7,18 @@ import '@/styles/index.css';
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('Elemento #root não encontrado no index.html');
 
+// Só em produção: em `npm run dev` um service worker serviria arquivo
+// velho por cima do hot reload, e o sintoma ("minha alteração não
+// aparece") não parece cache nenhum.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  // depois do `load` para não disputar banda com o primeiro render
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.register('/sw.js').catch((erro) => {
+      console.warn('[triade] service worker não registrou:', erro);
+    });
+  });
+}
+
 createRoot(rootEl).render(
   <StrictMode>
     <BrowserRouter>

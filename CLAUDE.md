@@ -335,9 +335,17 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 - Sem painel administrativo de verdade (a UI de edição acima não conta —
   falta o backend com permissão real, ver Módulo 5).
 - Sem testes automatizados no repositório.
-- Sem atalho de instalação (Android/iOS) nem notificações de evento —
-  planejado como Módulo 7 (agora que a autenticação existe, o pré-requisito
-  que faltava para saber "quem" notificar está pronto).
+- **Instalar na tela de início já funciona** (02/09/2026): manifesto com
+  ícones PNG (192/512 + maskable), `apple-touch-icon` e um service worker
+  escrito à mão em `public/sw.js` — sem plugin, sem dependência nova. Rede
+  primeiro na navegação (deploy novo aparece na hora), cache primeiro nos
+  assets com hash. **Nada do Supabase passa pelo cache**, de propósito:
+  curtida, RSVP e conteúdo precisam do estado real. Medido em rede de
+  200ms de latência: 497ms → 292ms na visita repetida. **Notificação de
+  evento continua não existindo** — é o que falta do Módulo 7.
+  Mudou um arquivo SEM hash (ícone, manifesto, `marca/conecta.png`)? Suba
+  o nome do cache em `sw.js` (`triade-v1` → `v2`), senão o cache primeiro
+  segura o arquivo velho para sempre.
 
 ## 8. Roadmap
 
@@ -351,7 +359,7 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | 🔸 começado 31/08/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de **evento**. Falta palestrante, plano e post |
 | 6 | Migração de dados localStorage → banco | ⏳ |
-| 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | ⏳ depende do Módulo 2 |
+| 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | 🔸 instalação pronta 02/09/2026 (manifesto + ícones + service worker); falta a notificação |
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |
