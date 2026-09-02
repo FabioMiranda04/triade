@@ -278,6 +278,28 @@ async function savePost(post: Post): Promise<void> {
   if (error) throw new Error(`Falha ao salvar o post: ${error.message}`);
 }
 
+async function saveSpeaker(palestrante: Speaker): Promise<void> {
+  const { error } = await requireSupabase().from('speakers').upsert({
+    id: palestrante.id,
+    name: palestrante.name,
+    topic: palestrante.topic,
+    bio: palestrante.bio,
+  });
+  if (error) throw new Error(`Falha ao salvar a palestrante: ${error.message}`);
+}
+
+async function savePlan(plano: Plan): Promise<void> {
+  const { error } = await requireSupabase().from('plans').upsert({
+    id: plano.id,
+    name: plano.name,
+    price: plano.price,
+    period: plano.period,
+    featured: plano.featured,
+    perks: plano.perks,
+  });
+  if (error) throw new Error(`Falha ao salvar o plano: ${error.message}`);
+}
+
 async function saveEvent(evento: TriadeEvent): Promise<void> {
   const supabase = requireSupabase();
   const { error } = await supabase.from('events').upsert({
@@ -366,6 +388,8 @@ export const supabaseProvider: DataProvider = {
   uploadMedia,
   saveEvent,
   savePost,
+  saveSpeaker,
+  savePlan,
 };
 
 

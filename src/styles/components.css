@@ -1638,3 +1638,22 @@ button.cal-cell.junta-esq {
   background: var(--hairline);
 }
 .ano-cabeca .quantas { order: 2; }
+
+/* Campo de marcar/desmarcar dentro do `EditSheet`. O rótulo é o alvo de
+   toque inteiro — caixinha de 16px sozinha não chega perto dos 38px. */
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  color: var(--on-dark);
+  font-size: var(--fs-sm);
+}
+.field-inline input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+/* O "..." do plano flutua sobre o card em vez de empurrar o layout — os
+   cards de plano têm altura casada entre si e um cabeçalho os desalinharia. */
+.plan-wrap { position: relative; }
+.plan-wrap > .kebab { position: absolute; top: 10px; right: 10px; z-index: 2; }

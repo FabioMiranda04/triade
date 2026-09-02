@@ -60,4 +60,10 @@ export interface DataProvider {
 
   /** Grava o post no banco (insert ou update pelo `id`). */
   savePost(post: Post): Promise<void>;
+
+  /** Grava a palestrante no banco (insert ou update pelo `id`). */
+  saveSpeaker(palestrante: Speaker): Promise<void>;
+
+  /** Grava o plano no banco (insert ou update pelo `id`). */
+  savePlan(plano: Plan): Promise<void>;
 }

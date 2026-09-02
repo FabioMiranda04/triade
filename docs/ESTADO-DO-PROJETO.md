@@ -3,10 +3,18 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.6.0`
+**Versão atual:** `v3.7.0`
 **Última atualização:** 02/09/2026
 
-**Última sessão (21, 02/09/2026) — auditoria de UI/UX e camada de
+**Última sessão (22, 02/09/2026) — Módulo 5 fechado e auditoria
+versionada.** Palestrante e plano passaram a gravar no banco, completando
+o painel administrativo (evento e post já gravavam). Nenhuma migração de
+SQL foi precisa — as políticas RLS já existiam. O plano é o único
+formulário sem caminho local, de propósito. E o ferramental de verificação
+virou `npm run auditoria`, versionado no repositório em vez de morrer com
+a sessão.
+
+**Sessão 21 (02/09/2026) — auditoria de UI/UX e camada de
 movimento.** Cascata na troca de aba, foto que revela em vez de estalar,
 cabeçalho que ganha peso ao rolar. Palestrantes deixou de abrir com meia
 tela vazia (abre na convidada do próximo encontro). **Módulo 7 quase fechado**: manifesto com

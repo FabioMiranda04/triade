@@ -34,9 +34,19 @@ try {
   ({ chromium } = await import('playwright'));
 } catch {
   console.log('\nPlaywright não está instalado. Para rodar a auditoria:\n');
-  console.log('  npm i -D playwright && npx playwright install chromium\n');
-  console.log('(fica fora do package.json de propósito — ver comentário no topo deste arquivo)');
+  console.log('  npm i -D playwright pngjs && npx playwright install chromium\n');
+  console.log('(ficam fora do package.json de propósito — ver comentário no topo deste arquivo)');
   process.exit(0);
+}
+
+// `pngjs` só é preciso para o contraste, que lê o pixel da captura. Sem ele
+// as outras três verificações continuam valendo — melhor rodar três do que
+// nenhuma, e a mensagem diz o que está faltando.
+let PNG = null;
+try {
+  ({ PNG } = await import('pngjs'));
+} catch {
+  console.log('(sem `pngjs` — pulando a verificação de contraste. `npm i -D pngjs` liga ela.)');
 }
 
 const lum = ([r, g, b]) => {
@@ -172,7 +182,7 @@ for (const tema of TEMAS) {
       // Calcular em cima dos tokens ignora gradiente, `backdrop-filter` e a
       // barra flutuante por cima do conteúdo. O jeito que funciona: apagar o
       // texto, fotografar, e ler o pixel do fundo onde ele estava.
-      if (largura === 375) {
+      if (largura === 375 && PNG) {
         const alvos = await page.evaluate(() => {
           const rgb = (s) => s.match(/[\d.]+/g).slice(0, 3).map(Number);
           const barra = document.querySelector('.tabbar')?.getBoundingClientRect();
@@ -200,7 +210,6 @@ for (const tema of TEMAS) {
         if (alvos.length) {
           await page.addStyleTag({ content: '*{color:transparent!important;text-shadow:none!important}' });
           await page.waitForTimeout(120);
-          const { PNG } = await import('pngjs');
           const png = PNG.sync.read(await page.screenshot());
           const escala = png.width / largura;  // a captura pode sair em px de dispositivo
           await page.evaluate(() => document.querySelectorAll('style').forEach((s) => {

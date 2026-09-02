@@ -52,11 +52,13 @@ export default function Palestrantes() {
       .sort((a, b) => b.date.localeCompare(a.date));
   }
 
-  function handleSaved() {
+  function handleSaved(noBanco: boolean) {
     setEditing(null);
     setSelected(null);
     setVersion((v) => v + 1);
-    showToast('Palestrante salva neste aparelho ✓');
+    showToast(
+      noBanco ? 'Palestrante publicada para todo mundo ✓' : 'Palestrante salva neste aparelho ✓',
+    );
   }
 
   return (

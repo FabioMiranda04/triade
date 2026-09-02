@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { SectionHead } from '@/components/SectionHead';
+import { Kebab } from '@/components/Kebab';
 import { PlanCard } from '@/components/PlanCard';
+import { PlanEditSheet } from '@/components/PlanEditSheet';
 import { Skeleton } from '@/components/Skeleton';
 import { Mark } from '@/components/Brand';
 import { useToast } from '@/components/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAsyncData } from '@/hooks/useAsyncData';
+import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { db } from '@/lib/db';
 import type { Plan } from '@/types';
 
@@ -13,8 +16,11 @@ import type { Plan } from '@/types';
 export default function Planos() {
   const { showToast } = useToast();
   const { requireAuth } = useAuth();
-  const { data: plans, loading } = useAsyncData<Plan[]>(() => db.getPlans(), []);
+  const [versao, setVersao] = useState(0);
+  const { data: plans, loading } = useAsyncData<Plan[]>(() => db.getPlans(), [], versao);
   const [chosen, setChosen] = useState<string | null>(null);
+  const podeEditar = usePodeEditar();
+  const [editando, setEditando] = useState<Plan | null>(null);
 
   useEffect(() => {
     db.getChosenPlan().then(setChosen);
@@ -25,6 +31,12 @@ export default function Planos() {
     await db.choosePlan(plan.id);
     setChosen(plan.id);
     showToast(`Plano ${plan.name} selecionado!`);
+  }
+
+  function handleSaved() {
+    setEditando(null);
+    setVersao((v) => v + 1);
+    showToast('Plano publicado para todo mundo ✓');
   }
 
   return (
@@ -42,7 +54,15 @@ export default function Planos() {
         <Skeleton rows={3} height={190} />
       ) : (
         plans.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} chosen={chosen === plan.id} onChoose={handleChoose} />
+          <div className="plan-wrap" key={plan.id}>
+            {podeEditar && (
+              <Kebab
+                label={`Opções do plano ${plan.name}`}
+                actions={[{ label: 'Editar', icon: 'edit', onClick: () => setEditando(plan) }]}
+              />
+            )}
+            <PlanCard plan={plan} chosen={chosen === plan.id} onChoose={handleChoose} />
+          </div>
         ))
       )}
 
@@ -60,6 +80,10 @@ export default function Planos() {
           </button>
         </div>
       </article>
+
+      {editando && (
+        <PlanEditSheet plan={editando} onClose={() => setEditando(null)} onSaved={handleSaved} />
+      )}
     </section>
   );
 }

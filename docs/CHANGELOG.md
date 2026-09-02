@@ -11,6 +11,47 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.7.0 — Módulo 5 fechado: palestrante e plano gravam de verdade
+**Sessão 22 — 02/09/2026**
+
+### O que faltava
+
+O Módulo 5 (painel administrativo) estava em 🔸 desde 31/08: permissão,
+upload de foto e gravação real de **evento** funcionavam; **post** entrou
+em 01/09. Sobravam palestrante e plano.
+
+- **Palestrante.** O formulário já existia e já estava escondido atrás do
+  `usePodeEditar()`, mas gravava só no navegador. Agora tem os mesmos dois
+  destinos do evento — com permissão vai para a tabela `speakers`, sem
+  permissão fica no overlay local — e o aviso no topo diz qual dos dois
+  está valendo antes de a pessoa digitar.
+- **Plano não tinha editor nenhum.** Entrou o `PlanEditSheet`, com nome,
+  preço, período, vantagens (uma por linha) e o destaque "Mais escolhido".
+
+**Nenhuma migração de SQL foi precisa:** as políticas `admin escreve
+palestrantes` e `admin escreve planos` já existiam no `schema.sql` desde
+31/08. Só faltava o front usá-las.
+
+### Duas decisões sobre o plano
+
+**Ele é o único formulário do app sem caminho local.** Preço só faz
+sentido se valer para todo mundo: uma sócia que corrige um valor no
+navegador dela e acha que arrumou é pior do que não poder corrigir.
+
+**Ele edita, mas não cria.** São três faixas fixas, e "novo plano" é
+decisão de negócio que não deveria caber num botão.
+
+### Um defeito que a auditoria pegou no próprio ferramental
+
+Rodar `npm run auditoria` depois das mudanças quebrou com
+`Cannot find package 'pngjs'` — o script precisa de **dois** pacotes, e a
+mensagem de instalação que eu tinha escrito citava só o `playwright`.
+Corrigida, e o script passou a **degradar em vez de quebrar**: sem
+`pngjs`, ele pula só o contraste e roda as outras três verificações. Três
+valem mais que nenhuma.
+
+Auditoria limpa nas 20 combinações depois de tudo.
+
 ## v3.6.0 — Calendário que mostra o evento, e Eventos organizada por ano
 **Sessão 21 (segunda parte) — 02/09/2026**
 

@@ -103,7 +103,9 @@ Sai com código 1 se achar algo → serve em CI.
 **Playwright fica fora do `package.json` de propósito** (regra 7): baixa
 ~300 MB de navegador, e quem só quer rodar o app não deve pagar isso. O
 script detecta a ausência e imprime o que instalar:
-`npm i -D playwright && npx playwright install chromium`.
+`npm i -D playwright pngjs && npx playwright install chromium`. Sem o
+`pngjs` o script roda mesmo assim, pulando só o contraste — três
+verificações valem mais que nenhuma.
 
 `CHROMIUM_BIN=/caminho/do/chrome` cobre ambiente onde o navegador não está
 onde o Playwright espera — é o caso do contêiner remoto do Claude Code.
@@ -222,9 +224,13 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
   **Desde 01/09/2026 a UI de edição só existe para admin** — sem permissão
   não há "..." → Editar, nem "Novo evento", nem "Nova palestrante". O gate é
   o hook `usePodeEditar()`; use ele, não uma checagem nova.
-  Ainda **não** é um painel administrativo completo: **evento e post** têm
-  gravação real (post desde 01/09/2026, tabela `posts`). Palestrante e
-  plano seguem locais.
+  **Módulo 5 fechado em 02/09/2026**: evento, post, palestrante e plano
+  gravam de verdade (`db.saveEvent` / `savePost` / `saveSpeaker` /
+  `savePlan`). O **plano é o único formulário sem caminho local** — preço
+  só faz sentido se valer para todo mundo; corrigir um valor no próprio
+  navegador e achar que arrumou é pior do que não poder corrigir. Ele
+  também só edita, nunca cria: "novo plano" é decisão de negócio que não
+  deveria caber num botão.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
   26/08/2026): 11 fotos no bucket `media` do Supabase Storage. Desde
   01/09/2026 elas também ilustram os **posts do Início** (`Post.mediaUrl`)
@@ -244,9 +250,14 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
   "parecida"**: "não trocar tipografia" está na lista de usos incorretos do
   manual. Detalhes em `docs/MANUAL-DE-MARCA.md`, seção 4.
 - Sem pagamento. Escolher plano só grava a escolha localmente.
-- Sem painel administrativo de verdade (a UI de edição acima não conta —
-  falta o backend com permissão real, ver Módulo 5).
-- Sem testes automatizados no repositório.
+- **Sem tela de administração central** — a edição vive espalhada, no "..."
+  de cada item. Isso é decisão, não pendência: um painel separado obrigaria
+  a manter duas representações de cada conteúdo. O que ainda não existe é
+  gerenciar a lista de **admins** pelo app (só pelo SQL Editor, de
+  propósito: o front usa a chave `anon`, que é pública).
+- Sem teste unitário no repositório. Existe a **auditoria de UI**
+  (`npm run auditoria`, seção 1 acima), que cobre layout, contraste e alvo
+  de toque — não cobre lógica.
 - **Instalar na tela de início já funciona** (02/09/2026): manifesto com
   ícones PNG (192/512 + maskable), `apple-touch-icon` e um service worker
   escrito à mão em `public/sw.js` — sem plugin, sem dependência nova. Rede
@@ -271,9 +282,9 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
 | 3 | Área de membras logada (feed real, diretório) | ⏳ |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
-| 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | 🔸 começado 31/08/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de **evento**. Falta palestrante, plano e post |
+| 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ✅ concluído 02/09/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de evento, post, palestrante e plano |
 | 6 | Migração de dados localStorage → banco | ⏳ |
-| 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | 🔸 instalação pronta 02/09/2026 (manifesto + ícones + service worker); falta a notificação |
+| 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | 🔸 instalação pronta 02/09/2026 (manifesto + ícones + service worker); falta a notificação (push com VAPID + tabela de inscrições) |
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |

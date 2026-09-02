@@ -46,4 +46,10 @@ export const localProvider: DataProvider = {
   savePost: async () => {
     throw new Error('Sem Supabase configurado: o post é salvo só neste aparelho.');
   },
+  saveSpeaker: async () => {
+    throw new Error('Sem Supabase configurado: a palestrante é salva só neste aparelho.');
+  },
+  savePlan: async () => {
+    throw new Error('Sem Supabase configurado: o plano é salvo só neste aparelho.');
+  },
 };
