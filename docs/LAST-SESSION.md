@@ -76,28 +76,6 @@ escrita **"coneecta"**, com dois "e". As versões da página 06 estão certas,
 e foi de lá que saiu a máscara do app — o código está correto. Mas aquela é
 a página que um designer copiaria.
 
-## EM ANDAMENTO — tela de inicialização e de carregamento
-
-Pedido de 03/09/2026: a tela que o celular mostra ao abrir o app está feia,
-e falta uma tela de carregamento estética. Plano, na ordem:
-
-1. **Ícones escuros com a marca em dourado.** Hoje eles são bordô sobre
-   Cream Quartz (claro) e o `background_color` do manifesto é
-   `#0F0A06` (quase preto): o Android compõe o ícone claro sobre fundo
-   escuro e sai um quadrado brilhante no meio da tela. É a origem do
-   "feio". Fundo do ícone = `background_color` → a splash vira uma peça
-   só. Gold sobre escuro é uso aprovado pelo manual ("versão clara / uso
-   reverso") e é como o app abre (tema Ônix), então não há salto de
-   claro para escuro.
-2. **`apple-touch-startup-image`** para os tamanhos de iPhone mais comuns —
-   o iOS ignora o manifesto e, sem essas imagens, mostra tela em branco.
-3. **Tela de carregamento dentro do `index.html`**, em HTML+CSS inline: é o
-   que aparece ANTES do React montar, então não pode depender do bundle.
-   Marca ao centro, respirando, e sai em fade quando o app monta.
-
-Se ficar pela metade: o que estiver feito já está em `main`, e o que falta
-é o que sobrar desta lista.
-
 ## Opcional, quando quiser
 
 - **Cartaz da Feira/Jantar no post.** Hoje os posts usam fotos do acervo. O

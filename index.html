@@ -44,6 +44,47 @@
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
+    <!-- Tela de abertura do iOS. Ele ignora o `background_color` do
+         manifesto (que é o que o Android usa), então sem estas imagens o
+         app instalado abre numa tela EM BRANCO até o bundle carregar —
+         era metade do "feio". Uma por resolução, retrato, porque o app é
+         `orientation: portrait`. -->
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/splash/iphone-14-15-pro-max.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/splash/iphone-14-15-pro.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/splash/iphone-12-13-14-plus.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/splash/iphone-12-13-14.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/splash/iphone-x-xs-11pro.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+      href="/splash/iphone-xr-11.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+      href="/splash/iphone-se-8.png"
+    />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -52,6 +93,61 @@
     />
   </head>
   <body>
+    <!-- Tela de carregamento. Mora aqui, em HTML e CSS inline, porque ela
+         precisa aparecer ANTES de o bundle baixar — se dependesse do React
+         não teria o que fazer justamente no momento em que serve. Sai
+         quando o app monta (`main.tsx` põe `.sumiu`), e a cor de fundo é a
+         mesma do tema Ônix e da tela de abertura do sistema: as três viram
+         uma continuidade só, sem piscar de uma para outra. -->
+    <style>
+      #carregando {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f0a06;
+        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #carregando.sumiu {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #carregando svg {
+        width: 92px;
+        height: auto;
+        /* respira: 2,4s de ida e volta. Só opacidade e escala de um SVG
+           solto — não há vidro nem desfoque nesta tela, então escalar aqui
+           é barato (a regra da seção 9 vale para quem carrega o vidro). */
+        animation: respira 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      }
+      @keyframes respira {
+        0%,
+        100% {
+          opacity: 0.55;
+          transform: scale(0.96);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #carregando svg {
+          animation: none;
+          opacity: 1;
+        }
+      }
+    </style>
+    <div id="carregando">
+      <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="6,10 6,110 66,60" fill="#C9A66B" />
+        <polygon points="34,14 34,106 88,60" stroke="#C9A66B" stroke-width="6" opacity=".5" />
+        <polygon points="62,18 62,102 116,60" stroke="#C9A66B" stroke-width="6" opacity=".5" />
+      </svg>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

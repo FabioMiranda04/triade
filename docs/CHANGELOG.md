@@ -11,6 +11,43 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.11.0 — Tela de abertura e de carregamento
+**Sessão 22 (quinta parte) — 03/09/2026**
+
+### Por que estava feio
+
+Não era falta de capricho, era incompatibilidade: os ícones eram **bordô
+sobre Cream Quartz** (claro) e o `background_color` do manifesto era
+`#0F0A06` (quase preto). O Android compõe o ícone sobre essa cor, então o
+resultado era um **quadrado claro brilhando no meio de uma tela escura**.
+E o iOS, que ignora o manifesto, abria em **branco** até o bundle carregar.
+
+### O que mudou
+
+- **Ícones em dourado sobre o escuro do Ônix.** O fundo do ícone passou a
+  ser o mesmo `background_color`, então a tela de abertura vira uma peça
+  só, sem quadrado. Gold sobre escuro é o "uso reverso" que o próprio
+  manual aprova, e é como o app abre — não há salto de claro para escuro.
+- **Sete telas de abertura para o iOS** (`apple-touch-startup-image`), uma
+  por resolução de iPhone, em retrato. Sem elas o iOS mostra branco.
+- **Tela de carregamento dentro do `index.html`**, em HTML e CSS inline.
+  Ela precisa aparecer **antes** de o bundle baixar — se dependesse do
+  React não teria o que fazer justamente no momento em que serve. A marca
+  respira, e some em fade quando o app monta.
+
+O fade espera dois `requestAnimationFrame`, não um: com um só, ele começa
+enquanto a tela ainda está em branco e aparece um piscar entre uma coisa e
+outra.
+
+**As três telas usam a mesma cor de fundo** — abertura do sistema,
+carregamento e tema Ônix. É isso que faz a sequência ler como uma
+continuidade em vez de três telas diferentes.
+
+**Cache do service worker subiu para `triade-v2`:** ícone é arquivo sem
+hash no nome, e o cache primeiro seguraria o ícone velho para sempre. É
+exatamente a armadilha anotada no `CLAUDE.md` quando o service worker
+entrou.
+
 ## v3.10.0 — Rótulo da tab bar vira opção, desligada por padrão
 **Sessão 22 (quarta parte) — 03/09/2026**
 

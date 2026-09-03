@@ -24,7 +24,7 @@
  * SEM hash mudar (ícones, manifesto, a máscara da marca) — esses o cache
  * primeiro seguraria para sempre.
  */
-const CACHE = 'triade-v1';
+const CACHE = 'triade-v2';
 
 self.addEventListener('install', () => {
   // assume o lugar do worker anterior sem esperar a aba fechar. É seguro

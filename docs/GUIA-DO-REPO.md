@@ -289,7 +289,7 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ✅ concluído 02/09/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de evento, post, palestrante e plano |
 | 6 | Migração de dados localStorage → banco | ⏳ |
 | 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | 🔸 instalação pronta 02/09/2026 (manifesto + ícones + service worker); falta a notificação (push com VAPID + tabela de inscrições) |
-| 7.5 | Tela de inicialização (splash) e de carregamento, seguindo o manual | 🔸 em andamento 03/09/2026 |
+| 7.5 | Tela de inicialização (splash) e de carregamento, seguindo o manual | ✅ concluído 03/09/2026 |
 | 8 | Sobre — mídias e relatos reais (fotos, vídeos, depoimentos) | ⏳ planejado 23/08/2026 |
 | 9 | Eventos — calendário de datas + artigo histórico por edição (mídia/vídeo) | ✅ concluído no código 23/08/2026 — pendente rodar `schema.sql`/`seed.sql` no Supabase real |
 | 10 | Palestrantes — pop-up completo por palestrante (redes, presenças, cursos, contato) | ⏳ planejado 23/08/2026 |

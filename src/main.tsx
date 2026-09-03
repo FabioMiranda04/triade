@@ -26,3 +26,17 @@ createRoot(rootEl).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+// Some a tela de carregamento (declarada no `index.html`) depois que o app
+// pintou. O `requestAnimationFrame` duplo espera o primeiro quadro REAL:
+// sem ele o fade começa enquanto a tela ainda está em branco e aparece um
+// piscar entre uma coisa e outra.
+const carregando = document.getElementById('carregando');
+if (carregando) {
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      carregando.classList.add('sumiu');
+      carregando.addEventListener('transitionend', () => carregando.remove(), { once: true });
+    }),
+  );
+}
