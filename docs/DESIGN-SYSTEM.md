@@ -616,6 +616,29 @@ Só na pílula flutuante. Na barra fixa o item ativo continua com fundo
 próprio — lá as células encostam nas bordas da tela e uma bolha viajando
 não tem margem para respirar.
 
+### Rótulo da tab bar é opção, e vem desligado
+
+Desde 03/09/2026 o nome embaixo do ícone é uma chave em Configurações →
+Navegação, **desligada por padrão** (decisão do usuário: os ícones
+comunicam sozinhos, e sem o texto a barra fica mais baixa e a bolha mais
+redonda).
+
+Isso reverte a decisão de 26/08/2026, que tinha posto rótulo em tudo
+porque "coração = Sobre" e "microfone = Palestrantes" não são deduzíveis
+de primeira. O trade-off não sumiu — virou escolha de quem usa.
+
+**A acessibilidade não muda:** o `aria-label` de cada aba continua dizendo
+o nome, então leitor de tela e comando de voz seguem iguais. E como não há
+mais texto visível, a regra 2.5.3 da WCAG (nome acessível tem que conter o
+texto visível) deixa de se aplicar — é por isso que o rótulo curto
+"Palestras" existia, e ele só importa com a chave ligada.
+
+**Armadilha medida:** tirar o texto tirou junto ~11px de altura, e o alvo
+de toque caiu para 36px — abaixo do piso de 38 do app. A barra parecia
+ótima; quem pegou foi a `npm run auditoria`, nas 20 combinações. O respiro
+do item subiu para 12px (12 + 20 + 12 = 44, o número da Apple) e a pílula
+ainda ficou 11px mais baixa do que com texto.
+
 ### Vidro da pílula: três camadas, uma só de blur
 
 O que faz parecer material em vez de painel escuro com desfoque atrás:

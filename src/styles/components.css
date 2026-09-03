@@ -1715,3 +1715,32 @@ button.cal-cell.junta-esq {
   cursor: pointer;
 }
 .bv-depois:active { color: var(--on-dark); }
+
+/* Chave liga/desliga no padrão iOS, dentro de `.ios-row`.
+   É um `<span>` porque quem carrega o estado e o toque é o botão da linha
+   inteira (`aria-pressed`) — a linha toda é o alvo, não um retângulo de
+   36px na ponta. */
+.ios-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--fill-strong);
+  transition: background 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ios-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  /* só `translate` — a chave vive dentro do pop-up, que tem vidro */
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ios-switch.on { background: var(--accent); }
+.ios-switch.on::after { transform: translateX(18px); }

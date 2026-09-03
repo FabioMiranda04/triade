@@ -599,3 +599,23 @@ body.modal-open .mesh span {
   .app-main { padding-top: 2px; }
   .panel { max-width: 600px; }
 }
+
+/* ---------- barra sem rótulo (padrão desde 03/09/2026) ---------- */
+/* Sem o texto embaixo, a célula deixa de ser um retângulo em pé e vira
+   quase um quadrado — a bolha, que ocupa a célula inteira, fica
+   naturalmente redonda. Era o efeito que se buscava desde o começo. */
+.app.sem-rotulo {
+  --tabbar-float-h: calc(68px + var(--safe-b));
+}
+/* 12px de respiro, não 8: o rótulo saiu e levava junto ~11px de altura, o
+   que deixava o alvo de toque em 36px — abaixo do piso de 38 do app e
+   longe dos 44 da Apple. A `npm run auditoria` reprovou nas 20
+   combinações, e é o tipo de regressão que só aparece medindo: a barra
+   parecia ótima. 12 + 20 + 12 = 44px de alvo, e a pílula ainda fica 11px
+   mais baixa do que com texto. */
+.app.sem-rotulo .tab-pill .tab {
+  padding: 12px 2px;
+}
+.app.sem-rotulo .tabbar:not(.padrao2-wrap) .tab {
+  padding: 11px 2px;
+}

@@ -58,7 +58,7 @@ const TABS: TabDef[] = [
  * membro!" sempre visível no cabeçalho (ver `TopBar`).
  */
 export function TabBar() {
-  const { style } = useTabBarStyle();
+  const { style, rotulos } = useTabBarStyle();
   const { pathname } = useLocation();
   const { profile, openAccount } = useAuth();
   // O selo só acende quando existe evento por vir. Preso a um dado real, ele
@@ -94,7 +94,7 @@ export function TabBar() {
           </span>
         )}
       </span>
-      <span className="tab-label">{tab.label}</span>
+      {rotulos && <span className="tab-label">{tab.label}</span>}
     </NavLink>
   ));
 
@@ -105,7 +105,7 @@ export function TabBar() {
       ) : (
         <Icon name="user" size={iconSize} />
       )}
-      <span className="tab-label">Perfil</span>
+      {rotulos && <span className="tab-label">Perfil</span>}
     </button>,
   );
 

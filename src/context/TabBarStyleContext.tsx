@@ -29,6 +29,9 @@ export const TABBAR_STYLES: { value: TabBarStyle; label: string; hint: string }[
 interface TabBarStyleContextValue {
   style: TabBarStyle;
   setStyle: (style: TabBarStyle) => void;
+  /** rótulo de texto embaixo do ícone. Padrão: desligado (03/09/2026) */
+  rotulos: boolean;
+  setRotulos: (mostrar: boolean) => void;
 }
 
 const TabBarStyleContext = createContext<TabBarStyleContextValue | null>(null);
@@ -48,7 +51,33 @@ export function TabBarStyleProvider({ children }: { children: ReactNode }) {
     setStyleState(next);
   }, []);
 
-  return <TabBarStyleContext.Provider value={{ style, setStyle }}>{children}</TabBarStyleContext.Provider>;
+  /**
+   * Rótulo de texto embaixo do ícone — **desligado por padrão** desde
+   * 03/09/2026, por decisão do usuário: os ícones comunicam sozinhos, e
+   * sem o texto a barra fica mais baixa e a bolha mais redonda.
+   *
+   * Isso reverte a decisão de 26/08/2026, que tinha posto rótulo em tudo
+   * porque "coração = Sobre" e "microfone = Palestrantes" não são
+   * deduzíveis de primeira. O trade-off continua existindo; agora é
+   * escolha de quem usa, e quem quiser o texto liga aqui.
+   *
+   * **A acessibilidade não muda**: o `aria-label` de cada aba continua
+   * dizendo o nome, então leitor de tela e comando de voz seguem
+   * funcionando igual. O que se perde é a dica visual para quem abre o app
+   * pela primeira vez.
+   */
+  const [rotulos, setRotulosState] = useState<boolean>(() => getPref<boolean>('tabbar_rotulos', false));
+
+  const setRotulos = useCallback((mostrar: boolean) => {
+    setPref('tabbar_rotulos', mostrar);
+    setRotulosState(mostrar);
+  }, []);
+
+  return (
+    <TabBarStyleContext.Provider value={{ style, setStyle, rotulos, setRotulos }}>
+      {children}
+    </TabBarStyleContext.Provider>
+  );
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

@@ -9,7 +9,7 @@ interface SettingsSheetProps {
 
 /** Pop-up de configurações do app, com lista agrupada estilo iOS. */
 export function SettingsSheet({ onClose }: SettingsSheetProps) {
-  const { style, setStyle } = useTabBarStyle();
+  const { style, setStyle, rotulos, setRotulos } = useTabBarStyle();
   const { theme, setTheme } = useTheme();
 
   return (
@@ -69,6 +69,26 @@ export function SettingsSheet({ onClose }: SettingsSheetProps) {
           ))}
         </div>
         <p className="ios-hint">Como a barra de navegação aparece no rodapé do app.</p>
+
+        <div className="ios-group" style={{ marginTop: 14 }}>
+          <button
+            className="ios-row"
+            aria-pressed={rotulos}
+            onClick={() => setRotulos(!rotulos)}
+          >
+            <span className="ios-row-main">
+              <span className="ios-row-text">
+                <span className="t">Nome embaixo do ícone</span>
+                <span className="s">
+                  {rotulos
+                    ? 'Mostrando o nome de cada aba.'
+                    : 'Só os ícones — a barra fica mais baixa.'}
+                </span>
+              </span>
+            </span>
+            <span className={`ios-switch${rotulos ? ' on' : ''}`} aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </ModalOverlay>
   );

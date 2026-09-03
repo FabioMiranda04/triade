@@ -11,6 +11,33 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.10.0 — Rótulo da tab bar vira opção, desligada por padrão
+**Sessão 22 (quarta parte) — 03/09/2026**
+
+O nome embaixo do ícone agora é uma chave em **Configurações → Navegação**,
+e vem **desligada**: os ícones comunicam sozinhos, e sem o texto a barra
+cai de 61px para 50px e a bolha fica mais redonda.
+
+Isso reverte a decisão de 26/08/2026, que tinha posto rótulo em tudo
+porque "coração = Sobre" e "microfone = Palestrantes" não são deduzíveis
+de primeira. O trade-off não sumiu — virou escolha de quem usa, que é o
+que a §6.3 do manual já mandava fazer com variação de UI.
+
+**A acessibilidade não muda:** o `aria-label` continua dizendo o nome de
+cada aba, então leitor de tela e comando de voz seguem iguais. Sem texto
+visível, a regra 2.5.3 da WCAG deixa de se aplicar.
+
+**A auditoria pegou uma regressão que o olho não pegaria.** Tirar o texto
+levou junto ~11px, e o alvo de toque caiu para **36px** — abaixo do piso
+de 38 do app e longe dos 44 da Apple. Reprovou nas 20 combinações. O
+respiro do item subiu para 12px (12 + 20 + 12 = 44) e a pílula ainda ficou
+11px mais baixa do que com texto.
+
+Entrou também a chave liga/desliga (`.ios-switch`) no padrão iOS, usável
+em qualquer `.ios-row`: quem carrega estado e toque é o botão da linha
+inteira (`aria-pressed`), então o alvo é a linha, não um retângulo de 44px
+na ponta.
+
 ## v3.9.0 — Bolha na tab bar flutuante, e a pílula vira vidro de verdade
 **Sessão 22 (terceira parte) — 03/09/2026**
 

@@ -40,7 +40,7 @@ function AppShell() {
   // conteúdo — o feed passa por baixo dela e aparece através do vidro. Isso
   // exige tirar o <nav> do fluxo e devolver o espaço em padding na
   // `.app-main`; ver docs/DESIGN-SYSTEM.md, seção 6.2.
-  const { style } = useTabBarStyle();
+  const { style, rotulos } = useTabBarStyle();
 
   // ao trocar de aba, volta o conteúdo para o topo
   useEffect(() => {
@@ -67,7 +67,10 @@ function AppShell() {
     <>
       <MeshBackground />
       <div
-        className={`app${style === 'padrao2' ? ' app-tabs-floating' : ''}${rolou ? ' rolando' : ''}`}
+        className={
+          `app${style === 'padrao2' ? ' app-tabs-floating' : ''}` +
+          `${rolou ? ' rolando' : ''}${rotulos ? '' : ' sem-rotulo'}`
+        }
       >
         <TopBar />
         <main className="app-main" ref={mainRef}>
