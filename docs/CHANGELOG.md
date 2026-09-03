@@ -11,6 +11,60 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.8.0 — Diretório de membras e o convite de entrada
+**Sessão 22 (segunda parte) — 03/09/2026**
+
+### Módulo 3, primeira fatia: o diretório
+
+`db.getMembers()` lê `profiles` e a tela Sobre ganhou a seção **Membras da
+Tríade** — mas só para quem está logada. A checagem na tela não é a
+segurança: a RLS de `profiles` só devolve linha para `authenticated`, e
+essa política existe desde o Módulo 2 **exatamente** para isto. Deslogada,
+quem recusa é o banco; a tela só evita mostrar um vazio sem explicação.
+
+Duas decisões:
+
+- **sem `withFallback`.** Todas as outras leituras caem no seed quando o
+  Supabase falha. Aqui não: não existe seed de membra, e cair num fallback
+  significaria inventar gente. Erro ou deslogada devolve lista vazia;
+- **perfil incompleto aparece assim mesmo**, com rótulo genérico. Sumir com
+  a pessoa da lista da própria comunidade é pior que um cartão incompleto —
+  e o cartão incompleto convida a preencher.
+
+O `@` é o próprio link para o Instagram: não há glifo dele no `Icon.tsx`, e
+criar um só para isso trocaria uma palavra legível por um símbolo (regra 7).
+
+**Falta do Módulo 3:** o feed real (membra publicar) e "minhas inscrições".
+O feed precisa de tabela nova, tela de escrever e moderação.
+
+### Convite de boas-vindas
+
+Pop-up na primeira abertura, com os benefícios de virar membra. Três
+regras decidem se ele aparece, e todas existem para o convite não virar
+praga:
+
+1. **uma vez por aparelho** — fechou, não volta. Um pop-up que reaparece a
+   cada abertura não convence: ensina a fechar rápido;
+2. **nunca para quem já escolheu plano** — vender de novo para quem já
+   comprou é o jeito mais rápido de parecer que o app não sabe quem ela é;
+3. **900ms depois da tela desenhar** — cair por cima de uma tela ainda
+   montando lê como erro, não como convite.
+
+**Os benefícios não são texto fixo:** saem do plano em destaque
+(`featured`), então corrigir uma vantagem em Planos → "..." → Editar já
+corrige o convite. Duas listas para a mesma coisa sairiam de sincronia na
+primeira alteração.
+
+A lista entra em cascata (§7 do manual) e o selo da marca usa o raio
+direcional da §12 — a forma que nasceu no calendário começou a se repetir,
+que era o objetivo dela.
+
+### A auditoria precisou saber do pop-up
+
+`npm run auditoria` mede a TELA, e o convite cobriria o conteúdo em todas
+as rotas. O script passou a marcar a preferência de "já visto" no
+`addInitScript`, junto com o tema.
+
 ## v3.7.0 — Módulo 5 fechado: palestrante e plano gravam de verdade
 **Sessão 22 — 02/09/2026**
 

@@ -231,6 +231,10 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
   navegador e achar que arrumou é pior do que não poder corrigir. Ele
   também só edita, nunca cria: "novo plano" é decisão de negócio que não
   deveria caber num botão.
+- **Não existe post de membra.** O feed do Início é conteúdo da Tríade
+  (tabela `posts`), escrito por admin. Membra publicar é a parte que falta
+  do Módulo 3 e precisa de tabela nova, tela de escrever e moderação —
+  nada disso existe.
 - **Fotos reais já existem** nas retrospectivas de edição (Módulo 11,
   26/08/2026): 11 fotos no bucket `media` do Supabase Storage. Desde
   01/09/2026 elas também ilustram os **posts do Início** (`Post.mediaUrl`)
@@ -280,7 +284,7 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
-| 3 | Área de membras logada (feed real, diretório) | ⏳ |
+| 3 | Área de membras logada (feed real, diretório) | 🔸 começado 03/09/2026: **diretório de membras** em Sobre, visível só para quem está logada (`db.getMembers()` sobre `profiles`). Falta o feed real (post de membra) e "minhas inscrições" |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ✅ concluído 02/09/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de evento, post, palestrante e plano |
 | 6 | Migração de dados localStorage → banco | ⏳ |

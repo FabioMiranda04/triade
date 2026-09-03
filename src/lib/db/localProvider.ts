@@ -1,5 +1,5 @@
 import { seed } from '@/data/seed';
-import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { Member, Plan, Post, Speaker, TriadeEvent } from '@/types';
 import type { DataProvider } from './types';
 import { engagement, readCache } from './prefs';
 
@@ -16,6 +16,9 @@ export const localProvider: DataProvider = {
   getPosts: async (): Promise<Post[]> => readCache('posts', seed.posts),
   getSpeakers: async (): Promise<Speaker[]> => readCache('speakers', seed.speakers),
   getPlans: async (): Promise<Plan[]> => readCache('plans', seed.plans),
+  // Sem banco não existe comunidade: um diretório com gente de mentira
+  // seria pior que um diretório vazio.
+  getMembers: async (): Promise<Member[]> => [],
 
   // Sem Supabase configurado não há autenticação possível — engajamento
   // é sempre local, só embrulhado em Promise para bater com a interface.

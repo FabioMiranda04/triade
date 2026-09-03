@@ -3,8 +3,8 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.7.0`
-**Última atualização:** 02/09/2026
+**Versão atual:** `v3.8.0`
+**Última atualização:** 03/09/2026
 
 **Última sessão (22, 02/09/2026) — Módulo 5 fechado e auditoria
 versionada.** Palestrante e plano passaram a gravar no banco, completando

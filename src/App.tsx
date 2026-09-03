@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { BoasVindas } from '@/components/BoasVindas';
 import { MeshBackground } from '@/components/Brand';
 import { TopBar } from '@/components/TopBar';
 import { TabBar } from '@/components/TabBar';
@@ -81,6 +82,9 @@ function AppShell() {
         </main>
         <TabBar />
       </div>
+      {/* no nível do app, não da Início: o convite é da comunidade, não de
+          uma tela — e assim sobrevive a quem abre direto em /eventos */}
+      <BoasVindas />
     </>
   );
 }

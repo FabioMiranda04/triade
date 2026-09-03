@@ -39,6 +39,22 @@ export interface Speaker {
   bio: string;
 }
 
+/**
+ * Uma membra no diretório da comunidade (Módulo 3).
+ *
+ * Vem de `profiles`, cuja RLS libera leitura para quem está logada — o
+ * diretório é o motivo de essa política existir desde o Módulo 2. Deslogada
+ * não vê ninguém, e isso não é restrição de tela: é o banco recusando.
+ */
+export interface Member {
+  id: string;
+  nome: string;
+  bio?: string;
+  instagram?: string;
+  negocio?: string;
+  avatarUrl?: string;
+}
+
 export interface Plan {
   id: string;
   name: string;
