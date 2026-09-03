@@ -160,11 +160,20 @@ alter table public.rsvps            enable row level security;
 alter table public.post_engagements enable row level security;
 alter table public.plan_selections  enable row level security;
 
--- perfis: qualquer pessoa logada vê (diretório de membras do Módulo 3),
--- mas só a dona edita o próprio.
+-- perfis: PRIVADOS. Cada uma lê e edita só o próprio.
+--
+-- Até 03/09/2026 a política de leitura era `using (true)` para
+-- `authenticated`, pensada num diretório de membras. O diretório foi
+-- removido a pedido do dono da comunidade: nome, negócio, bio e Instagram
+-- são dado pessoal, e o front usa a chave `anon`, que é pública — bastava
+-- criar uma conta para ler a tabela inteira. A política larga não era
+-- "quase" um problema: era o problema.
+--
+-- Se um dia existir diretório, ele não volta assim. As opções certas são
+-- uma coluna de consentimento (`perfil_publico boolean default false`) com
+-- a política restrita a ela, ou uma view/função `security definer`
+-- expondo só os campos escolhidos.
 drop policy if exists "perfis visiveis para logadas" on public.profiles;
-create policy "perfis visiveis para logadas"
-  on public.profiles for select to authenticated using (true);
 
 drop policy if exists "cada uma edita seu perfil" on public.profiles;
 create policy "cada uma edita seu perfil"
