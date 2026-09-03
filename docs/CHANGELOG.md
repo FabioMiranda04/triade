@@ -11,6 +11,38 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v3.9.0 — Bolha na tab bar flutuante
+**Sessão 22 (terceira parte) — 03/09/2026**
+
+O item ativo da pílula tinha fundo próprio: ao trocar de aba, um fundo
+apagava e outro acendia. O destaque **piscava** de um lugar para outro.
+
+Agora existe **um** elemento — a bolha — que desliza por baixo de todas as
+abas. A diferença é de leitura: o destaque não pula, ele viaja, e o olho
+segue a viagem.
+
+Detalhes que decidem se fica bom ou amador:
+
+- **posição por índice, não por medida** — as abas são `flex: 1`, então a
+  bolha tem a largura de uma aba e anda 100% de si mesma por casa;
+- **a curva passa do destino e volta** (`cubic-bezier(0.34, 1.42, 0.5, 1)`,
+  0,62s). É o que faz ler como bolha em vez de gaveta;
+- **raio 20px, não `999px`** — a célula é quase quadrada (59×57), e raio
+  total viraria círculo. O círculo cortava o rótulo, que ficava cruzando a
+  curva. Foi corrigido depois de olhar a captura, não antes;
+- **só `transform` e `opacity`** — a pílula carrega o `backdrop-filter`, e
+  mexer no tamanho dela refaria o desfoque a cada quadro (§9);
+- **em `/planos`, que não é aba**, a bolha some **onde estava** e volta de
+  lá. Mandá-la para a primeira aba apontaria para o lugar errado.
+
+Medido: a bolha para exatamente sobre a aba ativa nas quatro rotas (7, 66,
+124 e 183px, contra 7, 66, 124 e 183 das abas), e no meio da troca está
+entre as duas posições — ou seja, viaja mesmo, não teleporta.
+
+Só na pílula flutuante. Na barra fixa o item ativo continua como estava:
+lá as células encostam nas bordas da tela e uma bolha viajando não tem
+margem para respirar.
+
 ## v3.8.0 — Diretório de membras e o convite de entrada
 **Sessão 22 (segunda parte) — 03/09/2026**
 

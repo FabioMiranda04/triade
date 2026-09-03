@@ -522,9 +522,39 @@ body.modal-open .mesh span {
   border-radius: 999px;
   padding: 9px 2px;
 }
-.tab-pill .tab.active {
+/* O fundo do item ativo virou a BOLHA (`.tab-bolha`), que é um elemento só
+   deslizando por baixo de todos. Acender e apagar um fundo por aba faz o
+   destaque piscar de um lugar para outro; a bolha viaja, e o olho segue. */
+.tab-bolha {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 7px;
+  /* a pílula tem 7px de respiro de cada lado, e são 5 abas de largura igual */
+  width: calc((100% - 14px) / 5);
+  /* 20px e não `999px`: a célula é quase quadrada (59x57), então o raio
+     total vira um CÍRCULO — e o círculo corta o rótulo, que fica cruzando
+     a curva. O quadrado macio abraça ícone e texto juntos. */
+  border-radius: 20px;
   background: var(--on-dark-fill);
+  pointer-events: none;
+  z-index: 0;
+  /* Só `transform` e `opacity` (§9): a pílula é quem carrega o
+     `backdrop-filter`, e mexer no tamanho dela obrigaria o navegador a
+     refazer o desfoque a cada quadro.
+     A curva passa do destino e volta — é o exagero que a §12 libera, e é
+     ele que faz o movimento ler como bolha em vez de gaveta. */
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition:
+    transform 0.62s cubic-bezier(0.34, 1.42, 0.5, 1),
+    opacity 0.3s ease;
 }
+/* Rota que não é aba (`/planos`): a bolha some no lugar onde estava e volta
+   de lá — mandá-la para a primeira aba apontaria para o lugar errado. */
+.tab-bolha.fora { opacity: 0; }
+
+/* o conteúdo da aba fica ACIMA da bolha, senão ela cobre ícone e rótulo */
+.tab-pill .tab { position: relative; z-index: 1; }
 /* na pílula o item é uma cápsula, então o toque também acende o fundo —
    arredondado, no lugar do bloco quadrado do realce padrão */
 .tab-pill .tab:active {

@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import type { CSSProperties } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Icon } from '@/components/Icon';
 import type { IconName } from '@/components/Icon';
 import { useAuth } from '@/context/AuthContext';
@@ -58,6 +59,7 @@ const TABS: TabDef[] = [
  */
 export function TabBar() {
   const { style } = useTabBarStyle();
+  const { pathname } = useLocation();
   const { profile, openAccount } = useAuth();
   // O selo só acende quando existe evento por vir. Preso a um dado real, ele
   // se apaga sozinho quando a agenda esvazia — um selo fixo de "novo" vira
@@ -108,9 +110,29 @@ export function TabBar() {
   );
 
   if (floating) {
+    // A bolha é UM elemento que desliza entre as abas, em vez de um fundo
+    // que acende e apaga em cada uma. É o que dá a leitura de continuidade:
+    // o destaque não pula, ele viaja — e o olho segue a viagem.
+    //
+    // O índice basta porque as abas são de larguras iguais (`flex: 1`):
+    // a bolha tem a largura de uma aba e anda 100% de si mesma por casa.
+    // Medir com `getBoundingClientRect` daria o mesmo número e custaria um
+    // observador de redimensionamento.
+    //
+    // -1 em rota que não é aba (`/planos`, que virou CTA no cabeçalho): a
+    // bolha some sem se mexer, e volta do mesmo lugar quando a pessoa
+    // retorna. Mandá-la para a primeira aba seria apontar para o lugar errado.
+    const indice = TABS.findIndex((t) => (t.to === '/' ? pathname === '/' : pathname.startsWith(t.to)));
     return (
       <nav className="tabbar padrao2-wrap" aria-label="Navegação principal">
-        <div className="tab-pill glass-dark">{links}</div>
+        <div className="tab-pill glass-dark">
+          <span
+            className={`tab-bolha${indice < 0 ? ' fora' : ''}`}
+            style={{ '--i': Math.max(indice, 0) } as CSSProperties}
+            aria-hidden="true"
+          />
+          {links}
+        </div>
       </nav>
     );
   }

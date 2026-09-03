@@ -572,6 +572,35 @@ dispara em toque), então desligar o realce não custou acessibilidade. Não
 declare `border-radius` junto do anel: ele já acompanha o raio do próprio
 elemento, e um valor fixo deforma botões redondos.
 
+### Bolha da tab bar flutuante (`.tab-bolha`)
+
+O item ativo da pílula não tem mais fundo próprio: existe **um** elemento
+que desliza por baixo de todos. Acender e apagar um fundo por aba faz o
+destaque piscar de um lugar para outro; a bolha viaja, e o olho segue a
+viagem. É continuidade, não estado.
+
+- **Posição por índice, não por medida.** As abas são `flex: 1`, logo de
+  larguras iguais: a bolha tem `width: calc((100% - 14px) / 5)` (os 14px
+  são o respiro da pílula) e anda `translateX(calc(var(--i) * 100%))`.
+  `getBoundingClientRect` daria o mesmo número e custaria um observador de
+  redimensionamento.
+- **Só `transform` e `opacity`** (§9): a pílula é quem carrega o
+  `backdrop-filter`, e mexer no tamanho dela obrigaria o navegador a
+  refazer o desfoque a cada quadro.
+- **A curva passa do destino e volta** — `cubic-bezier(0.34, 1.42, 0.5, 1)`
+  em 0,62s. É o exagero que a §12 libera, e é ele que faz o movimento ler
+  como bolha em vez de gaveta.
+- **Raio 20px, não `999px`.** A célula é quase quadrada (59×57 em 375px):
+  raio total vira círculo, e o círculo corta o rótulo, que fica cruzando a
+  curva. O quadrado macio abraça ícone e texto juntos.
+- **Rota que não é aba** (`/planos`) → `.fora`, opacidade 0 **sem se
+  mexer**: a bolha some onde estava e volta de lá. Mandá-la para a primeira
+  aba apontaria para o lugar errado.
+
+Só na pílula flutuante. Na barra fixa o item ativo continua com fundo
+próprio — lá as células encostam nas bordas da tela e uma bolha viajando
+não tem margem para respirar.
+
 ### Revelação de imagem
 
 Toda foto vinda da rede entra com `.foto-fade`, e o `onLoad` acrescenta
