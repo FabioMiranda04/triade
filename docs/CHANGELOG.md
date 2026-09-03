@@ -17,10 +17,15 @@ desenvolvimento dentro do mesmo módulo.
 ### A pílula ficou mais baixa e virou vidro
 
 Altura de 68 para 61px (o respiro do conteúdo, `--tabbar-float-h`,
-acompanhou: 92 → 80px). E a bolha virou **esfera de 38px atrás do ícone** —
-cobrindo ícone e rótulo juntos ela era uma cápsula achatada; para ser
-redonda de verdade precisa soltar o rótulo, que fica abaixo e continua
-marcado por cor e peso, como na barra do iOS.
+acompanhou: 92 → 80px).
+
+A bolha passou por três formas até fechar, e as duas primeiras foram
+descartadas olhando a captura, não o código: esfera de 38px atrás do ícone
+(solta o rótulo, mas o destaque fica leve demais), célula exata (certo, mas
+ainda tímido) e a final — **célula inteira com a moldura da pílula afinada
+de 6px para 3px**, o que dá 60×53 numa pílula de 61. Bolha grande em aro
+fino lê melhor que bolha pequena em faixa larga. O item ganhou de volta,
+em padding próprio, o que a pílula perdeu: a altura total não mudou.
 
 O vidro são três camadas: `blur(30px) saturate(190%)` (o desfoque sozinho
 dá leitosa — a saturação devolve a cor do que está por baixo), um brilho de

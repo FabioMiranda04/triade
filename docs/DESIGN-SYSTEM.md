@@ -590,15 +590,20 @@ viagem. É continuidade, não estado.
 - **A curva passa do destino e volta** — `cubic-bezier(0.34, 1.42, 0.5, 1)`
   em 0,62s. É o exagero que a §12 libera, e é ele que faz o movimento ler
   como bolha em vez de gaveta.
-- **É uma esfera de 38px atrás do ÍCONE**, não um retângulo sobre a célula
-  inteira. Cobrindo ícone e rótulo juntos a forma vira cápsula achatada;
-  para ser redonda de verdade ela solta o rótulo, que fica logo abaixo e
-  continua marcado por cor e peso — como faz a barra do iOS.
-- **A caixa que anda tem a largura da célula; a esfera é o `::before`
-  dela.** Num `translateX`, `100%` vale a largura do PRÓPRIO elemento: com
-  a esfera de 38px como elemento, o passo seria de 38px em vez de uma casa.
-  Com a caixa do tamanho da célula, `translateX(100%)` acerta em qualquer
-  largura de tela, sem medir nada em JS.
+- **Ocupa a CÉLULA inteira** — ícone, rótulo e o padding dos dois (60×53
+  numa pílula de 61px de altura). Chegou a ser uma esfera de 38px só atrás
+  do ícone; cheia ela pesa mais e emoldura os dois como uma coisa só, que
+  é o que barra de app maduro faz.
+- **A moldura da pílula é fina (3px) para a bolha ser grande.** O respiro
+  da pílula é o aro; a bolha cresce no que sobrar. Bolha grande em aro fino
+  lê melhor que bolha pequena em faixa larga. O item ganhou de volta, em
+  padding próprio, o que a pílula perdeu — a altura total não muda.
+- **A largura da bolha é exatamente a da célula, e isso não é estética, é
+  o que faz o passo funcionar.** Num `translateX`, `100%` vale a largura do
+  PRÓPRIO elemento: casando os dois, `translateX(100%)` anda uma casa em
+  qualquer largura de tela, sem medir nada em JS. Se a bolha precisar ser
+  MAIOR que a célula, ela vira um `::before` dentro de uma caixa do tamanho
+  da célula — quem anda continua sendo a caixa.
 - **A esfera não tem `backdrop-filter` próprio.** Um segundo desfoque que
   anda a cada quadro é o que derruba o desempenho de verdade. O efeito de
   vidro sai de preenchimento translúcido + brilho de 1px na quina de cima

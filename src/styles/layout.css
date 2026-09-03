@@ -514,7 +514,12 @@ body.modal-open .mesh span {
   justify-content: space-around;
   width: 100%;
   max-width: 340px;
-  padding: 6px;
+  /* 3px e não 6: o respiro da pílula é a moldura, e a bolha cresce no que
+     sobrar. Afinando a moldura, ela vira quase toda a altura da pílula —
+     uma bolha grande dentro de um aro fino lê melhor que uma bolha
+     pequena dentro de uma faixa larga. O item ganhou de volta, em padding
+     próprio, o que a pílula perdeu: a altura total não muda. */
+  padding: 3px;
   border-radius: 999px;
   /* Vidro de verdade, não painel escuro com um desfoque atrás.
      Três camadas, e cada uma faz uma coisa que as outras não fazem:
@@ -536,26 +541,37 @@ body.modal-open .mesh span {
 }
 .tab-pill .tab {
   border-radius: 999px;
-  padding: 6px 2px;
+  padding: 9px 2px;
   gap: 3px;
 }
 /* O fundo do item ativo virou a BOLHA (`.tab-bolha`), que é um elemento só
    deslizando por baixo de todos. Acender e apagar um fundo por aba faz o
    destaque piscar de um lugar para outro; a bolha viaja, e o olho segue. */
 .tab-bolha {
-  /* Caixa invisível do tamanho de UMA célula; a esfera visível é o
-     `::before` dentro dela. O motivo é técnico e importa: num `translateX`,
-     `100%` vale a largura do PRÓPRIO elemento — com a esfera (38px) como
-     elemento, o passo seria de 38px e não de uma célula. Com a caixa do
-     tamanho da célula, `translateX(100%)` anda exatamente uma casa, em
-     qualquer largura de tela, sem medir nada em JS. */
+  /* Ocupa a CÉLULA inteira — largura e altura. Foi esfera atrás do ícone
+     por um tempo; cheia ela pesa mais e emoldura ícone e rótulo como uma
+     coisa só, que é como as barras de app maduro fazem.
+     Com a caixa do tamanho exato da célula, `translateX(100%)` anda uma
+     casa em qualquer largura de tela — num `translateX`, `100%` vale a
+     largura do PRÓPRIO elemento, então esse casamento não é coincidência,
+     é o que dispensa medir qualquer coisa em JS. */
   position: absolute;
   top: 3px;
-  left: 6px;
-  width: calc((100% - 12px) / 5);
-  height: 38px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / 5);
+  border-radius: 999px;
   pointer-events: none;
   z-index: 0;
+  /* Vidro, e SEM `backdrop-filter` próprio: um segundo desfoque que anda a
+     cada quadro é o que derruba desempenho de verdade. O mesmo efeito sai
+     de preenchimento translúcido + brilho de 1px na quina de cima — de
+     graça, porque é só pintura. */
+  background: var(--tab-bolha-fundo);
+  border: 1px solid var(--tab-bolha-rim);
+  box-shadow:
+    0 1px 0 var(--tabbar-float-luz) inset,
+    0 2px 10px -5px rgba(0, 0, 0, 0.45);
   /* Só `transform` e `opacity` (§9): a pílula é quem carrega o
      `backdrop-filter`, e mexer no tamanho dela obrigaria o navegador a
      refazer o desfoque a cada quadro.
@@ -565,29 +581,6 @@ body.modal-open .mesh span {
   transition:
     transform 0.62s cubic-bezier(0.34, 1.42, 0.5, 1),
     opacity 0.3s ease;
-}
-/* A esfera. Atrás do ÍCONE, não sobre a célula inteira: cobrindo ícone e
-   rótulo juntos a forma vira uma cápsula achatada, e para ser redonda de
-   verdade ela precisa soltar o rótulo — que fica logo abaixo e continua
-   marcado por cor e peso, como faz a barra do iOS. */
-.tab-bolha::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 38px;
-  height: 38px;
-  margin-left: -19px;
-  border-radius: 50%;
-  /* Vidro aqui também, e SEM `backdrop-filter` próprio: um segundo
-     desfoque que anda a cada quadro é o que derruba o desempenho de
-     verdade. O mesmo efeito sai de preenchimento translúcido + brilho na
-     quina de cima — de graça, porque é só pintura. */
-  background: var(--tab-bolha-fundo);
-  border: 1px solid var(--tab-bolha-rim);
-  box-shadow:
-    0 1px 0 var(--tabbar-float-luz) inset,
-    0 2px 8px -4px rgba(0, 0, 0, 0.4);
 }
 /* Rota que não é aba (`/planos`): a bolha some no lugar onde estava e volta
    de lá — mandá-la para a primeira aba apontaria para o lugar errado. */
