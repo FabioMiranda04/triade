@@ -485,7 +485,7 @@ body.modal-open .mesh span {
    mesma, troque o estilo que trocar. */
 .tabbar.padrao2-wrap {
   border-top: none;
-  padding: 8px 34px calc(12px + var(--safe-b));
+  padding: 6px 34px calc(10px + var(--safe-b));
   justify-content: center;
 }
 /* A pílula FLUTUA sobre o conteúdo: o <nav> sai do fluxo e a `.app-main`
@@ -514,29 +514,46 @@ body.modal-open .mesh span {
   justify-content: space-around;
   width: 100%;
   max-width: 340px;
-  padding: 7px;
+  padding: 6px;
   border-radius: 999px;
-  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.55);
+  /* Vidro de verdade, não painel escuro com um desfoque atrás.
+     Três camadas, e cada uma faz uma coisa que as outras não fazem:
+     1. `blur` alto + `saturate` — o desfoque sozinho dá leitosa; a
+        saturação devolve a cor do que está por baixo, e é isso que faz
+        parecer material em vez de véu;
+     2. o brilho de 1px no topo (`inset`) é a quina que a luz pega. Sem
+        ele o vidro não tem espessura, tem só transparência;
+     3. a sombra projetada separa a pílula do conteúdo — vidro que não
+        levanta do fundo lê como adesivo.
+     Uma camada de blur só, e ela não se move: o custo é pago uma vez por
+     quadro, não por elemento (ver a bolha abaixo). */
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  border: 1px solid var(--tabbar-float-rim);
+  box-shadow:
+    0 1px 0 var(--tabbar-float-luz) inset,
+    0 14px 30px -14px rgba(0, 0, 0, 0.5);
 }
 .tab-pill .tab {
   border-radius: 999px;
-  padding: 9px 2px;
+  padding: 6px 2px;
+  gap: 3px;
 }
 /* O fundo do item ativo virou a BOLHA (`.tab-bolha`), que é um elemento só
    deslizando por baixo de todos. Acender e apagar um fundo por aba faz o
    destaque piscar de um lugar para outro; a bolha viaja, e o olho segue. */
 .tab-bolha {
+  /* Caixa invisível do tamanho de UMA célula; a esfera visível é o
+     `::before` dentro dela. O motivo é técnico e importa: num `translateX`,
+     `100%` vale a largura do PRÓPRIO elemento — com a esfera (38px) como
+     elemento, o passo seria de 38px e não de uma célula. Com a caixa do
+     tamanho da célula, `translateX(100%)` anda exatamente uma casa, em
+     qualquer largura de tela, sem medir nada em JS. */
   position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: 7px;
-  /* a pílula tem 7px de respiro de cada lado, e são 5 abas de largura igual */
-  width: calc((100% - 14px) / 5);
-  /* 20px e não `999px`: a célula é quase quadrada (59x57), então o raio
-     total vira um CÍRCULO — e o círculo corta o rótulo, que fica cruzando
-     a curva. O quadrado macio abraça ícone e texto juntos. */
-  border-radius: 20px;
-  background: var(--on-dark-fill);
+  top: 3px;
+  left: 6px;
+  width: calc((100% - 12px) / 5);
+  height: 38px;
   pointer-events: none;
   z-index: 0;
   /* Só `transform` e `opacity` (§9): a pílula é quem carrega o
@@ -548,6 +565,29 @@ body.modal-open .mesh span {
   transition:
     transform 0.62s cubic-bezier(0.34, 1.42, 0.5, 1),
     opacity 0.3s ease;
+}
+/* A esfera. Atrás do ÍCONE, não sobre a célula inteira: cobrindo ícone e
+   rótulo juntos a forma vira uma cápsula achatada, e para ser redonda de
+   verdade ela precisa soltar o rótulo — que fica logo abaixo e continua
+   marcado por cor e peso, como faz a barra do iOS. */
+.tab-bolha::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 38px;
+  height: 38px;
+  margin-left: -19px;
+  border-radius: 50%;
+  /* Vidro aqui também, e SEM `backdrop-filter` próprio: um segundo
+     desfoque que anda a cada quadro é o que derruba o desempenho de
+     verdade. O mesmo efeito sai de preenchimento translúcido + brilho na
+     quina de cima — de graça, porque é só pintura. */
+  background: var(--tab-bolha-fundo);
+  border: 1px solid var(--tab-bolha-rim);
+  box-shadow:
+    0 1px 0 var(--tabbar-float-luz) inset,
+    0 2px 8px -4px rgba(0, 0, 0, 0.4);
 }
 /* Rota que não é aba (`/planos`): a bolha some no lugar onde estava e volta
    de lá — mandá-la para a primeira aba apontaria para o lugar errado. */

@@ -590,9 +590,19 @@ viagem. É continuidade, não estado.
 - **A curva passa do destino e volta** — `cubic-bezier(0.34, 1.42, 0.5, 1)`
   em 0,62s. É o exagero que a §12 libera, e é ele que faz o movimento ler
   como bolha em vez de gaveta.
-- **Raio 20px, não `999px`.** A célula é quase quadrada (59×57 em 375px):
-  raio total vira círculo, e o círculo corta o rótulo, que fica cruzando a
-  curva. O quadrado macio abraça ícone e texto juntos.
+- **É uma esfera de 38px atrás do ÍCONE**, não um retângulo sobre a célula
+  inteira. Cobrindo ícone e rótulo juntos a forma vira cápsula achatada;
+  para ser redonda de verdade ela solta o rótulo, que fica logo abaixo e
+  continua marcado por cor e peso — como faz a barra do iOS.
+- **A caixa que anda tem a largura da célula; a esfera é o `::before`
+  dela.** Num `translateX`, `100%` vale a largura do PRÓPRIO elemento: com
+  a esfera de 38px como elemento, o passo seria de 38px em vez de uma casa.
+  Com a caixa do tamanho da célula, `translateX(100%)` acerta em qualquer
+  largura de tela, sem medir nada em JS.
+- **A esfera não tem `backdrop-filter` próprio.** Um segundo desfoque que
+  anda a cada quadro é o que derruba o desempenho de verdade. O efeito de
+  vidro sai de preenchimento translúcido + brilho de 1px na quina de cima
+  — de graça, porque é só pintura.
 - **Rota que não é aba** (`/planos`) → `.fora`, opacidade 0 **sem se
   mexer**: a bolha some onde estava e volta de lá. Mandá-la para a primeira
   aba apontaria para o lugar errado.
@@ -600,6 +610,26 @@ viagem. É continuidade, não estado.
 Só na pílula flutuante. Na barra fixa o item ativo continua com fundo
 próprio — lá as células encostam nas bordas da tela e uma bolha viajando
 não tem margem para respirar.
+
+### Vidro da pílula: três camadas, uma só de blur
+
+O que faz parecer material em vez de painel escuro com desfoque atrás:
+
+1. **`blur(30px) saturate(190%)`** — o desfoque sozinho dá leitosa; a
+   saturação devolve a cor do que está por baixo;
+2. **brilho de 1px no topo** (`box-shadow: inset`) — é a quina que a luz
+   pega. Sem ele o vidro tem transparência, não espessura;
+3. **sombra projetada** — vidro que não levanta do fundo lê como adesivo.
+
+**Uma camada de blur, e ela não se move.** O custo é pago uma vez por
+quadro pela pílula, não por elemento — por isso a esfera é pintura, não um
+segundo `backdrop-filter`.
+
+**A transparência é diferente por tema, e não é inconsistência.** A pílula
+é escura nos dois, mas no Pérola o que passa por trás é conteúdo claro: a
+0.62 de alfa os rótulos ativos mediram 3,2–3,9:1, abaixo dos 4,5 da WCAG
+AA. Ficou 0.78 no Pérola e 0.52 no Ônix. Achado pela auditoria, não pelo
+olho — no escuro passava, e é o tipo de defeito que só existe em um tema.
 
 ### Revelação de imagem
 

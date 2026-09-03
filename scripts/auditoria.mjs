@@ -189,7 +189,11 @@ for (const tema of TEMAS) {
           const rgb = (s) => s.match(/[\d.]+/g).slice(0, 3).map(Number);
           const barra = document.querySelector('.tabbar')?.getBoundingClientRect();
           const out = [];
-          for (const el of document.querySelectorAll('.app-main *, .app-top *')) {
+          // A tab bar entra na conta. Ela ficava de fora porque o filtro
+          // logo abaixo pula o que ela cobre — e acabava pulando ela
+          // própria. É justamente onde o vidro é mais transparente, então
+          // é onde o contraste tem mais chance de reprovar.
+          for (const el of document.querySelectorAll('.app-main *, .app-top *, .tabbar *')) {
             const texto = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim().length > 1);
             if (!texto) continue;
             const cs = getComputedStyle(el);
@@ -197,7 +201,8 @@ for (const tema of TEMAS) {
             const r = el.getBoundingClientRect();
             if (r.width < 8 || r.height < 8) continue;
             if (r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > innerWidth) continue;
-            if (barra && r.bottom > barra.top) continue;  // coberto pela tab bar
+            // coberto pela tab bar — exceto se FOR a tab bar
+            if (barra && r.bottom > barra.top && !el.closest('.tabbar')) continue;
             const px = parseFloat(cs.fontSize);
             out.push({
               nome: (el.className.split(' ')[0] || el.tagName) + ': ' + el.textContent.trim().slice(0, 22),

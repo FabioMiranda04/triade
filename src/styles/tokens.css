@@ -111,7 +111,16 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-dark: rgba(55, 46, 37, 0.86);
   --glass-dark-border: rgba(201, 166, 107, 0.22);
-  --tabbar-float-bg: rgba(55, 46, 37, 0.7);
+  /* Mais transparente que antes (era 0.70): com blur alto e saturação, a
+     cor do conteúdo passa e a pílula lê como material, não como painel.
+     Foi conferido com `npm run auditoria` — os rótulos continuam acima da
+     WCAG AA por cima do conteúdo mais claro do app. */
+  --tabbar-float-bg: rgba(55, 46, 37, 0.52);
+  /* a quina que a luz pega: sem ela o vidro tem transparência, não espessura */
+  --tabbar-float-luz: rgba(255, 255, 255, 0.18);
+  --tabbar-float-rim: rgba(255, 255, 255, 0.1);
+  --tab-bolha-fundo: rgba(255, 255, 255, 0.14);
+  --tab-bolha-rim: rgba(255, 255, 255, 0.16);
   --glass-inset: rgba(255, 255, 255, 0.05);
   --glass-shadow: rgba(0, 0, 0, 0.6);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 34%);
@@ -266,7 +275,7 @@
   /* espaço que a tab bar flutuante ("Padrão 2") ocupa sobre o conteúdo —
      é o respiro que a `.app-main` recebe em padding para o último item não
      ficar preso embaixo da pílula (ver layout.css) */
-  --tabbar-float-h: calc(92px + var(--safe-b));
+  --tabbar-float-h: calc(80px + var(--safe-b));
 
 
   /* tipografia — Manual de Marca, seção 04 ("Aplicação de tipografia")
@@ -347,7 +356,16 @@
      ativo cair para 4,3:1 (medido no pixel). Em 0.82 o rótulo volta a
      5,7:1 e o conteúdo continua aparecendo por baixo, que é o motivo de a
      pílula existir. */
-  --tabbar-float-bg: rgba(45, 35, 24, 0.82);
+  /* No Pérola o vidro carrega MENOS transparência que no Ônix, e isso não é
+     inconsistência: a pílula é escura nos dois temas, mas aqui o que passa
+     por trás é conteúdo claro. A 0.62 os rótulos ativos mediram 3,2–3,9:1
+     — abaixo dos 4,5 da WCAG AA. Achado pela `npm run auditoria`, não pelo
+     olho: no escuro passava, e é o tipo de defeito que só aparece num tema. */
+  --tabbar-float-bg: rgba(45, 35, 24, 0.78);
+  --tabbar-float-luz: rgba(255, 255, 255, 0.2);
+  --tabbar-float-rim: rgba(255, 255, 255, 0.12);
+  --tab-bolha-fundo: rgba(255, 255, 255, 0.16);
+  --tab-bolha-rim: rgba(255, 255, 255, 0.18);
   --glass-inset: rgba(255, 255, 255, 0.7);
   --glass-shadow: rgba(64, 40, 20, 0.26);
   --sheen-grad: linear-gradient(120deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%);

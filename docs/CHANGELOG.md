@@ -11,8 +11,37 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
-## v3.9.0 — Bolha na tab bar flutuante
+## v3.9.0 — Bolha na tab bar flutuante, e a pílula vira vidro de verdade
 **Sessão 22 (terceira parte) — 03/09/2026**
+
+### A pílula ficou mais baixa e virou vidro
+
+Altura de 68 para 61px (o respiro do conteúdo, `--tabbar-float-h`,
+acompanhou: 92 → 80px). E a bolha virou **esfera de 38px atrás do ícone** —
+cobrindo ícone e rótulo juntos ela era uma cápsula achatada; para ser
+redonda de verdade precisa soltar o rótulo, que fica abaixo e continua
+marcado por cor e peso, como na barra do iOS.
+
+O vidro são três camadas: `blur(30px) saturate(190%)` (o desfoque sozinho
+dá leitosa — a saturação devolve a cor do que está por baixo), um brilho de
+1px no topo (a quina que a luz pega; sem ele há transparência, não
+espessura) e a sombra projetada (vidro que não levanta lê como adesivo).
+
+**Uma camada de blur, e ela não se move.** A esfera NÃO tem
+`backdrop-filter` próprio: um segundo desfoque que anda a cada quadro é o
+que derruba desempenho. O efeito dela é pintura.
+
+### A auditoria não olhava a tab bar — e era lá que ia quebrar
+
+O filtro que pula elementos cobertos pela barra acabava pulando a própria
+barra. Corrigido, e a primeira rodada com ela incluída **reprovou na
+hora**: no Pérola os rótulos ativos caíram para 3,2–3,9:1, abaixo dos 4,5
+da WCAG AA — vidro claro demais atrás de texto claro. A transparência do
+Pérola subiu para 0.78 (o Ônix ficou em 0.52).
+
+Não é inconsistência entre temas: a pílula é escura nos dois, mas no claro
+o que passa por trás é conteúdo claro. No escuro passava — é o tipo de
+defeito que só existe em um tema, e que o olho não pega.
 
 O item ativo da pílula tinha fundo próprio: ao trocar de aba, um fundo
 apagava e outro acendia. O destaque **piscava** de um lugar para outro.
