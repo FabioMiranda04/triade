@@ -6,13 +6,27 @@
 **Versão atual:** `v3.11.0`
 **Última atualização:** 03/09/2026
 
-**Última sessão (22, 02/09/2026) — Módulo 5 fechado e auditoria
-versionada.** Palestrante e plano passaram a gravar no banco, completando
-o painel administrativo (evento e post já gravavam). Nenhuma migração de
-SQL foi precisa — as políticas RLS já existiam. O plano é o único
-formulário sem caminho local, de propósito. E o ferramental de verificação
-virou `npm run auditoria`, versionado no repositório em vez de morrer com
-a sessão.
+**Última sessão (22, 02–03/09/2026) — cinco frentes.**
+
+1. **Módulo 5 fechado.** Palestrante e plano passaram a gravar no banco,
+   completando o painel administrativo (evento e post já gravavam).
+   Nenhuma migração de SQL foi precisa — as políticas RLS já existiam. O
+   plano é o único formulário sem caminho local, de propósito.
+2. **Auditoria versionada.** O ferramental de verificação virou
+   `npm run auditoria`, no repositório em vez de morrer com a sessão.
+3. **Diretório de membras: feito e removido no mesmo dia.** Perfil de
+   membra é privado. A tela, o `db.getMembers()` e a política de RLS que
+   deixava qualquer conta logada ler `profiles` saíram. **Pendente no
+   banco de produção** até rodar `supabase/migracao-perfis-privados.sql`.
+   Ver v3.8.0 no `CHANGELOG.md`.
+4. **Convite de boas-vindas** na primeira abertura, com os benefícios do
+   plano em destaque — que saem do próprio plano, não de texto fixo.
+5. **Tab bar flutuante virou vidro com bolha.** Pílula mais baixa, bolha
+   que desliza ocupando a célula inteira, e o rótulo do ícone virou opção
+   em Configurações → Navegação, **desligada por padrão**. Fechando,
+   a tela de abertura do celular e a de carregamento passaram a seguir o
+   manual: ícones dourados sobre o Ônix, sete telas de abertura para iOS
+   e um `index.html` que já desenha algo antes de o bundle chegar.
 
 **Sessão 21 (02/09/2026) — auditoria de UI/UX e camada de
 movimento.** Cascata na troca de aba, foto que revela em vez de estalar,
@@ -186,8 +200,7 @@ na tab bar pra se destacar). Curtir/salvar/RSVP/plano gravam nas tabelas
 reais quando há usuária logada; sem login, ou sem Supabase configurado,
 continua local. Navegação reestruturada em 23/08/2026: CTA "Quero ser
 membro!" no cabeçalho + "Perfil" na tab bar. Próximo passo: **Módulo 3**
-(feed real, diretório de membras) ou completar os Módulos 8/10 já
-detalhados. **Domínio próprio**: passo a passo completo já documentado
+(feed real) ou completar os Módulos 8/10 já detalhados. **Domínio próprio**: passo a passo completo já documentado
 (`docs/DEPLOY.md`), só falta comprar.
 
 **Login com Google — bug real corrigido em 23/08/2026**: apesar de
@@ -415,9 +428,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
    cadastrar/sair com Supabase Auth; curtir/RSVP/plano gravam nas tabelas
    reais quando logada. Ver seção 2.
-2. **Módulo 3 — Área de membras**: feed real e diretório de membras
-   (`profiles` já tem RLS pública para leitura entre logadas, pensada pra
-   isso), "minhas inscrições". O perfil editável em si já saiu do Módulo 2.
+2. **Módulo 3 — Área de membras**: feed real e "minhas inscrições". O
+   perfil editável em si já saiu do Módulo 2. **Diretório de membras está
+   fora**: foi feito e removido em 03/09/2026 porque perfil de membra é
+   privado — a RLS permitir a leitura nunca foi permissão para exibir. Se
+   voltar, precisa de consentimento explícito por perfil, campo a campo.
 3. **Módulo 4 — Assinaturas e pagamento**: cobrança recorrente
    (Stripe/Pagar.me), provavelmente via Edge Function do Supabase para o
    webhook. A tabela `plan_selections` já prevê o campo `status`.

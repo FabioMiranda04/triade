@@ -148,31 +148,43 @@ Só na pílula flutuante. Na barra fixa o item ativo continua como estava:
 lá as células encostam nas bordas da tela e uma bolha viajando não tem
 margem para respirar.
 
-## v3.8.0 — Diretório de membras e o convite de entrada
+## v3.8.0 — O convite de entrada, e o diretório de membras feito e desfeito
 **Sessão 22 (segunda parte) — 03/09/2026**
 
-### Módulo 3, primeira fatia: o diretório
+### Módulo 3, primeira fatia: o diretório — construído e REMOVIDO no mesmo dia
 
-`db.getMembers()` lê `profiles` e a tela Sobre ganhou a seção **Membras da
-Tríade** — mas só para quem está logada. A checagem na tela não é a
-segurança: a RLS de `profiles` só devolve linha para `authenticated`, e
-essa política existe desde o Módulo 2 **exatamente** para isto. Deslogada,
-quem recusa é o banco; a tela só evita mostrar um vazio sem explicação.
+**O diretório de membras não existe no app.** Ele foi construído
+(`cf5e30b`) e removido horas depois (`d3bedf0`), a pedido do usuário. Fica
+registrado aqui porque o erro é mais útil que a funcionalidade seria.
 
-Duas decisões:
+Como foi feito: `db.getMembers()` lia `profiles` e a tela Sobre ganhou a
+seção **Membras da Tríade**, visível só para quem estivesse logada — a RLS
+de `profiles` devolvia linha para qualquer `authenticated`, e a checagem na
+tela só evitava mostrar um vazio sem explicação.
 
-- **sem `withFallback`.** Todas as outras leituras caem no seed quando o
-  Supabase falha. Aqui não: não existe seed de membra, e cair num fallback
-  significaria inventar gente. Erro ou deslogada devolve lista vazia;
-- **perfil incompleto aparece assim mesmo**, com rótulo genérico. Sumir com
-  a pessoa da lista da própria comunidade é pior que um cartão incompleto —
-  e o cartão incompleto convida a preencher.
+**Por que saiu:** perfil de membra é **privado**. Nome, `@` do Instagram e
+negócio de cada mulher da comunidade não viram lista navegável porque a
+política de RLS permitia a consulta. O erro tem nome: tratar "o banco
+devolve a linha" como "pode exibir na tela". São perguntas diferentes — a
+RLS diz o que a conta consegue ler, não o que a pessoa concordou em
+publicar.
 
-O `@` é o próprio link para o Instagram: não há glifo dele no `Icon.tsx`, e
-criar um só para isso trocaria uma palavra legível por um símbolo (regra 7).
+O que foi desfeito, em duas etapas:
+
+- **`d3bedf0` — a tela e o dado.** Saíram a seção em Sobre, o
+  `db.getMembers()` do contrato de `src/lib/db/types.ts` e as duas
+  implementações (local e Supabase). Nada no app lê `profiles` de outra
+  pessoa;
+- **`da654e0` — o banco.** A política `perfis visiveis para logadas` caiu
+  do `schema.sql`, com comentário explicando o motivo e o que um diretório
+  precisaria para voltar em segurança (consentimento explícito por perfil,
+  campo a campo). Enquanto a migração `supabase/migracao-perfis-privados.sql`
+  não for rodada, a política antiga continua valendo no banco em produção:
+  **é a pendência de maior prioridade** da lista do `LAST-SESSION.md`.
 
 **Falta do Módulo 3:** o feed real (membra publicar) e "minhas inscrições".
-O feed precisa de tabela nova, tela de escrever e moderação.
+O feed precisa de tabela nova, tela de escrever e moderação. O diretório
+**não** está nessa lista — se voltar, volta como opt-in.
 
 ### Convite de boas-vindas
 

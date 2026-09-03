@@ -284,7 +284,7 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | 1.5 | Supabase para o conteúdo | ✅ camada pronta |
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
-| 3 | Área de membras logada (feed real, diretório) | 🔸 começado 03/09/2026: **diretório de membras** em Sobre, visível só para quem está logada (`db.getMembers()` sobre `profiles`). Falta o feed real (post de membra) e "minhas inscrições" |
+| 3 | Área de membras logada (feed real) | ⏳ nada em pé. O **diretório de membras** foi construído e removido em 03/09/2026 — perfil de membra é privado (v3.8.0 do CHANGELOG). Falta o feed real (post de membra) e "minhas inscrições". Diretório só volta como opt-in explícito |
 | 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ✅ concluído 02/09/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de evento, post, palestrante e plano |
 | 6 | Migração de dados localStorage → banco | ⏳ |

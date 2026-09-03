@@ -6,9 +6,9 @@
 > trabalho **concluído** — este registra trabalho **em andamento**, e volta
 > para "nada pendente" assim que for retomado e terminado.
 
-**Status: nada pendente de código.** Tudo o que a sessão 21 (02/09/2026)
-produziu está em `main` — commit `cb4eeb2`. Branch e `main` sincronizadas,
-nada sem commit.
+**Status: nada pendente de código.** Tudo o que a sessão 22
+(02–03/09/2026) produziu está em `main` — commit `99fd7c1`. Branch e
+`main` sincronizadas, nada sem commit.
 
 ## Trocando de máquina (web ↔ PC)
 
@@ -35,16 +35,31 @@ e este arquivo. `docs/ESTADO-DO-PROJETO.md` tem o estado detalhado.
 `caveman` e `ponytail`) e o `.claude/settings.json` com as permissões já
 liberadas. Não precisa reinstalar nada.
 
-## Três coisas que só você pode fazer
+## Cinco coisas que só você pode fazer
 
-### 1. Rodar `supabase/migracao-posts.sql` no SQL Editor
+### 1. Rodar `supabase/migracao-perfis-privados.sql` — PRIORIDADE
 
-**É o único passo pendente do código.** Um arquivo, uma colagem, um Run.
-Ele cria a tabela `public.posts` e insere os três posts do Início.
-Idempotente — rodar de novo não duplica.
+Enquanto não rodar, **qualquer conta logada no app consegue ler a tabela
+`profiles` inteira** pela API do Supabase: nome, `@` do Instagram e negócio
+de todas as membras. O app não mostra mais isso (o diretório foi removido),
+mas o banco continua entregando para quem pedir direto. Esta migração
+derruba a política `perfis visiveis para logadas`. Um arquivo, uma
+colagem, um Run.
+
+### 2. Rodar `supabase/migracao-posts.sql` no SQL Editor
+
+Um arquivo, uma colagem, um Run. Ele cria a tabela `public.posts` e insere
+os três posts do Início. Idempotente — rodar de novo não duplica.
 
 Enquanto não rodar: editar um post continua salvando só no navegador de
 quem editou, mesmo sendo admin. Não é bug, é não ter onde gravar.
+
+### 3. Trocar a senha do banco
+
+A senha do Postgres foi colada no chat numa sessão anterior. Ela não foi
+gravada em arquivo nenhum e não chegou a ser usada (TCP puro é bloqueado no
+contêiner remoto), mas ficou no histórico da conversa. Supabase → Settings
+→ Database → Reset database password.
 
 O `schema.sql` e o `seed.sql` **já foram rodados** (01/09/2026): a tabela
 `admins`, a função `curtidas_do_post()`, a Feira de Negócios e as seis
@@ -56,7 +71,7 @@ o Claude aplicar migração sozinho pela Management API. Ver
 `docs/SUPABASE.md`, seção "Rodar SQL sem abrir o SQL Editor" — inclusive o
 que o token custa em risco.
 
-### 2. Testar o anel azul numa janela anônima
+### 4. Testar o anel azul numa janela anônima
 
 No PC aparece um anel azul em volta do botão depois de clicar. **Não é do
 app**: o CSS publicado tem `:focus{outline:none}`, uma varredura no CSS do
@@ -69,7 +84,7 @@ extensão de acessibilidade — todas desenham anel assim). Se continuar, é
 caso novo: anote **qual navegador e versão** e o Claude ataca por outro
 lado.
 
-### 3. Corrigir o manual com quem o produziu
+### 5. Corrigir o manual com quem o produziu
 
 Página 03 do Manual de Marca, item "1. LOGOMARCA PRINCIPAL": a palavra está
 escrita **"coneecta"**, com dois "e". As versões da página 06 estão certas,
@@ -82,10 +97,6 @@ a página que um designer copiaria.
   `.html` do Instagram não trouxe as imagens (só o HTML, sem a pasta
   `Instagram_files/`). Para trocar: mande o JPG, ou faça pelo app — Início
   → "..." → Editar → Foto do post, que já recorta em 4:5.
-- **Loop de auditoria versionado.** O ferramental que achou o overflow de
-  7px em 360px, as reprovações de contraste e o dia 12 sumido vive no
-  scratchpad e morre com a sessão. Virar script no repo, rodando a cada
-  build, foi proposto e não foi feito. É o que mais tira trabalho manual.
 - **Notificação de evento** — última peça do Módulo 7 (a instalação já
   funciona). Precisa de push com VAPID e tabela de inscrições.
 
