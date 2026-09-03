@@ -604,17 +604,21 @@ body.modal-open .mesh span {
 /* Sem o texto embaixo, a célula deixa de ser um retângulo em pé e vira
    quase um quadrado — a bolha, que ocupa a célula inteira, fica
    naturalmente redonda. Era o efeito que se buscava desde o começo. */
+/* A largura da célula é fixa: 5 abas dentro de 307px dão ~60px cada. Para
+   a bolha ser REDONDA a altura tem que subir até perto disso — daí o
+   respiro de 18px (18 + 20 do ícone + 18 = 56, contra 60 de largura, o
+   que o olho já lê como círculo). Estreitar a bolha daria o mesmo
+   resultado com menos altura, mas ela deixaria de ocupar a célula inteira,
+   que é o oposto do pedido. */
 .app.sem-rotulo {
-  --tabbar-float-h: calc(68px + var(--safe-b));
+  --tabbar-float-h: calc(78px + var(--safe-b));
 }
-/* 12px de respiro, não 8: o rótulo saiu e levava junto ~11px de altura, o
-   que deixava o alvo de toque em 36px — abaixo do piso de 38 do app e
-   longe dos 44 da Apple. A `npm run auditoria` reprovou nas 20
-   combinações, e é o tipo de regressão que só aparece medindo: a barra
-   parecia ótima. 12 + 20 + 12 = 44px de alvo, e a pílula ainda fica 11px
-   mais baixa do que com texto. */
+/* Sem o rótulo o alvo de toque chegou a cair para 36px (a `npm run
+   auditoria` reprovou nas 20 combinações, com a barra parecendo ótima).
+   Com 18px de respiro ele fica em 56px — bem acima dos 44 da Apple, e é
+   o mesmo número que arredonda a bolha. */
 .app.sem-rotulo .tab-pill .tab {
-  padding: 12px 2px;
+  padding: 18px 2px;
 }
 .app.sem-rotulo .tabbar:not(.padrao2-wrap) .tab {
   padding: 11px 2px;

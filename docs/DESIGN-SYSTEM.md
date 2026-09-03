@@ -633,11 +633,18 @@ mais texto visível, a regra 2.5.3 da WCAG (nome acessível tem que conter o
 texto visível) deixa de se aplicar — é por isso que o rótulo curto
 "Palestras" existia, e ele só importa com a chave ligada.
 
-**Armadilha medida:** tirar o texto tirou junto ~11px de altura, e o alvo
-de toque caiu para 36px — abaixo do piso de 38 do app. A barra parecia
-ótima; quem pegou foi a `npm run auditoria`, nas 20 combinações. O respiro
-do item subiu para 12px (12 + 20 + 12 = 44, o número da Apple) e a pílula
-ainda ficou 11px mais baixa do que com texto.
+**Sem rótulo a pílula é MAIS ALTA, e isso é de propósito.** A largura da
+célula é fixa — 5 abas em 307px dão ~60px cada —, então a bolha só fica
+redonda se a altura subir até perto disso. Com 18px de respiro a célula
+mede 60×56 (razão 0,94, que o olho lê como círculo) e a pílula fica em
+64px, contra 61px da versão com texto. Estreitar a bolha daria o mesmo
+arredondamento com menos altura, mas ela deixaria de ocupar a célula
+inteira — que é o oposto do que foi pedido.
+
+**Armadilha medida no caminho:** tirar o texto tirou junto ~11px, e com o
+respiro de 8px o alvo de toque caiu para 36px — abaixo do piso de 38 do
+app. A barra parecia ótima; quem pegou foi a `npm run auditoria`, nas 20
+combinações. Com os 18px atuais o alvo é 56px, bem acima dos 44 da Apple.
 
 ### Vidro da pílula: três camadas, uma só de blur
 

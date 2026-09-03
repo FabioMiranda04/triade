@@ -27,11 +27,18 @@ que a §6.3 do manual já mandava fazer com variação de UI.
 cada aba, então leitor de tela e comando de voz seguem iguais. Sem texto
 visível, a regra 2.5.3 da WCAG deixa de se aplicar.
 
-**A auditoria pegou uma regressão que o olho não pegaria.** Tirar o texto
-levou junto ~11px, e o alvo de toque caiu para **36px** — abaixo do piso
-de 38 do app e longe dos 44 da Apple. Reprovou nas 20 combinações. O
-respiro do item subiu para 12px (12 + 20 + 12 = 44) e a pílula ainda ficou
-11px mais baixa do que com texto.
+**Sem rótulo a pílula é mais alta, e é de propósito.** A largura da célula
+é fixa (5 abas em 307px = ~60px cada), então a bolha só fica redonda se a
+altura subir até perto disso: com 18px de respiro ela mede **60×56**,
+razão 0,94 — o olho lê círculo. A pílula fica em 64px contra 61 da versão
+com texto. Estreitar a bolha daria o mesmo arredondamento com menos
+altura, mas ela deixaria de ocupar a célula inteira, que é o oposto do
+pedido.
+
+**A auditoria pegou uma regressão no caminho.** Numa versão intermediária,
+com respiro de 8px, o alvo de toque caiu para **36px** — abaixo do piso de
+38 do app. Reprovou nas 20 combinações, com a barra parecendo ótima. Com
+os 18px atuais o alvo é 56px, bem acima dos 44 da Apple.
 
 Entrou também a chave liga/desliga (`.ios-switch`) no padrão iOS, usável
 em qualquer `.ios-row`: quem carrega estado e toque é o botão da linha
