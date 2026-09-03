@@ -1,4 +1,4 @@
-import type { Member, Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
 
 /**
  * Contrato da camada de dados.
@@ -16,13 +16,6 @@ export interface DataProvider {
   getPosts(): Promise<Post[]>;
   getSpeakers(): Promise<Speaker[]>;
   getPlans(): Promise<Plan[]>;
-
-  /**
-   * Diretório de membras (Módulo 3). Lista vazia quando não há Supabase ou
-   * ninguém está logada — a RLS de `profiles` só devolve linha para quem
-   * está autenticada.
-   */
-  getMembers(): Promise<Member[]>;
 
   /* ---- engajamento da usuária ----
      Assíncrono desde o Módulo 2: com usuária logada e Supabase configurado,

@@ -1,7 +1,7 @@
 import { requireSupabase } from '@/lib/supabase';
 import { seed } from '@/data/seed';
-import type { Member, Plan, Post, Speaker, TriadeEvent } from '@/types';
-import type { EventRow, PlanRow, PostRow, ProfileRow, SpeakerRow } from '@/types/database';
+import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { EventRow, PlanRow, PostRow, SpeakerRow } from '@/types/database';
 import type { DataProvider } from './types';
 import { engagement } from './prefs';
 
@@ -34,19 +34,6 @@ function mapEvent(row: EventRow): TriadeEvent {
     spots: row.spots || undefined,
     recapText: row.recap_text ?? undefined,
     recapMedia: row.recap_media && row.recap_media.length > 0 ? row.recap_media : undefined,
-  };
-}
-
-function mapMember(row: ProfileRow): Member {
-  return {
-    id: row.id,
-    // sem nome preenchido a linha viraria um vazio no diretório; o rótulo
-    // genérico ao menos diz que a pessoa existe
-    nome: row.full_name?.trim() || 'Membra da Tríade',
-    bio: row.bio ?? undefined,
-    instagram: row.instagram ?? undefined,
-    negocio: row.business ?? undefined,
-    avatarUrl: row.avatar_url ?? undefined,
   };
 }
 
@@ -359,20 +346,6 @@ export const supabaseProvider: DataProvider = {
       mapPost,
       seed.posts,
     ),
-
-  // Sem `withFallback`: não existe seed de membra, e cair num fallback aqui
-  // significaria inventar gente. Erro ou deslogada => lista vazia.
-  getMembers: async (): Promise<Member[]> => {
-    const { data, error } = await requireSupabase()
-      .from('profiles')
-      .select('*')
-      .order('full_name', { ascending: true });
-    if (error) {
-      console.error('[supabase] não deu para listar as membras:', error.message);
-      return [];
-    }
-    return (data ?? []).map(mapMember);
-  },
 
   getSpeakers: () =>
     withFallback(

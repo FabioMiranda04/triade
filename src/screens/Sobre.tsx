@@ -1,8 +1,6 @@
 import { Mark } from '@/components/Brand';
-import { DiretorioMembras } from '@/components/DiretorioMembras';
 import { SectionHead } from '@/components/SectionHead';
 import { founders, timeline } from '@/data/seed';
-import { useAuth } from '@/context/AuthContext';
 import { byName } from '@/lib/format';
 
 const STATS = [
@@ -13,11 +11,6 @@ const STATS = [
 
 /** Tela Sobre — perfil da comunidade, idealizadoras e trajetória. */
 export default function Sobre() {
-  // O diretório só existe para quem está logada, e a decisão não é da tela:
-  // a RLS de `profiles` só devolve linha para `authenticated`. Aqui a
-  // checagem evita mostrar uma seção que viria vazia sem explicar por quê.
-  const { user } = useAuth();
-
   return (
     <section className="panel">
       <div className="profile-card glass">
@@ -58,17 +51,6 @@ export default function Sobre() {
           </div>
         ))}
       </div>
-
-      {user && (
-        <>
-          <SectionHead
-            eyebrow="Comunidade"
-            title="Membras da Tríade"
-            description="Quem já faz parte. Toque no @ para visitar o Instagram."
-          />
-          <DiretorioMembras />
-        </>
-      )}
 
       <SectionHead eyebrow="Nossa trajetória" title="Conexões genuínas" />
       {timeline.map((item) => (
