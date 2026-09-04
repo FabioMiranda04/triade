@@ -65,9 +65,23 @@ supabase/
 ├── schema.sql            # tabelas + RLS + triggers (idempotente) — já rodado no projeto real
 └── seed.sql              # conteúdo inicial (idempotente)
 
-landing/                  # página de captação do QR code do outdoor — NÃO é o app
-├── convite.html          #   .html autocontido, fora do build (abrir direto no navegador)
-└── README.md             #   status, decisões tomadas, ajustes pendentes e link de revisão
+html/                     # TODO .html que não é o app — inventário em html/README.md
+├── README.md             #   os 3 .html do repo e quais entram no build
+├── landing/              #   página de captação do QR code do outdoor — NÃO é o app
+│   ├── convite.html      #     .html autocontido, fora do build (abrir direto no navegador)
+│   └── README.md         #     status, ajustes pendentes e como publicar em /convite.html
+└── legacy/               #   HTML original do Bubble — referência visual, NÃO EDITE
+```
+
+`index.html` fica na **raiz**, e é a única exceção: é a entrada do Vite.
+Mover exigiria mexer em `root`, no caminho do `public/`, na saída do `dist/`
+e na Vercel. Ver `html/README.md`.
+
+```
+docs/specs/               # SDD — comportamento especificado antes de codar (R19)
+├── README.md             #   formato da spec e índice
+├── SPEC-001-…            #   quando o convite de membro aparece (implementada)
+└── SPEC-002-pagamento.md #   assinatura e pagamento, 3 fases (aprovada, não feita)
 ```
 
 ```
@@ -285,7 +299,7 @@ INTEIRO para `never`, e o erro aparece em tabelas que você nem tocou. Detalhes 
 | — | Pop-up de evento + WhatsApp, edição inline local, config/tab bar | ✅ pronto (sessões 6–9) |
 | 2 | Autenticação (Supabase Auth) — entrar/cadastrar/sair, Google (configurado e funcionando), perfil editável, engajamento no banco quando logada | ✅ concluído 23/08/2026 |
 | 3 | Área de membras logada (feed real) | ⏳ nada em pé. O **diretório de membras** foi construído e removido em 03/09/2026 — perfil de membra é privado (v3.8.0 do CHANGELOG). Falta o feed real (post de membra) e "minhas inscrições". Diretório só volta como opt-in explícito |
-| 4 | Assinaturas e pagamento (já com banco real) | ⏳ |
+| 4 | Assinaturas e pagamento (já com banco real) | ⏳ **especificado** em `docs/specs/SPEC-002-pagamento.md` (3 fases; a fase 0 cobra sem back-end). Parado esperando 4 decisões comerciais — provedor, CNPJ, preço, o que quem para de pagar perde |
 | 5 | Painel administrativo — trocar o overlay local (`localContent.ts`) por gravação real no Supabase | ✅ concluído 02/09/2026: permissão (`admins` + RLS), upload de foto para o Storage e gravação real de evento, post, palestrante e plano |
 | 6 | Migração de dados localStorage → banco | ⏳ |
 | 7 | Atalho na tela de início (Android/iOS) + notificações de evento/ingressos | 🔸 instalação pronta 02/09/2026 (manifesto + ícones + service worker); falta a notificação (push com VAPID + tabela de inscrições) |

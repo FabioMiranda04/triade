@@ -4,43 +4,50 @@ import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { ModalOverlay } from '@/components/ModalOverlay';
 import { db } from '@/lib/db';
-import { getPref, setPref } from '@/lib/db/prefs';
+import { decidirConvite } from '@/lib/convite';
+import { getFlagSessao, setFlagSessao } from '@/lib/db/prefs';
 import { formatPrice } from '@/lib/format';
 import type { Plan } from '@/types';
 
-const PREF = 'boas_vindas_vista';
+const FLAG = 'convite_visto_sessao';
+
+/** D5 — tempo para a tela terminar de montar antes de o convite entrar. */
+const ATRASO_MS = 900;
 
 /**
- * Convite para virar membra, na primeira abertura do app.
+ * Convite para virar membra.
  *
- * Três regras que decidem se ele aparece, e todas existem para o convite
- * não virar praga:
+ * **Quando ele aparece não se decide aqui** — a regra inteira mora em
+ * `src/lib/convite.ts`, especificada em
+ * `docs/specs/SPEC-001-convite-de-membro.md`. Este componente faz três
+ * coisas e só: busca o estado, pergunta à regra, desenha o resultado.
  *
- * 1. **uma vez por aparelho.** Fechou, não volta — a preferência fica
- *    gravada mesmo se a pessoa não clicar em nada. Um pop-up que reaparece
- *    a cada abertura não convence ninguém, ensina a fechar rápido;
- * 2. **nunca para quem já escolheu plano.** Vender de novo para quem já
- *    comprou é o jeito mais rápido de parecer que o app não sabe quem ela é;
- * 3. **depois da tela desenhar.** Entra com 900ms de atraso: cair por cima
- *    de uma tela que ainda está montando lê como erro, não como convite.
+ * Em resumo, para quem está lendo a tela: o convite volta **a cada abertura
+ * do app** (não a cada navegação, não a cada F5) e some para sempre quando
+ * a pessoa assina um plano pago.
  *
- * Os benefícios não são texto fixo: saem do plano em destaque
- * (`featured`), então corrigir uma vantagem em Planos → "..." → Editar já
- * corrige o convite. Duas fontes de verdade para a mesma lista sairiam de
- * sincronia na primeira alteração.
+ * Os benefícios não são texto fixo: saem do plano promovido, então corrigir
+ * uma vantagem em Planos → "..." → Editar já corrige o convite. Duas fontes
+ * de verdade para a mesma lista sairiam de sincronia na primeira alteração.
  */
 export function BoasVindas() {
   const navigate = useNavigate();
   const [plano, setPlano] = useState<Plan | null>(null);
 
   useEffect(() => {
-    if (getPref(PREF, false)) return;
     let vivo = true;
     void Promise.all([db.getPlans(), db.getChosenPlan()]).then(([planos, escolhido]) => {
-      if (!vivo || escolhido) return;
-      const destaque = planos.find((p) => p.featured) ?? planos[1] ?? planos[0];
-      if (!destaque) return;
-      setTimeout(() => vivo && setPlano(destaque), 900);
+      if (!vivo) return;
+      const promovido = decidirConvite({
+        planos,
+        planoEscolhidoId: escolhido,
+        vistoNestaAbertura: getFlagSessao(FLAG),
+      });
+      if (!promovido) return;
+      // D6: marca aqui, na decisão, e não no fechar — senão quem ignora o
+      // pop-up e recarrega a página o vê de novo na mesma abertura.
+      setFlagSessao(FLAG);
+      setTimeout(() => vivo && setPlano(promovido), ATRASO_MS);
     });
     return () => {
       vivo = false;
@@ -50,7 +57,6 @@ export function BoasVindas() {
   if (!plano) return null;
 
   function fechar() {
-    setPref(PREF, true);
     setPlano(null);
   }
 

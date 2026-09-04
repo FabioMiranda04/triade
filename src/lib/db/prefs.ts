@@ -44,6 +44,36 @@ export function setPref(key: string, value: unknown): boolean {
   }
 }
 
+/**
+ * Marca de "já aconteceu nesta abertura do app".
+ *
+ * Vive em `sessionStorage`, e a escolha do storage **é** a regra: ele morre
+ * quando a aba/janela do app fecha, e sobrevive a recarregar a página e a
+ * navegar entre telas. É exatamente a fronteira de "abertura do app" que a
+ * SPEC-001 precisa — `localStorage` sobreviveria demais (foi o que fez o
+ * convite aparecer uma vez só, para sempre) e uma variável em memória
+ * sobreviveria de menos (voltaria a cada F5).
+ *
+ * Mesmo cuidado do `isBrowser()` acima: o acesso em si pode lançar quando o
+ * navegador bloqueia storage. Bloqueado, devolve `false` — o efeito é o
+ * convite aparecer, que é o lado seguro de errar.
+ */
+export function getFlagSessao(key: string): boolean {
+  try {
+    return window.sessionStorage.getItem(NS + key) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function setFlagSessao(key: string): void {
+  try {
+    window.sessionStorage.setItem(NS + key, '1');
+  } catch {
+    // storage bloqueado: o pior caso é o convite reaparecer ao recarregar
+  }
+}
+
 export function readCache<T>(key: string, fallback: T): T {
   if (!isBrowser()) return fallback;
   try {

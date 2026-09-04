@@ -73,4 +73,4 @@ Nenhum componente fala com o banco direto: tudo passa pelo `db` de
 ## Histórico
 
 O app começou como um único arquivo HTML colado num elemento do Bubble.io.
-Esse arquivo está preservado em [`legacy/`](./legacy/) apenas como referência.
+Esse arquivo está preservado em [`html/legacy/`](./html/legacy/) apenas como referência.

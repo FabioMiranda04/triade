@@ -6,9 +6,10 @@
 > trabalho **concluído** — este registra trabalho **em andamento**, e volta
 > para "nada pendente" assim que for retomado e terminado.
 
-**Status: nada pendente de código.** Tudo o que a sessão 22
-(02–03/09/2026) produziu está em `main` — commit `99fd7c1`. Branch e
-`main` sincronizadas, nada sem commit.
+**Status: nada pendente de código.** Tudo o que a sessão 23 (04/09/2026)
+produziu está em `main`. Branch e `main` sincronizadas, nada sem commit.
+(Sem número de commit aqui de propósito: ele fica velho toda sessão e vira
+mais uma coisa para conferir. `git log -1` responde melhor.)
 
 ## Trocando de máquina (web ↔ PC)
 
@@ -35,7 +36,7 @@ e este arquivo. `docs/ESTADO-DO-PROJETO.md` tem o estado detalhado.
 `caveman` e `ponytail`) e o `.claude/settings.json` com as permissões já
 liberadas. Não precisa reinstalar nada.
 
-## Cinco coisas que só você pode fazer
+## Seis coisas que só você pode fazer
 
 ### 1. Rodar `supabase/migracao-perfis-privados.sql` — PRIORIDADE
 
@@ -90,6 +91,25 @@ Página 03 do Manual de Marca, item "1. LOGOMARCA PRINCIPAL": a palavra está
 escrita **"coneecta"**, com dois "e". As versões da página 06 estão certas,
 e foi de lá que saiu a máscara do app — o código está correto. Mas aquela é
 a página que um designer copiaria.
+
+### 6. Decidir o provedor de pagamento
+
+`docs/specs/SPEC-002-pagamento.md` está pronta e parada esperando quatro
+decisões que são suas, não técnicas:
+
+1. **qual provedor** — recomendação é **Asaas** (assinatura recorrente com
+   Pix e link de cobrança que se manda por WhatsApp, que já é o canal da
+   Tríade). Mercado Pago é a troca certa se a preferência for marca
+   conhecida na hora de pagar. Stripe está fora: não faz Pix recorrente;
+2. **CNPJ** para abrir a conta — todos exigem;
+3. **preço final** de cada plano (hoje o `seed.ts` tem valores de
+   demonstração: R$ 0, R$ 97/mês, R$ 970/ano);
+4. **o que quem para de pagar perde** — pode esperar, o app ainda não tem
+   conteúdo exclusivo.
+
+Decidido o item 1, a **fase 0** da spec é curta: criar os links de cobrança
+no painel do provedor e me mandar as URLs. Não precisa de back-end nenhum e
+já cobra de verdade.
 
 ## Opcional, quando quiser
 

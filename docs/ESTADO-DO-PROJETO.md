@@ -3,10 +3,21 @@
 > Estado **atual** do projeto. O histórico fica no `CHANGELOG.md`.
 > Para regras de trabalho e convenções, veja o `CLAUDE.md` na raiz.
 
-**Versão atual:** `v3.11.0`
-**Última atualização:** 03/09/2026
+**Versão atual:** `v4.0.0`
+**Última atualização:** 04/09/2026
 
-**Última sessão (22, 02–03/09/2026) — cinco frentes.**
+**Última sessão (23, 04/09/2026) — o projeto passa a trabalhar por spec.**
+Comportamento novo agora começa em `docs/specs/` e a regra vira **função
+pura**, fora do componente (regra 19 do `CLAUDE.md`). Primeira aplicação:
+o **convite de membro volta a cada abertura do app** — antes aparecia uma
+única vez por aparelho, para sempre, e é o único lugar que promove o plano
+premium. A regra saiu do `BoasVindas.tsx` para `src/lib/convite.ts`.
+Plano gratuito deixou de silenciar o convite; só plano pago silencia.
+**SPEC-002** desenhou o pagamento (Módulo 4) em três fases, com a fase 0
+já cobrando sem back-end nenhum. E todo `.html` que não é o app foi para
+`html/` (`index.html` fica na raiz por ser a entrada do Vite).
+
+**Sessão 22 (02–03/09/2026) — cinco frentes.**
 
 1. **Módulo 5 fechado.** Palestrante e plano passaram a gravar no banco,
    completando o painel administrativo (evento e post já gravavam).
@@ -159,7 +170,7 @@ Detalhes e números no `CHANGELOG.md`, entrada `v2.5.0`.
 QR code, e o destino desse QR é uma página nova — não o app. O app abre no
 feed e não explica o que é a Tríade para quem chega sem contexto, então
 mandar o QR para lá desperdiçaria o investimento. Rascunho pronto e
-aprovado em conceito, guardado em `landing/`; ajustes pendentes listados
+aprovado em conceito, guardado em `html/landing/`; ajustes pendentes listados
 lá. Estratégia definida: **uma única ação (WhatsApp), e a página não vende
 assinatura** — quem nunca foi a um encontro não assina uma comunidade.
 
@@ -174,7 +185,7 @@ que existiam como mock **não existem mais** — foram substituídas por
 edições reais (Casa Benedita, Carla Martins, 6ª, 9ª, Maio, 11ª) e pelo
 próximo evento de verdade, o Jantar da Tríade para Casais (30/09/2026).
 Qualquer texto do projeto que ainda cite "3 edições" ou "85+ mulheres" é
-resíduo do mock. A `landing/` foi limpa em 31/08/2026 (ela ainda tinha "85
+resíduo do mock. A `html/landing/` foi limpa em 31/08/2026 (ela ainda tinha "85
 vagas" no fecho e "19 de setembro" na barra fixa).
 
 **Módulo em desenvolvimento:** **Módulo 9 (Eventos: calendário +
@@ -362,13 +373,13 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
 | `docs/` | Esta documentação |
 | `docs/DESIGN-SYSTEM.md` | **Manual de UI/UX** — tokens, pop-ups, ícones, animação, navegação. Ler antes de mexer em interface. |
 | `.env.example` | Modelo das variáveis; copiar para `.env.local` |
-| `legacy/` | HTML original do Bubble, só referência — **não editar** |
+| `html/legacy/` | HTML original do Bubble, só referência — **não editar** |
 | `vercel.json` | Configuração de deploy (inclui rewrite de SPA) |
 | `.claude/commands/` | Comandos/skills prontos para o Claude Code (inclui `design-systems` e `revisar-mobile`) |
 | `src/styles/tokens.css` | **Onde toda cor vive.** Três camadas: paleta de marca → papéis semânticos → blocos de tema. Nenhum outro arquivo sabe qual tema está ativo. |
 | `src/context/ThemeContext.tsx` | Tema visual (Pérola / Ônix): grava `data-theme` no `<html>`, persiste no aparelho e sincroniza a `<meta name="theme-color">` |
 | `content-raw/` | Pasta de trabalho local para o export do Instagram — **ignorada pelo Git**, nunca commitar o conteúdo |
-| `landing/` | Página de captação do QR code do outdoor (rascunho). `.html` autocontido, **fora do build** — não é o app. Status e pendências em `landing/README.md` |
+| `html/landing/` | Página de captação do QR code do outdoor (rascunho). `.html` autocontido, **fora do build** — não é o app. Status e pendências em `html/landing/README.md` |
 | `.github/workflows/ci.yml` | Typecheck + build em cada push/PR |
 
 ## 5. O que NÃO foi feito ainda (importante não presumir)
@@ -422,7 +433,7 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
      navegação reestruturada).
    - ~~Calendário na tela Eventos~~ — **resolvido em 23/08/2026**:
      `EventCalendar.tsx` novo, desenhado do zero (não foi encontrada
-     nenhuma versão anterior no código, no `git log` nem no `legacy/` — o
+     nenhuma versão anterior no código, no `git log` nem no `html/legacy/` — o
      usuário lembrava de algo que não existia neste repositório). Ver
      Módulo 9 na seção 6.
 1. ~~Módulo 2 — Autenticação~~ **✅ concluído em 23/08/2026.** Entrar/
@@ -507,7 +518,7 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    `recapText?`/`recapMedia?`. Múltiplos eventos futuros ao mesmo tempo:
    decisão do usuário foi não tratar por ora (ritmo é mensal). O calendário
    que o usuário lembrava de uma versão anterior **não foi encontrado**
-   nem no código, nem no `git log`, nem no `legacy/` — este é desenhado do
+   nem no código, nem no `git log`, nem no `html/legacy/` — este é desenhado do
    zero. Validado com `tsc -b` + `vite build` + Playwright em 375px.
    **Pendente**: `recap_text`/`recap_media` só existem em
    `supabase/schema.sql`/`seed.sql` — rodar contra o projeto Supabase real

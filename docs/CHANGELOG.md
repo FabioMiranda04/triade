@@ -11,6 +11,123 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v4.0.0 — SDD: a regra sai da tela e vira função
+**Sessão 23 — 04/09/2026**
+
+Módulo novo de método, então MAJOR sobe: o projeto passa a especificar
+comportamento antes de implementar, e a guardar a regra numa função pura em
+vez de dentro do componente que a usa.
+
+### O convite de membro volta a cada abertura do app
+
+Ele aparecia **uma vez por aparelho, para sempre**. Quem abriu o app no dia
+em que instalou nunca mais viu — e é o único lugar que apresenta o plano
+premium para quem ainda não é membra.
+
+A cadência agora é **uma vez por abertura**: reabriu o app, o convite volta;
+navegar entre telas ou dar F5 não conta. A fronteira é `sessionStorage`, e a
+escolha do storage **é** a regra — ele morre quando a janela do app fecha e
+sobrevive a recarregar, que é exatamente a definição de "abertura".
+`localStorage` sobrevivia demais (foi o que causou o problema) e uma
+variável em memória sobreviveria de menos.
+
+O argumento antigo — "pop-up que reaparece ensina a fechar rápido" — não foi
+descartado, foi delimitado: ele vale para pop-up que reaparece **dentro da
+mesma sessão**, a cada navegação. Uma vez por abertura é a cadência de
+qualquer app que vende assinatura.
+
+Duas regras mudaram junto:
+
+- **plano gratuito não silencia mais o convite.** Antes, escolher qualquer
+  plano fazia o convite sumir. Mas quem escolheu o grátis é exatamente o
+  perfil que ele existe para converter. Agora só plano **pago** (`price > 0`)
+  cala o convite — vender de novo para quem já comprou continua proibido;
+- **o plano promovido deixou de ser posicional.** Era `planos[1]`, que
+  quebra em silêncio quando alguém reordena o `seed.ts`. Agora é o
+  `featured`, com queda para o primeiro pago.
+
+Verificado no navegador, os seis casos: primeira abertura aparece · navegar
+não reaparece · F5 não reaparece · abertura nova aparece · plano pago nunca
+aparece · plano grátis continua aparecendo.
+
+### O método: `docs/specs/` e a regra 19
+
+O motivo de a mudança acima ter sido barata é o que interessa. A regra
+"quando o convite aparece" morava dentro de um `useEffect` no
+`BoasVindas.tsx`, misturada com busca de dado e com JSX. Mexer nela era ler
+o componente inteiro para achar onde a decisão estava.
+
+Agora ela mora em `src/lib/convite.ts`, numa função pura — sem `await`, sem
+storage, sem React. Entra estado, sai decisão:
+
+```ts
+decidirConvite({ planos, planoEscolhidoId, vistoNestaAbertura }): Plan | null
+```
+
+O componente ficou com o trabalho dele: buscar, perguntar, desenhar.
+
+É a mesma fronteira da regra 5 (nenhum componente fala com storage direto),
+aplicada agora à **decisão** e não só ao **dado**. Virou a **regra 19** do
+`CLAUDE.md`: comportamento novo começa por spec — Problema · Decisão
+numerada · Contrato · Aceite · Fora de escopo — e a regra vira função.
+
+**Duas specs nasceram:**
+
+- **SPEC-001**, do convite, já implementada;
+- **SPEC-002**, do pagamento (Módulo 4), aprovada e não implementada.
+
+### O plano de pagamento, em três fases
+
+A tentação era desenhar checkout, webhook e portal da assinante antes de a
+primeira mulher pagar. A spec faz o contrário: **a fase 0 já cobra e não
+tem back-end nenhum** — link de cobrança recorrente criado no painel do
+provedor, que o app abre. É o produto inteiro para quem tem dezenas de
+assinantes, e é reversível.
+
+A fase 1 (tabela `subscriptions` + webhook em Edge Function) só entra quando
+conferir pagamento na mão virar trabalho. A fase 2 (checkout dentro do app)
+só depois disso.
+
+Duas decisões que valem antes de existir código:
+
+- **quem decide se está pago é o webhook, nunca a tela.** Sem isso, "sou
+  membra" vira um `POST` que qualquer pessoa com o DevTools manda;
+- **`plan_selections` continua existindo ao lado de `subscriptions`.** Uma é
+  intenção ("ela clicou"), a outra é fato ("o provedor confirmou"). Fundir
+  as duas perderia a lista de quem quis e não pagou — que é a mais útil
+  para a Tríade ligar de volta.
+
+Provedor recomendado: **Asaas**, porque link de cobrança recorrente que se
+manda por WhatsApp é literalmente o fluxo que a Tríade já usa, só que
+cobrando. Stripe está fora por não fazer Pix recorrente.
+
+E o gancho com a SPEC-001 é o ponto todo do método: quando o pagamento
+entrar, "já é membra" deixa de ser "escolheu plano pago" e passa a ser "tem
+assinatura ativa" — dentro de `ehMembroPagante`, uma função. O convite, a
+tela de Planos e o resto do app não mudam uma linha.
+
+### Todo HTML num lugar só
+
+`landing/` e `legacy/` saíram da raiz e viraram `html/landing/` e
+`html/legacy/`. `html/README.md` é o inventário: três arquivos, o que cada
+um é, e quais entram no build.
+
+**`index.html` continua na raiz** e é a única exceção — ele é a entrada do
+Vite, e mover exigiria mexer em `root`, no caminho do `public/`, na saída do
+`dist/` e na configuração da Vercel. Três coisas que funcionam, trocadas por
+uma pasta mais arrumada: não compensa. A regra virou explícita nos dois
+lugares (`CLAUDE.md` e `html/README.md`) para ninguém procurar duas vezes.
+
+Nada no build referenciava as duas pastas — `vercel.json`, `vite.config.ts`
+e os scripts do `package.json` foram conferidos antes da mudança.
+
+### A auditoria precisou saber da flag nova
+
+`npm run auditoria` marcava `triade_pref_boas_vindas_vista` para o convite
+não cobrir a tela medida. Essa preferência não existe mais; o script agora
+marca a flag de sessão. Sem isso, o convite passaria a cobrir **toda** rota
+auditada — a mudança de cadência quebraria a auditoria em silêncio.
+
 ## v3.11.0 — Tela de abertura e de carregamento
 **Sessão 22 (quinta parte) — 03/09/2026**
 

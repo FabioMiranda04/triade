@@ -26,7 +26,7 @@ Nasceu como HTML único dentro do Bubble.io → migrado para código real.
 - CSS puro com variáveis. Sem Tailwind, sem CSS-in-JS
 - Supabase (Postgres + RLS) atrás de `src/lib/db/`
 - Deploy Vercel (`vercel.json`)
-- `legacy/` = HTML original, referência visual. **NÃO EDITE**
+- `html/legacy/` = HTML original, referência visual. **NÃO EDITE**
 
 ## 3. Comandos
 
@@ -51,14 +51,17 @@ Fora daqui para não pesar em toda chamada. Leia sob demanda:
 | receita: tela / ícone / cor / campo de dado / pop-up / UI de edição nova | `docs/GUIA-DO-REPO.md` §2 |
 | **o que ainda NÃO existe** (não presuma) | `docs/GUIA-DO-REPO.md` §3 |
 | roadmap e status dos módulos | `docs/GUIA-DO-REPO.md` §4 |
+| **spec de comportamento** (o que a regra é, e onde ela mora) | `docs/specs/` — índice no `README.md` de lá |
 | estado atual, decisões, pendências | `docs/ESTADO-DO-PROJETO.md` |
 | tokens, pop-up, ícone, animação, navegação, **direção de design** | `docs/DESIGN-SYSTEM.md` (skill `design-systems`) |
 | cor de marca e fonte — manda em tudo (R16) | `docs/MANUAL-DE-MARCA.md` |
 | trabalho interrompido no meio | `docs/LAST-SESSION.md` |
 | histórico | `docs/CHANGELOG.md` |
 
-1º nível: `src/` app · `supabase/` schema+seed · `landing/` página do QR
-code (fora do build) · `legacy/` não editar · `docs/`.
+1º nível: `src/` app · `supabase/` schema+seed · `docs/` (specs em
+`docs/specs/`) · `html/` **todo .html que não é o app** (`landing/` página
+do QR code, `legacy/` não editar) — inventário em `html/README.md`.
+`index.html` fica na raiz ∵ é a entrada do Vite; é a única exceção.
 
 ## 5. Regras
 
@@ -167,6 +170,19 @@ versionadas ∵ o contêiner é efêmero). Onde cada uma paga:
     alvo e `| tail -n`, não despeje arquivo;
   - **sessão curta** — encerre por tarefa. Os docs da R13/R15 existem para
     a sessão seguinte retomar lendo ~31k em vez de herdar 370k.
+
+**R19 — Comportamento novo ou alterado começa por spec, não pelo editor.**
+`docs/specs/SPEC-NNN-nome.md` com Problema · Decisão numerada (`D1`,
+`D2`…) · Contrato (assinaturas + arquivo) · Aceite (verificável) · Fora de
+escopo. Formato completo em `docs/specs/README.md`.
+Vale para: regra de negócio, cadência, permissão, fluxo de dado, integração
+externa. **Não** vale para: ajuste visual, correção de bug, texto.
+**A regra vira função pura** — sem `await`, sem storage, sem React: entra
+estado, sai decisão. O componente busca o dado, chama a função, desenha.
+Motivo: mudar a regra passa a ser mexer numa função, não reler a tela
+inteira. Caso concreto: SPEC-001 tirou "quando o convite aparece" de dentro
+do `BoasVindas.tsx` e pôs em `src/lib/convite.ts` — o pagamento (SPEC-002)
+entra trocando **uma** função, `ehMembroPagante`.
 
 ## 6. Deploy
 

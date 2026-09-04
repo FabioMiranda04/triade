@@ -125,7 +125,7 @@ própria logomarca do manual (página 06, "1. Logo principal", a 400 dpi) e
 guardado como **máscara alfa** em `public/marca/conecta.png` (300×57,
 10 KB). O CSS aplica `mask-image` com `background-color: currentColor` —
 por isso ele muda de cor junto com o tema, dourado no Ônix e burgundy no
-Pérola, sem existirem duas imagens. Na `landing/convite.html` a mesma
+Pérola, sem existirem duas imagens. Na `html/landing/convite.html` a mesma
 máscara vai embutida em `data:` URI, porque aquele arquivo precisa
 funcionar sozinho.
 
@@ -168,9 +168,9 @@ desfocado. Nada saturado, nada azul.
 |---|---|
 | Paleta (seção 3) | `src/styles/tokens.css`, camada 1 (`--brand-*`) |
 | Tipografia (seção 4) | `src/styles/tokens.css` (`--font-brand`, `--font-display`, `--font-ui`) + `<link>` do Google Fonts em `index.html` |
-| Símbolo da seta tripla | `src/components/Brand.tsx` (`Mark`) e o SVG inline da `landing/convite.html` |
+| Símbolo da seta tripla | `src/components/Brand.tsx` (`Mark`) e o SVG inline da `html/landing/convite.html` |
 | Assinatura no cabeçalho | `.brand-lockup` / `.brand .name` / `.brand .tag` em `src/styles/layout.css` |
-| O traço do "conecta" | `public/marca/conecta.png` (máscara alfa) e o mesmo arquivo em `data:` URI dentro de `landing/convite.html` |
+| O traço do "conecta" | `public/marca/conecta.png` (máscara alfa) e o mesmo arquivo em `data:` URI dentro de `html/landing/convite.html` |
 | Como as cores viram papéis de interface | `docs/DESIGN-SYSTEM.md`, seções 1.1 a 1.3 |
 
 ## 7. O que ainda falta da marca

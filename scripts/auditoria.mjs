@@ -95,7 +95,7 @@ for (const tema of TEMAS) {
       localStorage.setItem('triade_pref_theme', JSON.stringify(t));
       // o convite de boas-vindas cobriria o conteúdo em toda rota, e a
       // auditoria mede a TELA. Marcado como já visto, ele não aparece.
-      localStorage.setItem('triade_pref_boas_vindas_vista', JSON.stringify(true));
+      sessionStorage.setItem('triade_convite_visto_sessao', '1');
     }, tema);
     const page = await ctx.newPage();
 
