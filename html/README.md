@@ -1,7 +1,8 @@
 # `html/` — todo HTML do repositório que **não** é o app
 
-> Se você está procurando um arquivo `.html`, ele está aqui ou é o
-> `index.html` da raiz. São só essas duas possibilidades, de propósito.
+> Se você está procurando um arquivo `.html`, ele está aqui, é o
+> `index.html` da raiz, ou é uma página já publicada em `public/`. Três
+> lugares, e a tabela abaixo lista os três.
 
 ## Inventário completo
 
@@ -9,6 +10,7 @@
 |---|---|---|
 | **`../index.html`** (raiz) | o casco do app: `<div id="root">`, meta tags do PWA, telas de abertura do iOS e a tela de carregamento inline | **sim** — é a entrada do Vite |
 | `landing/convite.html` | página de captação do QR code do outdoor. `.html` autocontido, abre direto no navegador | não |
+| **`../public/apresentacao/index.html`** | página de apresentação da marca, importada do site que estava no ChatGPT. Mora em `public/` porque é servida em `/apresentacao` | **sim** — `public/` é copiado para `dist/` |
 | `legacy/TRIADE-APP-TESTE-BUBBLE.html` | o app original, HTML único, de quando ele vivia dentro do Bubble.io. Referência visual — **não edite** | não |
 
 ## Por que o `index.html` não veio junto

@@ -11,6 +11,30 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v4.1.0 — a apresentação da marca sai do domínio emprestado
+**Sessão 24 — 21/09/2026**
+
+A página de apresentação da Tríade vivia num subdomínio do ChatGPT. Link
+que a gente não controla não serve para material impresso nem para dar a
+sócia nenhuma — some quando o serviço quiser. Trazida para o repositório.
+
+### `/apresentacao`
+
+`public/apresentacao/` — HTML autocontido, servido pela Vercel em
+`/apresentacao`. Conteúdo e CSS são os originais, intactos. Saiu o script
+de challenge da Cloudflare que o host injetava, e as imagens caíram de
+3,7 MB para 936 KB (vinham em 2240×3360, resolução de câmera). Detalhes e
+pendências no `README.md` de lá — a principal é que a página **ainda não
+segue o Manual de Marca**: dourado e fontes são os que a ferramenta
+escolheu, não os oficiais.
+
+O `vercel.json` ganhou um rewrite explícito de `/apresentacao` antes do
+catch-all de SPA, em vez de confiar que arquivo estático tem precedência
+sobre rewrite — que é justamente a dúvida que o `html/landing/README.md`
+mandava testar e não presumir.
+
+---
+
 ## v4.0.0 — SDD: a regra sai da tela e vira função
 **Sessão 23 — 04/09/2026**
 
