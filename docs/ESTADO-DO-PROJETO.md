@@ -26,8 +26,9 @@ achados que mudaram o desenho: o endpoint de criar cobrança é **público e
 sem chave**, então criar no front deixaria o preço na mão da compradora; e
 o **webhook deles não é assinado**, então ele vale como aviso e quem decide
 se está pago é uma segunda chamada (`payment_check`). Decisões do usuário:
-provedor InfinitePay Checkout, compra **só logada**. Implementação não
-começou.
+provedor InfinitePay Checkout, compra **só logada**, e o **preço do
+ingresso é editado pelas próprias sócias** no `EventEditSheet`, ao lado de
+"Vagas" — sem deploy, sem passar por código. Implementação não começou.
 
 **Sessão 24 (05/10/2026) — o app passa a poder cobrar.**
 Provedor decidido: **InfinitePay**, e conferido contra o requisito de Pix

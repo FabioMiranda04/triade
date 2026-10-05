@@ -3,7 +3,8 @@
 **Status:** rascunho — contrato da API conferido na documentação da
 InfinitePay em 05/10/2026, implementação não começou.
 **Decidido pelo usuário (05/10/2026):** provedor **InfinitePay Checkout**;
-compra **só para usuária logada**.
+compra **só para usuária logada**; **preço definido pelas sócias**, por
+quem tem login de admin (D7).
 **Precede:** [SPEC-002](./SPEC-002-pagamento.md). A assinatura continua
 desenhada e parada na fase 0 — **ingresso vem primeiro**, porque é o que a
 Tríade precisa vender agora.
@@ -43,6 +44,38 @@ DevTools e trocar `price` por `100` compraria o ingresso por R$ 1,00.
 Então a Edge Function não existe só para guardar segredo: ela existe porque
 **o preço tem de sair do nosso banco**, não do navegador. O front manda
 `eventId`; o servidor busca o preço, monta o pedido e devolve a URL.
+
+### D7 — O preço é conteúdo, e quem edita são as sócias
+
+Não é constante no `seed.ts` nem variável de ambiente: é **campo do evento**,
+editado no app, no mesmo `EventEditSheet` onde já se edita local, tema e
+número de vagas. Entra ao lado de `spots`, que já é um campo numérico — e
+quem vê o lápis é quem `podeEditarConteudo()` deixa, ou seja, quem está na
+tabela `admins`. Nenhuma tela nova, nenhuma permissão nova.
+
+Isso tem três consequências que **não** são detalhe:
+
+1. **a proteção do preço é a RLS, não a interface.** Esconder o campo de
+   quem não é admin é conveniência; o que de fato impede uma usuária comum
+   de mudar o preço é a política da tabela `events` no Supabase. A regra já
+   existe e é a mesma do Módulo 5 — esta spec não inventa permissão, usa a
+   que está lá;
+
+2. **a edição local não pode contaminar a venda.** O app tem um overlay de
+   edição no navegador (`localContent.ts`) para quem não é admin ou está
+   sem Supabase. Alguém pode "editar" o preço ali e ver R$ 1,00 na própria
+   tela. Isso é inofensivo **porque a Edge Function lê o preço do Supabase,
+   nunca do cliente** (D2) — a tela mente só para quem mentiu para si mesma,
+   e a cobrança sai certa. Vale testar isso explicitamente;
+
+3. **mudar o preço não pode mexer em quem já comprou.** Por isso `tickets`
+   guarda `valor_centavos` no momento da compra: o `payment_check` confere
+   o pagamento contra **o que foi cobrado naquele pedido**, não contra o
+   preço atual do evento. Sócia que corrige o preço às 22h não invalida o
+   ingresso vendido às 20h.
+
+Quem entra na tabela `admins` continua sendo decidido pelo SQL Editor do
+painel, como no Módulo 5. Esta spec não afrouxa isso.
 
 ### D3 — O webhook da InfinitePay **não é assinado** — e isso muda tudo
 
@@ -122,7 +155,22 @@ export interface TriadeEvent {
 ```
 
 Centavos, não reais: a API da InfinitePay cobra em centavos, e dinheiro em
-ponto flutuante é um erro esperando a conta fechar errado.
+ponto flutuante é um erro esperando a conta fechar errado. A tela mostra em
+reais (`formatPrice`); o campo de edição recebe em reais e converte na
+gravação — ninguém deve digitar "9700" para dizer R$ 97,00.
+
+### Edição (`src/components/EventEditSheet.tsx`, D7)
+
+Um campo a mais, ao lado de "Vagas", visível só para quem
+`podeEditarConteudo()`:
+
+```
+Ingresso (R$)   [ 97,00 ]   — vazio = edição sem venda
+```
+
+Vazio grava `null`, e `null` é o que faz a edição não vender nada. Não
+existe "preço zero": grátis e sem venda são a mesma coisa aqui, e um
+caminho só é menos coisa para errar.
 
 ### Contrato do app (`src/lib/db/types.ts`)
 
@@ -175,6 +223,14 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
 
 ## Aceite
 
+- [ ] sócia com login de admin edita o preço no `EventEditSheet` e a
+      mudança aparece para todo mundo (D7);
+- [ ] usuária **não** admin não vê o campo — e, se forçar a gravação, a RLS
+      recusa: a interface não é a proteção;
+- [ ] preço alterado no overlay local **não** muda o valor cobrado: a Edge
+      Function lê do Supabase (D2/D7);
+- [ ] mudar o preço do evento **não** altera `valor_centavos` de ingresso
+      já comprado;
 - [ ] edição com `ticketPriceCents` mostra botão de compra; sem ele, a tela
       é a de hoje;
 - [ ] deslogada, o botão leva ao login explicando por quê (D5), não ao
@@ -203,7 +259,9 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
 ## O que só o usuário pode decidir
 
 1. **o `handle`** (InfiniteTag) da conta InfinitePay;
-2. **preço do ingresso** de cada edição;
+2. ~~**preço do ingresso** de cada edição~~ — **resolvido em 05/10/2026**:
+   as sócias definem no app, pelo `EventEditSheet` (D7). Não precisa passar
+   por mim nem por deploy;
 3. **se o ingresso dá desconto para membra** — hoje o plano Convidada
    promete "desconto no 1º encontro" e nada no app implementa isso. Fica
    fora desta spec até virar regra escrita;
