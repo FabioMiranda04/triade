@@ -17,6 +17,18 @@ Plano gratuito deixou de silenciar o convite; só plano pago silencia.
 já cobrando sem back-end nenhum. E todo `.html` que não é o app foi para
 `html/` (`index.html` fica na raiz por ser a entrada do Vite).
 
+**Sessão 24 (05/10/2026) — prioridade virou ingresso, não assinatura.**
+A SPEC-002 fase 0 entrou (abaixo), mas no meio da sessão o usuário
+corrigiu a prioridade: **o que a Tríade precisa vender agora é ingresso de
+edição**, e assinatura vem depois. Nasceu a **SPEC-003**, com o contrato da
+API do Checkout da InfinitePay conferido na documentação deles. Dois
+achados que mudaram o desenho: o endpoint de criar cobrança é **público e
+sem chave**, então criar no front deixaria o preço na mão da compradora; e
+o **webhook deles não é assinado**, então ele vale como aviso e quem decide
+se está pago é uma segunda chamada (`payment_check`). Decisões do usuário:
+provedor InfinitePay Checkout, compra **só logada**. Implementação não
+começou.
+
 **Sessão 24 (05/10/2026) — o app passa a poder cobrar.**
 Provedor decidido: **InfinitePay**, e conferido contra o requisito de Pix
 recorrente antes de entrar na spec. O produto certo é **Planos de
