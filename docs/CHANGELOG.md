@@ -11,6 +11,43 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v4.2.0 — o app passa a poder cobrar
+**Sessão 24 — 05/10/2026**
+
+A SPEC-002 estava aprovada e parada desde setembro, esperando a decisão
+comercial. Ela veio: **InfinitePay**. A fase 0 entra.
+
+### O provedor foi conferido, não aceito de palavra
+
+A InfinitePay não estava na tabela da D2 — a spec nasceu antes da escolha.
+Conferida contra o requisito inegociável (recorrência **com Pix**), ela
+passa, mas por um produto específico: **Planos de Assinatura**, dentro da
+Gestão de Cobrança. O "Link de Pagamento" ao lado é avulso e **não aceita
+Pix** — criar o errado dá o oposto do que a spec pede. Está registrado na
+D2 para ninguém tropeçar nisso no painel.
+
+Detalhe que muda expectativa: a cobrança **não é débito automático**. A
+cada ciclo a assinante recebe WhatsApp e e-mail e precisa confirmar. É
+justamente por isso que o `valida_ate` e o status `atrasada` do contrato
+existem.
+
+### O que foi implementado
+
+`Plan` ganhou `paymentUrl`. Com link, o botão vira "Assinar …" e abre a
+cobrança em aba nova; sem link, a tela é idêntica à de antes — os três
+planos estão `null` até os links serem criados no painel.
+
+A aba abre **antes** do `await`, de propósito: depois dele o navegador não
+liga mais a janela ao clique e o bloqueador de pop-up a engole. É o bug
+clássico desse fluxo e está comentado no código.
+
+Isso é um desvio consciente do contrato da spec, que previa
+`getLinkDePagamento()` já na fase 0 — a URL já chega dentro do `Plan`, e um
+`await` para reler o que está na mão é a causa exata do bug acima. O método
+volta na fase 2, quando o app for de fato *criar* a cobrança pela API.
+
+---
+
 ## v4.1.0 — a apresentação da marca sai do domínio emprestado
 **Sessão 24 — 21/09/2026**
 

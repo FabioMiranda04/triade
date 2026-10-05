@@ -48,6 +48,12 @@ export interface Plan {
   period: string;
   featured: boolean;
   perks: string[];
+  /**
+   * SPEC-002 fase 0 — link de assinatura recorrente do provedor, criado à
+   * mão no painel. `null` = plano sem cobrança (o grátis), ou link ainda
+   * não criado: a tela cai no comportamento de antes, sem quebrar.
+   */
+  paymentUrl?: string | null;
 }
 
 export interface Founder {

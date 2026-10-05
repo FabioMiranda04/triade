@@ -1,7 +1,9 @@
 # SPEC-002 — Assinatura e pagamento (Módulo 4)
 
-**Status:** aprovada, não implementada.
-**Depende de:** decisão comercial do usuário (provedor, CNPJ, preço final).
+**Status:** fase 0 implementada em 05/10/2026, **esperando os links**.
+**Provedor escolhido:** InfinitePay (05/10/2026) — ver D2.
+**Depende de:** conta InfinitePay com CNPJ, e os links de assinatura
+criados no painel. O código já está pronto para recebê-los.
 **É consumida por:** [SPEC-001](./SPEC-001-convite-de-membro.md) — quem paga
 para de ver o convite.
 
@@ -47,11 +49,32 @@ venda. Boleto é bônus.
 | **Stripe** | melhor documentação e melhor webhook do mercado | **não faz Pix recorrente**; recorrência fica só no cartão |
 | **Pagar.me** | recorrência sólida, é da Stone | onboarding mais burocrático para volume pequeno |
 
-**Recomendação: Asaas**, por causa da fase 0 — link de cobrança recorrente
-que dá para mandar por WhatsApp é literalmente o fluxo que a Tríade já usa,
-só que cobrando. Se a preferência for marca conhecida na hora de pagar,
-Mercado Pago é a troca certa e nada nesta spec muda além do nome do
-provedor.
+**Recomendação original: Asaas.** **Decidido em 05/10/2026: InfinitePay.**
+
+A InfinitePay não estava na tabela porque a spec nasceu antes da escolha.
+Conferida contra o requisito de D2, ela passa — mas **por um produto
+específico, e tem um parecido ao lado que não serve**:
+
+| Produto da InfinitePay | Serve para a fase 0? |
+|---|---|
+| **Planos de Assinatura** (dentro da Gestão de Cobrança) | ✅ gera **um link público por plano**, recorrente, pago em Pix ou cartão em até 12x |
+| Link de Pagamento | ❌ cobrança **avulsa** e **só cartão** — não aceita Pix |
+| Checkout | para a fase 2: tem API, webhook e Pix, mas exige back-end |
+
+É o **Planos de Assinatura**. Criar o produto errado dá uma página que
+cobra uma vez e não aceita Pix, que é o oposto do requisito.
+
+Duas coisas a saber sobre como ela funciona:
+
+- **a cobrança não é débito automático.** A cada ciclo a assinante recebe
+  WhatsApp e e-mail (ao ser incluída, 7 e 2 dias antes, e no vencimento) e
+  **precisa abrir o link e confirmar**. Isso aumenta a inadimplência por
+  esquecimento em relação a cartão recorrente — e é exatamente por isso que
+  o `valida_ate` e o status `atrasada` do contrato existem;
+- **Pix é taxa zero** na InfinitePay, o que para um plano de R$ 97/mês não é
+  detalhe.
+
+Trocar de provedor depois continua barato: muda a URL no `seed.ts`.
 
 ⚠️ **Taxas e prazos de repasse mudam e precisam ser conferidos na
 contratação** — a tabela acima compara capacidade, não preço.
@@ -124,14 +147,39 @@ entrega cria uma assinatura duplicada.
 atrasa. Cartão recusado às vezes é só o banco da pessoa; derrubar o acesso
 na hora é hostil, e o provedor tenta de novo sozinho.
 
+### Fase 0 — a URL mora no `Plan` (implementado)
+
+```ts
+// src/types/index.ts
+export interface Plan {
+  // …
+  /** link de assinatura recorrente do provedor. `null` = sem cobrança. */
+  paymentUrl?: string | null;
+}
+```
+
+**Desvio consciente do contrato abaixo.** A spec previa
+`getLinkDePagamento(planId): Promise<string | null>` já na fase 0. Não foi
+feito assim, por dois motivos:
+
+1. **o dado já chegou.** `db.getPlans()` devolve o plano inteiro, URL
+   inclusa. Um método assíncrono para reler o que está na mão é indireção
+   sem ganho — e a R9 não pede isso: ela pede que a *leitura* seja async, e
+   `getPlans()` é;
+2. **`await` antes de `window.open` quebra o pop-up.** O navegador só liga a
+   aba nova ao clique enquanto a pilha de chamadas for do próprio clique.
+   Depois de um `await`, o bloqueador engole a janela. Com a URL síncrona no
+   `Plan`, a aba abre primeiro e o `await db.choosePlan()` vem depois.
+
+`getLinkDePagamento` **volta na fase 2**, que é quando ele faz sentido: lá o
+app chama a API do Checkout para *criar* a cobrança, e aí há mesmo uma ida
+ao servidor para esperar.
+
 ### Contrato do app (`src/lib/db/types.ts`, fase 1)
 
 ```ts
 /** Assinatura da usuária logada. `null` = não tem. */
 getAssinatura(): Promise<Assinatura | null>;
-
-/** Fase 0: a URL de cobrança do plano. Fase 2: cria a cobrança e devolve a URL. */
-getLinkDePagamento(planId: string): Promise<string | null>;
 ```
 
 ```ts
@@ -170,11 +218,17 @@ aconteceu.
 
 ## Aceite
 
-**Fase 0**
-- [ ] cada plano pago do `seed.ts` tem uma URL de cobrança recorrente;
-- [ ] "Quero ser membro" abre a URL do plano em aba nova;
-- [ ] plano gratuito continua sem link e sem cobrança;
-- [ ] nenhuma chave de API no bundle: `grep -ri "api.key\|secret" dist/` limpo.
+**Fase 0** — código pronto em 05/10/2026; só o primeiro item depende do painel.
+- [ ] cada plano pago do `seed.ts` tem uma URL de cobrança recorrente
+      *(os três estão `null`: falta criar no painel da InfinitePay)*;
+- [x] o botão do plano abre a URL em aba nova, **antes** do `await`, para o
+      bloqueador de pop-up não engolir;
+- [x] sem URL, a tela mantém exatamente o comportamento antigo — R10;
+- [x] o rótulo do botão vira "Assinar …" só quando existe link;
+- [x] a escolha continua gravada mesmo com link: intenção e pagamento são
+      coisas separadas (D5);
+- [x] nenhuma chave de API no bundle — não há chave nenhuma: a fase 0 só
+      conhece URL pública.
 
 **Fase 1**
 - [ ] pagamento de teste no sandbox do provedor cria linha em `subscriptions`;

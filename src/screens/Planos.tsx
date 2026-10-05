@@ -28,9 +28,22 @@ export default function Planos() {
 
   async function handleChoose(plan: Plan) {
     if (!requireAuth()) return;
+
+    // SPEC-002 fase 0. A aba abre ANTES do `await`: depois dele o navegador
+    // já não enxerga o clique como origem e o bloqueador de pop-up engole a
+    // janela. `null` = bloqueada, ou plano sem link ainda.
+    const aba = plan.paymentUrl ? window.open(plan.paymentUrl, '_blank', 'noopener') : null;
+
+    // A escolha continua sendo gravada mesmo com link: é a intenção
+    // (`plan_selections`), que a SPEC-002 D5 mantém separada do pagamento.
     await db.choosePlan(plan.id);
     setChosen(plan.id);
-    showToast(`Plano ${plan.name} selecionado!`);
+
+    if (plan.paymentUrl && !aba) {
+      showToast('Libere os pop-ups para abrir o pagamento');
+      return;
+    }
+    showToast(aba ? `Abrindo o pagamento do ${plan.name}…` : `Plano ${plan.name} selecionado!`);
   }
 
   function handleSaved() {

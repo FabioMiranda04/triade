@@ -17,6 +17,16 @@ Plano gratuito deixou de silenciar o convite; só plano pago silencia.
 já cobrando sem back-end nenhum. E todo `.html` que não é o app foi para
 `html/` (`index.html` fica na raiz por ser a entrada do Vite).
 
+**Sessão 24 (05/10/2026) — o app passa a poder cobrar.**
+Provedor decidido: **InfinitePay**, e conferido contra o requisito de Pix
+recorrente antes de entrar na spec. O produto certo é **Planos de
+Assinatura** (dentro da Gestão de Cobrança); o "Link de Pagamento" ao lado
+é avulso e não aceita Pix. Fase 0 da SPEC-002 implementada: `Plan` ganhou
+`paymentUrl`, e com link o botão abre a cobrança em aba nova — antes do
+`await`, senão o bloqueador de pop-up engole a janela. **Os três planos
+estão com `paymentUrl: null`**: falta criar os links no painel. Sem eles a
+tela é idêntica à de antes.
+
 **Sessão 22 (02–03/09/2026) — cinco frentes.**
 
 1. **Módulo 5 fechado.** Palestrante e plano passaram a gravar no banco,
@@ -403,7 +413,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
   (`prefers-color-scheme`) nem trocar por horário; quem não abrir
   Configurações continua no Pérola para sempre. Se um dia isso for
   desejado, o gancho é o `ThemeProvider` — nada mais precisa mudar.
-- Sem pagamento integrado — escolher plano só grava a escolha localmente.
+- **Pagamento: a fiação está pronta, falta o link.** A fase 0 da SPEC-002
+  está implementada, mas os três `paymentUrl` do `seed.ts` são `null` —
+  enquanto forem, escolher plano só grava a escolha, como antes. Colar os
+  links do painel da InfinitePay é o que liga a cobrança; não precisa
+  mexer em código.
 - Sem painel administrativo (a edição inline atual não substitui isso —
   ver item acima).
 - Sem testes automatizados.
@@ -444,9 +458,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
    fora**: foi feito e removido em 03/09/2026 porque perfil de membra é
    privado — a RLS permitir a leitura nunca foi permissão para exibir. Se
    voltar, precisa de consentimento explícito por perfil, campo a campo.
-3. **Módulo 4 — Assinaturas e pagamento**: cobrança recorrente
-   (Stripe/Pagar.me), provavelmente via Edge Function do Supabase para o
-   webhook. A tabela `plan_selections` já prevê o campo `status`.
+3. **Módulo 4 — Assinaturas e pagamento**: fase 0 feita (05/10/2026).
+   Provedor: **InfinitePay**. A seguir, pela SPEC-002: fase 1 = tabela
+   `subscriptions` + webhook numa Edge Function, quando conferir pagamento
+   na mão virar trabalho (~15 assinantes); fase 2 = checkout pela API.
+   Stripe saiu da conversa: **não faz Pix recorrente**.
 4. **Módulo 5 — Painel administrativo**: trocar o overlay local de
    `src/lib/db/localContent.ts` (edição "..." → Editar, ver seção 2) por
    gravação real no Supabase, com RLS restrita a uma conta de

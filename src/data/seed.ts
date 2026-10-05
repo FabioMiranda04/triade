@@ -223,6 +223,12 @@ export const speakers: Speaker[] = [
   },
 ];
 
+/**
+ * SPEC-002 fase 0 — os `paymentUrl` saem do painel da InfinitePay, em
+ * Gestão de Cobrança → **Planos de Assinatura** (não "Link de Pagamento",
+ * que é avulso e não aceita Pix). Um link por plano pago, recorrente.
+ * Enquanto forem `null`, a tela mantém o fluxo antigo.
+ */
 export const plans: Plan[] = [
   {
     id: 'pl1',
@@ -230,6 +236,7 @@ export const plans: Plan[] = [
     price: 0,
     period: 'grátis',
     featured: false,
+    paymentUrl: null, // grátis de propósito: não tem o que cobrar
     perks: [
       'Acesso à comunidade digital',
       'Conteúdo semanal sobre negócios e conexão',
@@ -238,6 +245,7 @@ export const plans: Plan[] = [
   },
   {
     id: 'pl2',
+    paymentUrl: null, // ← cole aqui o link de assinatura da InfinitePay
     name: 'Membra Tríade',
     price: 97,
     period: '/mês',
@@ -251,6 +259,7 @@ export const plans: Plan[] = [
   },
   {
     id: 'pl3',
+    paymentUrl: null, // ← cole aqui o link de assinatura da InfinitePay
     name: 'Fundadora',
     price: 970,
     period: '/ano',

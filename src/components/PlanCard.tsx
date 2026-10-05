@@ -29,7 +29,7 @@ export function PlanCard({ plan, chosen, onChoose }: PlanCardProps) {
         className={`btn ${plan.featured ? 'btn-glass' : 'btn-primary'} full`}
         onClick={() => onChoose(plan)}
       >
-        {chosen ? 'Selecionado' : `Escolher ${plan.name}`}
+        {chosen ? 'Selecionado' : plan.paymentUrl ? `Assinar ${plan.name}` : `Escolher ${plan.name}`}
       </button>
     </div>
   );
