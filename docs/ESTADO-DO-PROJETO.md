@@ -29,6 +29,14 @@ se está pago é uma segunda chamada (`payment_check`). Decisões do usuário:
 provedor InfinitePay Checkout, compra **só logada**, e o **preço do
 ingresso é editado pelas próprias sócias** no `EventEditSheet`, ao lado de
 "Vagas" — sem deploy, sem passar por código. Implementação não começou.
+A spec passou por **revisão de segurança** (05/10): modelo de ameaça com 12
+vetores e uma bateria de 14 testes de autossabotagem que tentam quebrar o
+próprio sistema — webhook forjado, pagamento menor, reenvio, leitura do
+ingresso alheio, escalar para admin, preço mentido no overlay local. Passar
+a bateria inteira é **porta de lançamento**, não checklist. Decidido também
+que **nenhum dado pessoal vai para a InfinitePay** (D8) e que o desconto de
+membra fica fora, por exposição jurídica — com a pendência de revisar o
+texto do plano Convidada, que promete desconto que o app não cumpre.
 
 **Sessão 24 (05/10/2026) — o app passa a poder cobrar.**
 Provedor decidido: **InfinitePay**, e conferido contra o requisito de Pix

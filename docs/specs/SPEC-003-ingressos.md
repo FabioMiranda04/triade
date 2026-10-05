@@ -2,6 +2,9 @@
 
 **Status:** rascunho — contrato da API conferido na documentação da
 InfinitePay em 05/10/2026, implementação não começou.
+**Revisão de segurança:** 05/10/2026 — modelo de ameaça (A1–A12) e bateria
+de autossabotagem (S1–S14) na seção *Segurança*. Falhar em qualquer S
+bloqueia o lançamento da venda.
 **Decidido pelo usuário (05/10/2026):** provedor **InfinitePay Checkout**;
 compra **só para usuária logada**; **preço definido pelas sócias**, por
 quem tem login de admin (D7).
@@ -121,6 +124,159 @@ tem para ligar de volta na véspera. Fundir perde isso.
 Na tela, com ingresso à venda, o botão principal passa a ser comprar; o
 RSVP vira ação secundária para quem ainda não decidiu.
 
+### D8 — Não mandamos dado pessoal para a InfinitePay
+
+O `customer` (nome, e-mail, telefone) e o `address` são **opcionais** na API
+deles. Ficam de fora.
+
+Não precisamos: `order_nsu` já amarra o pedido à usuária **no nosso banco**.
+Mandar nome e e-mail só acrescentaria uma cópia do dado pessoal num terceiro
+que não precisa dele — e cada cópia é mais uma superfície para vazar e mais
+um titular a notificar se vazar.
+
+O custo é pequeno e conhecido: a compradora digita os próprios dados no
+checkout, se ele pedir. Uma tela a mais, em troca de não espalhar o
+cadastro das mulheres da comunidade.
+
+## Segurança
+
+Esta seção existe porque o que esta spec move não é só dinheiro. A lista de
+quem comprou ingresso é **uma lista de mulheres com nome, e-mail, e um
+lugar e uma hora onde elas vão estar**. Isso é mais sensível que dado
+comercial, e o app já tem um precedente: em 03/09/2026 a política de
+`profiles` era `using (true)` para logadas — bastava criar uma conta para
+ler a tabela inteira. Foi corrigido, está comentado no `schema.sql`, e é o
+erro que esta seção existe para não repetir.
+
+**O que nos protege de graça:** cartão **nunca toca o app**. O dado de
+cartão vive e morre na InfinitePay — não passa pelo nosso front, não passa
+pela Edge Function, não entra no nosso banco. Isso tira do escopo a classe
+inteira de risco de PCI. Nenhuma decisão desta spec pode desfazer isso.
+
+### Modelo de ameaça
+
+| # | Ataque | Onde | Defesa | Decisão |
+|---|---|---|---|---|
+| A1 | trocar o preço no DevTools e comprar por R$ 1 | criação do pedido | preço lido do Supabase pelo servidor; o corpo do cliente só traz `eventId` | D2 |
+| A2 | `POST` no webhook dizendo "pago", sem pagar | webhook (público por natureza) | o corpo é **aviso**; só `payment_check` escreve `pago` | D3 |
+| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook | `paid_amount` conferido contra `valor_centavos` **do pedido** | D3 |
+| A4 | reenviar o webhook para gerar ingressos | webhook | `unique (order_nsu)` | D4 |
+| A5 | ler o ingresso de outra mulher | tabela `tickets` | RLS `auth.uid() = user_id`; cliente **nunca** escreve | contrato |
+| A6 | **listar quem comprou** | tabela `tickets` | mesma RLS: não existe leitura que devolva linha de terceiro. Lista de presença é tela de admin, nunca endpoint aberto | contrato |
+| A7 | adivinhar `order_nsu` de outra pessoa | URL / webhook | `order_nsu` é **uuid v4**, não sequencial. Sequencial permitiria varrer pedidos | D4 |
+| A8 | usar o webhook como oráculo ("esse pedido existe?") | webhook | resposta **sempre** `200 {"success": true, "message": null}`, não importa o que foi achado. Nunca "pedido não encontrado" | abaixo |
+| A9 | chamar `criar-pedido` sem login | Edge Function | exige JWT; sem ele `401` antes de qualquer leitura | D5 |
+| A10 | ler segredo no bundle | front-end | nada de pagamento em `VITE_*`; `handle` só na Edge Function | R11 / D3 da SPEC-002 |
+| A11 | vazar dado pessoal pelo log | Edge Function | **nunca** logar corpo de webhook nem e-mail. Só `order_nsu` e status | abaixo |
+| A12 | usuária comum muda o preço | tabela `events` | RLS por `e_admin()`. Esconder o campo é conveniência, não proteção | D7 |
+
+Dois itens acima não são óbvios e merecem o porquê:
+
+**A8 — o webhook não pode responder a verdade.** A tentação é devolver
+`404` quando o `order_nsu` não existe. Isso transforma o endpoint num
+oráculo: quem quiser descobrir se um pedido existe é só perguntar. Como a
+doc da InfinitePay exige `200 {"success": true, "message": null}` para
+sucesso e trata `400` como "reenvie", a resposta uniforme é ao mesmo tempo
+o comportamento correto para eles e o seguro para nós.
+
+**A11 — log é vazamento com outro nome.** Log de Edge Function é lido por
+quem tem acesso ao painel do Supabase, fica retido, e vai parar em captura
+de tela. O corpo do webhook traz `items` com a descrição do pedido; o
+`payment_check` traz dados da transação. Nada disso vai para o log. Regra:
+loga-se `order_nsu` e a decisão (`pago` / `recusado` / `valor-nao-bate`), e
+nada mais.
+
+### Autossabotagem — a bateria que tenta quebrar o próprio sistema
+
+Nenhum destes é hipótese: cada um é um comando que alguém roda **antes** de
+a venda abrir. Falhar em qualquer um bloqueia o lançamento.
+
+**Contra o webhook (os mais importantes)**
+
+```bash
+# S1 — webhook forjado. DEVE devolver 200 e NÃO marcar nada no banco.
+curl -X POST "$URL_WEBHOOK" -H 'Content-Type: application/json'   -d '{"order_nsu":"<pedido real e pendente>","transaction_nsu":"999","paid_amount":9700}'
+# aceite: a linha continua `pendente`. Se virou `pago`, a D3 não foi implementada.
+
+# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97 no sandbox.
+# aceite: continua `pendente`; log registra `valor-nao-bate`.
+
+# S3 — reenvio. Mande o MESMO webhook válido duas vezes.
+# aceite: um ingresso, não dois.
+
+# S4 — oráculo. Mande order_nsu que não existe.
+# aceite: resposta idêntica à do S1. Qualquer diferença de corpo, status ou
+#         tempo de resposta que distinga "existe" de "não existe" reprova.
+```
+
+**Contra o banco, com a chave `anon` (a que está no bundle)**
+
+```bash
+# S5 — ler ingresso dos outros, logada como A:
+#   supabase.from('tickets').select('*')
+# aceite: devolve SÓ as linhas de A. Qualquer linha de terceiro reprova.
+
+# S6 — contar compradoras sem ver os nomes:
+#   supabase.from('tickets').select('*', { count: 'exact', head: true })
+# aceite: a contagem também respeita a RLS. Contagem global vazaria
+#         quantas mulheres compraram — é metadado, e metadado vaza.
+
+# S7 — escrever direto, pulando a Edge Function:
+#   supabase.from('tickets').insert({ status: 'pago', ... })
+# aceite: recusado. Não existe política de INSERT para o cliente.
+
+# S8 — marcar o próprio ingresso como pago:
+#   supabase.from('tickets').update({ status: 'pago' }).eq('user_id', <eu>)
+# aceite: recusado. "É minha linha" não dá direito de escrever nela.
+
+# S9 — virar admin:
+#   supabase.from('admins').insert({ user_id: <eu> })
+# aceite: recusado.
+
+# S10 — descobrir quem são as admins:
+#   supabase.from('admins').select('*')
+# aceite: devolve no máximo a própria linha.
+
+# S11 — mudar o preço sem ser admin:
+#   supabase.from('events').update({ ticket_price_cents: 100 }).eq('id', ...)
+# aceite: recusado pelo BANCO, não pela interface.
+```
+
+**Contra o front**
+
+```bash
+# S12 — segredo no bundle:
+npm run build && grep -riE "service_role|infinitepay|handle.*=|api[_-]?key" dist/assets/*.js
+# aceite: nenhuma ocorrência que não seja código de biblioteca. Conferir
+#         o contexto de cada casamento — `apiKey` do cliente Supabase é
+#         falso positivo conhecido.
+
+# S13 — preço mentido no overlay local:
+# edite o preço pelo overlay (sem ser admin), compre, e confira o valor
+# cobrado no checkout.
+# aceite: cobra o preço REAL, do Supabase. A tela mentiu, a cobrança não.
+```
+
+**Teste humano, que nenhum `curl` cobre**
+
+- **S14 — a lista de presença.** Peça a uma sócia que mostre a lista de
+  compradoras pelo app. Depois peça a mesma coisa a uma usuária comum. Se
+  a segunda conseguir ver qualquer nome que não o próprio, está vazando —
+  e é exatamente o vazamento que mais importa aqui.
+
+### LGPD, em três linhas que importam
+
+Vender ingresso cria relação de consumo e trata dado pessoal. Três coisas
+que já são decisão desta spec, e não burocracia:
+
+1. **minimização** — não mandamos PII para a InfinitePay (D8), e o app não
+   coleta nada novo para vender ingresso: usa a conta que já existe;
+2. **finalidade** — o dado da compra serve para emitir e conferir o
+   ingresso. Usar a lista de compradoras para marketing é outra finalidade,
+   e precisa de consentimento próprio. Não está nesta spec;
+3. **retenção** — ingresso de evento passado não precisa ficar para sempre.
+   Definir prazo é pendência do usuário, não minha.
+
 ## Contrato
 
 ### Banco (`supabase/schema.sql`)
@@ -172,7 +328,160 @@ Vazio grava `null`, e `null` é o que faz a edição não vender nada. Não
 existe "preço zero": grátis e sem venda são a mesma coisa aqui, e um
 caminho só é menos coisa para errar.
 
-### Contrato do app (`src/lib/db/types.ts`)
+#### D8 — Não mandamos dado pessoal para a InfinitePay
+
+O `customer` (nome, e-mail, telefone) e o `address` são **opcionais** na API
+deles. Ficam de fora.
+
+Não precisamos: `order_nsu` já amarra o pedido à usuária **no nosso banco**.
+Mandar nome e e-mail só acrescentaria uma cópia do dado pessoal num terceiro
+que não precisa dele — e cada cópia é mais uma superfície para vazar e mais
+um titular a notificar se vazar.
+
+O custo é pequeno e conhecido: a compradora digita os próprios dados no
+checkout, se ele pedir. Uma tela a mais, em troca de não espalhar o
+cadastro das mulheres da comunidade.
+
+## Segurança
+
+Esta seção existe porque o que esta spec move não é só dinheiro. A lista de
+quem comprou ingresso é **uma lista de mulheres com nome, e-mail, e um
+lugar e uma hora onde elas vão estar**. Isso é mais sensível que dado
+comercial, e o app já tem um precedente: em 03/09/2026 a política de
+`profiles` era `using (true)` para logadas — bastava criar uma conta para
+ler a tabela inteira. Foi corrigido, está comentado no `schema.sql`, e é o
+erro que esta seção existe para não repetir.
+
+**O que nos protege de graça:** cartão **nunca toca o app**. O dado de
+cartão vive e morre na InfinitePay — não passa pelo nosso front, não passa
+pela Edge Function, não entra no nosso banco. Isso tira do escopo a classe
+inteira de risco de PCI. Nenhuma decisão desta spec pode desfazer isso.
+
+### Modelo de ameaça
+
+| # | Ataque | Onde | Defesa | Decisão |
+|---|---|---|---|---|
+| A1 | trocar o preço no DevTools e comprar por R$ 1 | criação do pedido | preço lido do Supabase pelo servidor; o corpo do cliente só traz `eventId` | D2 |
+| A2 | `POST` no webhook dizendo "pago", sem pagar | webhook (público por natureza) | o corpo é **aviso**; só `payment_check` escreve `pago` | D3 |
+| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook | `paid_amount` conferido contra `valor_centavos` **do pedido** | D3 |
+| A4 | reenviar o webhook para gerar ingressos | webhook | `unique (order_nsu)` | D4 |
+| A5 | ler o ingresso de outra mulher | tabela `tickets` | RLS `auth.uid() = user_id`; cliente **nunca** escreve | contrato |
+| A6 | **listar quem comprou** | tabela `tickets` | mesma RLS: não existe leitura que devolva linha de terceiro. Lista de presença é tela de admin, nunca endpoint aberto | contrato |
+| A7 | adivinhar `order_nsu` de outra pessoa | URL / webhook | `order_nsu` é **uuid v4**, não sequencial. Sequencial permitiria varrer pedidos | D4 |
+| A8 | usar o webhook como oráculo ("esse pedido existe?") | webhook | resposta **sempre** `200 {"success": true, "message": null}`, não importa o que foi achado. Nunca "pedido não encontrado" | abaixo |
+| A9 | chamar `criar-pedido` sem login | Edge Function | exige JWT; sem ele `401` antes de qualquer leitura | D5 |
+| A10 | ler segredo no bundle | front-end | nada de pagamento em `VITE_*`; `handle` só na Edge Function | R11 / D3 da SPEC-002 |
+| A11 | vazar dado pessoal pelo log | Edge Function | **nunca** logar corpo de webhook nem e-mail. Só `order_nsu` e status | abaixo |
+| A12 | usuária comum muda o preço | tabela `events` | RLS por `e_admin()`. Esconder o campo é conveniência, não proteção | D7 |
+
+Dois itens acima não são óbvios e merecem o porquê:
+
+**A8 — o webhook não pode responder a verdade.** A tentação é devolver
+`404` quando o `order_nsu` não existe. Isso transforma o endpoint num
+oráculo: quem quiser descobrir se um pedido existe é só perguntar. Como a
+doc da InfinitePay exige `200 {"success": true, "message": null}` para
+sucesso e trata `400` como "reenvie", a resposta uniforme é ao mesmo tempo
+o comportamento correto para eles e o seguro para nós.
+
+**A11 — log é vazamento com outro nome.** Log de Edge Function é lido por
+quem tem acesso ao painel do Supabase, fica retido, e vai parar em captura
+de tela. O corpo do webhook traz `items` com a descrição do pedido; o
+`payment_check` traz dados da transação. Nada disso vai para o log. Regra:
+loga-se `order_nsu` e a decisão (`pago` / `recusado` / `valor-nao-bate`), e
+nada mais.
+
+### Autossabotagem — a bateria que tenta quebrar o próprio sistema
+
+Nenhum destes é hipótese: cada um é um comando que alguém roda **antes** de
+a venda abrir. Falhar em qualquer um bloqueia o lançamento.
+
+**Contra o webhook (os mais importantes)**
+
+```bash
+# S1 — webhook forjado. DEVE devolver 200 e NÃO marcar nada no banco.
+curl -X POST "$URL_WEBHOOK" -H 'Content-Type: application/json'   -d '{"order_nsu":"<pedido real e pendente>","transaction_nsu":"999","paid_amount":9700}'
+# aceite: a linha continua `pendente`. Se virou `pago`, a D3 não foi implementada.
+
+# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97 no sandbox.
+# aceite: continua `pendente`; log registra `valor-nao-bate`.
+
+# S3 — reenvio. Mande o MESMO webhook válido duas vezes.
+# aceite: um ingresso, não dois.
+
+# S4 — oráculo. Mande order_nsu que não existe.
+# aceite: resposta idêntica à do S1. Qualquer diferença de corpo, status ou
+#         tempo de resposta que distinga "existe" de "não existe" reprova.
+```
+
+**Contra o banco, com a chave `anon` (a que está no bundle)**
+
+```bash
+# S5 — ler ingresso dos outros, logada como A:
+#   supabase.from('tickets').select('*')
+# aceite: devolve SÓ as linhas de A. Qualquer linha de terceiro reprova.
+
+# S6 — contar compradoras sem ver os nomes:
+#   supabase.from('tickets').select('*', { count: 'exact', head: true })
+# aceite: a contagem também respeita a RLS. Contagem global vazaria
+#         quantas mulheres compraram — é metadado, e metadado vaza.
+
+# S7 — escrever direto, pulando a Edge Function:
+#   supabase.from('tickets').insert({ status: 'pago', ... })
+# aceite: recusado. Não existe política de INSERT para o cliente.
+
+# S8 — marcar o próprio ingresso como pago:
+#   supabase.from('tickets').update({ status: 'pago' }).eq('user_id', <eu>)
+# aceite: recusado. "É minha linha" não dá direito de escrever nela.
+
+# S9 — virar admin:
+#   supabase.from('admins').insert({ user_id: <eu> })
+# aceite: recusado.
+
+# S10 — descobrir quem são as admins:
+#   supabase.from('admins').select('*')
+# aceite: devolve no máximo a própria linha.
+
+# S11 — mudar o preço sem ser admin:
+#   supabase.from('events').update({ ticket_price_cents: 100 }).eq('id', ...)
+# aceite: recusado pelo BANCO, não pela interface.
+```
+
+**Contra o front**
+
+```bash
+# S12 — segredo no bundle:
+npm run build && grep -riE "service_role|infinitepay|handle.*=|api[_-]?key" dist/assets/*.js
+# aceite: nenhuma ocorrência que não seja código de biblioteca. Conferir
+#         o contexto de cada casamento — `apiKey` do cliente Supabase é
+#         falso positivo conhecido.
+
+# S13 — preço mentido no overlay local:
+# edite o preço pelo overlay (sem ser admin), compre, e confira o valor
+# cobrado no checkout.
+# aceite: cobra o preço REAL, do Supabase. A tela mentiu, a cobrança não.
+```
+
+**Teste humano, que nenhum `curl` cobre**
+
+- **S14 — a lista de presença.** Peça a uma sócia que mostre a lista de
+  compradoras pelo app. Depois peça a mesma coisa a uma usuária comum. Se
+  a segunda conseguir ver qualquer nome que não o próprio, está vazando —
+  e é exatamente o vazamento que mais importa aqui.
+
+### LGPD, em três linhas que importam
+
+Vender ingresso cria relação de consumo e trata dado pessoal. Três coisas
+que já são decisão desta spec, e não burocracia:
+
+1. **minimização** — não mandamos PII para a InfinitePay (D8), e o app não
+   coleta nada novo para vender ingresso: usa a conta que já existe;
+2. **finalidade** — o dado da compra serve para emitir e conferir o
+   ingresso. Usar a lista de compradoras para marketing é outra finalidade,
+   e precisa de consentimento próprio. Não está nesta spec;
+3. **retenção** — ingresso de evento passado não precisa ficar para sempre.
+   Definir prazo é pendência do usuário, não minha.
+
+## Contrato do app (`src/lib/db/types.ts`)
 
 ```ts
 /** Cria o pedido e devolve a URL de checkout. Exige login (D5). */
@@ -244,7 +553,11 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
 - [ ] reenviar o mesmo webhook não cria segundo ingresso (D4);
 - [ ] usuária A não lê o ingresso da usuária B com a chave `anon`;
 - [ ] RSVP continua funcionando e independente da compra (D6);
-- [ ] `grep -ri "handle\|secret\|api.key" dist/` limpo.
+- [ ] `grep -ri "handle\|secret\|api.key" dist/` limpo;
+- [ ] **a bateria de autossabotagem (S1–S14) passa inteira.** Não é
+      checklist de qualidade: é porta de lançamento. Um `curl` que marca
+      ingresso como pago, ou uma consulta que devolve a linha de outra
+      mulher, bloqueia a venda até ser corrigido.
 
 ## Fora de escopo
 
@@ -255,6 +568,14 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
 - **Lote, meia-entrada, cupom, combo** (D1).
 - **Nota fiscal.** Igual à SPEC-002: é contabilidade, não pagamento.
 - **Transferir ingresso para outra pessoa.** Real, mas depois.
+- **Desconto para membra.** Fora por decisão do usuário (05/10/2026), e o
+  motivo é jurídico, não técnico: o plano Convidada promete hoje "desconto
+  no 1º encontro presencial" e **nada no app implementa isso**. Promessa
+  publicada que o produto não cumpre é exposição desnecessária — oferta
+  anunciada e não honrada é reclamável pelo CDC. Enquanto o desconto não
+  for regra escrita e implementada, a saída segura é não vinculá-lo à venda
+  de ingresso. **Pendência fora desta spec:** revisar o texto do plano
+  Convidada no `seed.ts`, que continua prometendo.
 
 ## O que só o usuário pode decidir
 
@@ -262,8 +583,5 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
 2. ~~**preço do ingresso** de cada edição~~ — **resolvido em 05/10/2026**:
    as sócias definem no app, pelo `EventEditSheet` (D7). Não precisa passar
    por mim nem por deploy;
-3. **se o ingresso dá desconto para membra** — hoje o plano Convidada
-   promete "desconto no 1º encontro" e nada no app implementa isso. Fica
-   fora desta spec até virar regra escrita;
 4. **o que acontece com quem paga e não vai** — política de reembolso
    precisa existir em texto antes de a primeira venda acontecer.
