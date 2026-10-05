@@ -37,6 +37,13 @@ a bateria inteira é **porta de lançamento**, não checklist. Decidido também
 que **nenhum dado pessoal vai para a InfinitePay** (D8) e que o desconto de
 membra fica fora, por exposição jurídica — com a pendência de revisar o
 texto do plano Convidada, que promete desconto que o app não cumpre.
+Pesquisa de campo (05/10) derrubou duas decisões da própria spec: **não
+existe sandbox** da InfinitePay (o teste é com dinheiro real, R$ 2,00 e um
+estorno, protocolo na spec), e **`paid_amount` > `amount` é normal** — vem
+dos juros do parcelamento, então conferir contra ele recusaria cartão
+parcelado legítimo. Entrou a D9: o webhook deles **pode não chegar** (caso
+real documentado), então a confirmação tem dois caminhos — webhook e
+retorno da compradora — chamando o mesmo finalizador idempotente.
 
 **Sessão 24 (05/10/2026) — o app passa a poder cobrar.**
 Provedor decidido: **InfinitePay**, e conferido contra o requisito de Pix

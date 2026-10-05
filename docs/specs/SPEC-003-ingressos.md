@@ -92,10 +92,45 @@ Portanto o webhook é tratado como **aviso, não como prova**:
 2. a função chama `payment_check` na InfinitePay com `order_nsu` e
    `transaction_nsu`;
 3. **só a resposta do `payment_check` escreve "pago"** no nosso banco;
-4. confere também o **valor**: `paid_amount` tem de bater com o preço do
-   evento no nosso banco. Pagou menos, não vale.
+4. confere o **valor** — e aqui há uma armadilha que custou uma correção
+   nesta spec: **`paid_amount` não é o que cobramos.** A própria
+   documentação da InfinitePay mostra `amount: 1500` com
+   `paid_amount: 1510`: o `paid_amount` inclui o custo do parcelamento que
+   a compradora pagou. Exigir `paid_amount == preço` **recusaria pagamento
+   legítimo no cartão parcelado**.
+   A conferência certa é contra o `amount`, que é o nosso valor ecoado de
+   volta: `paid === true` **e** `amount === valor_centavos` do pedido. O
+   `paid_amount` é guardado como informação, nunca como critério.
 
 Sem o passo 2, "ingresso pago" vira um `curl` que qualquer um manda.
+
+### D9 — O webhook **não chega sempre**, e por isso não pode ser o único caminho
+
+Pesquisa de campo (05/10/2026), não teoria: há caso real e documentado de
+pagamento aprovado cujo webhook **nunca chegou** — o pedido ficou
+"aguardando pagamento" com o dinheiro já pago. Quem integrou antes
+convergiu na mesma solução, e as duas implementações públicas que achei
+fazem igual.
+
+**São dois caminhos para o mesmo destino, e um só finalizador:**
+
+1. **webhook** (quando chega) → `payment_check` → finaliza;
+2. **retorno da compradora** — a InfinitePay devolve o navegador para o
+   `redirect_url` com `order_nsu`, `transaction_nsu` e `slug` na URL. O app
+   manda esses três para a nossa função, que roda **o mesmo**
+   `payment_check` e **o mesmo** finalizador idempotente.
+
+O caminho 2 não é plano B: na prática é o que confirma **primeiro**, porque
+não depende de entrega externa. O webhook vira a rede de segurança para
+quem fechou o navegador antes de voltar.
+
+⚠️ **Os parâmetros do retorno vêm pelo navegador, ou seja, do atacante.**
+Eles dizem apenas *qual pedido olhar* — exatamente como o corpo do webhook
+(D3). Nada do que vem na URL é gravado. Quem escreve é o `payment_check`.
+
+Como os dois caminhos chamam o mesmo finalizador, e o finalizador é
+idempotente por `order_nsu` (D4), os dois podem chegar juntos sem gerar
+ingresso dobrado.
 
 ### D4 — `order_nsu` é nosso, e é a chave da idempotência
 
@@ -159,7 +194,8 @@ inteira de risco de PCI. Nenhuma decisão desta spec pode desfazer isso.
 |---|---|---|---|---|
 | A1 | trocar o preço no DevTools e comprar por R$ 1 | criação do pedido | preço lido do Supabase pelo servidor; o corpo do cliente só traz `eventId` | D2 |
 | A2 | `POST` no webhook dizendo "pago", sem pagar | webhook (público por natureza) | o corpo é **aviso**; só `payment_check` escreve `pago` | D3 |
-| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook | `paid_amount` conferido contra `valor_centavos` **do pedido** | D3 |
+| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook / retorno | `amount` (não `paid_amount`) conferido contra `valor_centavos` **do pedido** | D3 |
+| A13 | forjar os parâmetros do `redirect_url` no navegador | retorno da compradora | os parâmetros só dizem qual pedido olhar; quem escreve é o `payment_check` | D9 |
 | A4 | reenviar o webhook para gerar ingressos | webhook | `unique (order_nsu)` | D4 |
 | A5 | ler o ingresso de outra mulher | tabela `tickets` | RLS `auth.uid() = user_id`; cliente **nunca** escreve | contrato |
 | A6 | **listar quem comprou** | tabela `tickets` | mesma RLS: não existe leitura que devolva linha de terceiro. Lista de presença é tela de admin, nunca endpoint aberto | contrato |
@@ -198,11 +234,20 @@ a venda abrir. Falhar em qualquer um bloqueia o lançamento.
 curl -X POST "$URL_WEBHOOK" -H 'Content-Type: application/json'   -d '{"order_nsu":"<pedido real e pendente>","transaction_nsu":"999","paid_amount":9700}'
 # aceite: a linha continua `pendente`. Se virou `pago`, a D3 não foi implementada.
 
-# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97 no sandbox.
+# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97.
 # aceite: continua `pendente`; log registra `valor-nao-bate`.
+
+# S2b — parcelado NÃO pode ser recusado. Pague um pedido em 3x no cartão,
+# onde paid_amount > amount por causa dos juros.
+# aceite: vira `pago`. Se recusar, a conferência está no campo errado —
+#         é contra `amount`, não contra `paid_amount`.
 
 # S3 — reenvio. Mande o MESMO webhook válido duas vezes.
 # aceite: um ingresso, não dois.
+
+# S3b — os dois caminhos juntos (D9). Dispare o retorno da compradora e o
+# webhook para o mesmo pedido, quase ao mesmo tempo.
+# aceite: um ingresso. É o teste de corrida do finalizador idempotente.
 
 # S4 — oráculo. Mande order_nsu que não existe.
 # aceite: resposta idêntica à do S1. Qualquer diferença de corpo, status ou
@@ -363,7 +408,8 @@ inteira de risco de PCI. Nenhuma decisão desta spec pode desfazer isso.
 |---|---|---|---|---|
 | A1 | trocar o preço no DevTools e comprar por R$ 1 | criação do pedido | preço lido do Supabase pelo servidor; o corpo do cliente só traz `eventId` | D2 |
 | A2 | `POST` no webhook dizendo "pago", sem pagar | webhook (público por natureza) | o corpo é **aviso**; só `payment_check` escreve `pago` | D3 |
-| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook | `paid_amount` conferido contra `valor_centavos` **do pedido** | D3 |
+| A3 | pagar R$ 1 e reivindicar ingresso de R$ 97 | webhook / retorno | `amount` (não `paid_amount`) conferido contra `valor_centavos` **do pedido** | D3 |
+| A13 | forjar os parâmetros do `redirect_url` no navegador | retorno da compradora | os parâmetros só dizem qual pedido olhar; quem escreve é o `payment_check` | D9 |
 | A4 | reenviar o webhook para gerar ingressos | webhook | `unique (order_nsu)` | D4 |
 | A5 | ler o ingresso de outra mulher | tabela `tickets` | RLS `auth.uid() = user_id`; cliente **nunca** escreve | contrato |
 | A6 | **listar quem comprou** | tabela `tickets` | mesma RLS: não existe leitura que devolva linha de terceiro. Lista de presença é tela de admin, nunca endpoint aberto | contrato |
@@ -402,11 +448,20 @@ a venda abrir. Falhar em qualquer um bloqueia o lançamento.
 curl -X POST "$URL_WEBHOOK" -H 'Content-Type: application/json'   -d '{"order_nsu":"<pedido real e pendente>","transaction_nsu":"999","paid_amount":9700}'
 # aceite: a linha continua `pendente`. Se virou `pago`, a D3 não foi implementada.
 
-# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97 no sandbox.
+# S2 — pagamento menor. Pague R$ 1 num pedido de R$ 97.
 # aceite: continua `pendente`; log registra `valor-nao-bate`.
+
+# S2b — parcelado NÃO pode ser recusado. Pague um pedido em 3x no cartão,
+# onde paid_amount > amount por causa dos juros.
+# aceite: vira `pago`. Se recusar, a conferência está no campo errado —
+#         é contra `amount`, não contra `paid_amount`.
 
 # S3 — reenvio. Mande o MESMO webhook válido duas vezes.
 # aceite: um ingresso, não dois.
+
+# S3b — os dois caminhos juntos (D9). Dispare o retorno da compradora e o
+# webhook para o mesmo pedido, quase ao mesmo tempo.
+# aceite: um ingresso. É o teste de corrida do finalizador idempotente.
 
 # S4 — oráculo. Mande order_nsu que não existe.
 # aceite: resposta idêntica à do S1. Qualquer diferença de corpo, status ou
@@ -577,9 +632,44 @@ da Edge Function. Nada em `VITE_*` — R11 e SPEC-002 D3.
   de ingresso. **Pendência fora desta spec:** revisar o texto do plano
   Convidada no `seed.ts`, que continua prometendo.
 
+## Pesquisa de campo — o que a documentação não diz (05/10/2026)
+
+Levantado em fontes públicas antes de implementar. Cada item mudou alguma
+coisa, ou evita uma surpresa cara.
+
+| Achado | Fonte | Consequência |
+|---|---|---|
+| **Não existe sandbox documentado** | doc oficial do Checkout, módulo WHMCS, plugin WooCommerce — nenhum menciona | o teste é com **dinheiro real**. Ver o protocolo abaixo |
+| **Webhook pode não chegar** | caso real em produção, com o pedido travado em "aguardando" | D9 — dois caminhos, um finalizador |
+| **`paid_amount` > `amount` é normal** | exemplo da doc oficial: 1500 / 1510 | conferir `amount`, não `paid_amount`. Senão recusa parcelado |
+| **Criar link não pede `Authorization`** | doc oficial | o `handle` sozinho cria cobrança. É o que torna a D2 obrigatória: sem segredo nenhum, o preço no cliente seria editável |
+| **Mas há contas que exigem Bearer** | plugin WooCommerce; há OAuth em `/v2/oauth/token` com `client_id`/`client_secret` | **perguntar ao suporte** se a conta da Tríade exige. Se exigir, é segredo de Edge Function |
+| **A conta precisa estar habilitada** para receber por link | troubleshooting do plugin WooCommerce | confirmar antes de implementar, não na véspera do evento |
+| **Webhook demora segundos** | mesmo troubleshooting | a tela nunca diz "pago" sozinha: ou espera a confirmação, ou mostra "estamos confirmando" |
+
+### Protocolo de teste sem sandbox
+
+Como não há ambiente de teste, a bateria S1–S14 roda contra produção. Isso
+é aceitável se for feito assim, e **antes** de anunciar a venda:
+
+1. criar uma **edição de teste despublicada** (`published = false`), com
+   ingresso de **R$ 1,00**;
+2. rodar S1, S4, S5–S13 — nenhum deles precisa de pagamento real;
+3. comprar de verdade, por Pix, R$ 1,00 → confirma o caminho feliz e o S3b;
+4. comprar de verdade **em 3x no cartão**, R$ 1,00 → é o S2b, o único jeito
+   de provar que parcelado não é recusado;
+5. conferir no painel que os R$ 2,00 caíram, e estornar;
+6. só então publicar a edição real.
+
+O custo do teste completo é **R$ 2,00 e um estorno**. Pular isso para
+"economizar" é trocar R$ 2 por descobrir na véspera do encontro.
+
 ## O que só o usuário pode decidir
 
 1. **o `handle`** (InfiniteTag) da conta InfinitePay;
+2. **se a conta exige Bearer token** para criar link — pergunta para o
+   suporte deles. Se exigir, vêm junto `client_id` e `client_secret`, que
+   são segredo de Edge Function e nunca entram no front;
 2. ~~**preço do ingresso** de cada edição~~ — **resolvido em 05/10/2026**:
    as sócias definem no app, pelo `EventEditSheet` (D7). Não precisa passar
    por mim nem por deploy;
