@@ -264,3 +264,45 @@ delete from public.admins where user_id = (
   select id from auth.users where email = 'seu-email@exemplo.com'
 );
 ```
+
+## Migrar de região (EUA → São Paulo) — cópia completa
+
+Região do Supabase não muda depois de criada: o caminho é um projeto novo
+em São Paulo e copiar tudo para ele. Quem copia é o workflow
+`.github/workflows/migrar-supabase.yml` (o GitHub tem rede até o banco; a
+sessão do Claude não tem). Segue o guia oficial *Backup and Restore using
+the CLI* do Supabase.
+
+**O que vai junto:** tabelas, contas (inclusive login Google, senhas e
+ids — as admins continuam admins), perfis, curtidas, RSVPs e as fotos do
+Storage. **O que não vai:** sessões abertas (todo mundo entra de novo uma
+vez) e as configurações do painel (passos 6–8).
+
+1. **Projeto novo**: New project → Region **South America (São Paulo)**.
+   **Não rode o `schema.sql` nele** — ele precisa estar vazio.
+2. **Strings de conexão**, nos dois projetos: botão **Connect** → aba
+   **Session pooler** → copie a URI e troque `[YOUR-PASSWORD]` pela senha
+   do banco. (A "Direct connection" usa IPv6, que o GitHub não tem.)
+3. **Chaves**: Project Settings → API Keys → `service_role` (secret), nos
+   dois projetos, e a URL de cada um (`https://<id>.supabase.co`).
+4. **GitHub** → repositório → Settings → Secrets and variables → Actions →
+   New repository secret, seis vezes:
+   `OLD_DB_URL`, `NEW_DB_URL`, `OLD_SUPABASE_URL`, `OLD_SERVICE_ROLE_KEY`,
+   `NEW_SUPABASE_URL`, `NEW_SERVICE_ROLE_KEY`.
+5. **Actions** → "Migrar Supabase (EUA → São Paulo)" → Run workflow →
+   digite `COPIAR`. Se só a etapa do Storage falhar, rode de novo marcando
+   "Só os arquivos do Storage".
+6. No projeto novo, **SQL Editor**: cole o `supabase/schema.sql` inteiro e
+   rode. Ele é idempotente, e recria o que o dump não leva: o gatilho de
+   perfil em `auth.users` e as políticas do Storage.
+7. **Authentication**: Providers → Google (mesmo Client ID/Secret); URL
+   Configuration → Site URL e Redirect URLs iguais às do projeto antigo.
+   No Google Cloud, troque o callback para
+   `https://<novo-id>.supabase.co/auth/v1/callback`.
+8. **Vercel**: troque `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` e faça
+   Redeploy. O app passa a usar o projeto novo nesse momento.
+9. Confira login, uma curtida e uma foto. Tudo certo → **apague os seis
+   secrets do GitHub** (as chaves service_role não devem ficar lá) e, depois
+   de alguns dias, pause/exclua o projeto antigo.
+10. Mande ao Claude o id do projeto novo: as URLs de foto do `seed.ts`
+    apontam para o antigo e precisam ser trocadas.

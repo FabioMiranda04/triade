@@ -1,0 +1,78 @@
+name: Migrar Supabase (EUA → São Paulo)
+
+# Cópia única do projeto Supabase antigo para o novo: banco inteiro
+# (contas, perfis, curtidas, eventos, posts…) e os arquivos do Storage.
+# Só roda à mão: Actions → "Migrar Supabase" → Run workflow.
+#
+# Segue o guia oficial "Backup and Restore using the CLI" do Supabase.
+# Passo a passo e secrets necessários: docs/SUPABASE.md, "Migrar de região".
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmar:
+        description: 'Digite COPIAR. O projeto NOVO precisa estar vazio (sem rodar o schema.sql antes).'
+        required: true
+      so_storage:
+        description: 'Só os arquivos do Storage (para repetir se essa etapa falhar; o banco já copiado não é tocado)'
+        type: boolean
+        default: false
+
+jobs:
+  migrar:
+    if: inputs.confirmar == 'COPIAR'
+    runs-on: ubuntu-latest
+    env:
+      # strings do "Session pooler" (IPv4): o runner do GitHub não tem IPv6
+      OLD_DB_URL: ${{ secrets.OLD_DB_URL }}
+      NEW_DB_URL: ${{ secrets.NEW_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        if: ${{ !inputs.so_storage }}
+        with:
+          version: latest
+
+      - name: Exportar do projeto antigo
+        if: ${{ !inputs.so_storage }}
+        run: |
+          supabase db dump --db-url "$OLD_DB_URL" -f roles.sql --role-only
+          supabase db dump --db-url "$OLD_DB_URL" -f schema.sql
+          supabase db dump --db-url "$OLD_DB_URL" -f data.sql --use-copy --data-only \
+            -x "storage.buckets_vectors" -x "storage.vector_indexes"
+          # os dois erros conhecidos que o próprio guia manda comentar
+          sed -i 's/^GRANT "postgres" TO "cli_login_postgres"/-- &/' roles.sql
+          sed -i '/OWNER TO "supabase_admin"/s/^/-- /' schema.sql
+          wc -l roles.sql schema.sql data.sql
+
+      - name: Importar no projeto novo
+        if: ${{ !inputs.so_storage }}
+        run: |
+          sudo apt-get install -y -qq postgresql-client >/dev/null
+          # tudo ou nada: qualquer erro desfaz a importação inteira.
+          # `replica` desliga os gatilhos durante a carga — sem isso o
+          # gatilho de perfil novo dispararia para cada conta importada.
+          psql \
+            --single-transaction \
+            --variable ON_ERROR_STOP=1 \
+            --file roles.sql \
+            --file schema.sql \
+            --command 'SET session_replication_role = replica' \
+            --file data.sql \
+            --dbname "$NEW_DB_URL"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Copiar arquivos do Storage
+        env:
+          OLD_SUPABASE_URL: ${{ secrets.OLD_SUPABASE_URL }}
+          OLD_SERVICE_ROLE_KEY: ${{ secrets.OLD_SERVICE_ROLE_KEY }}
+          NEW_SUPABASE_URL: ${{ secrets.NEW_SUPABASE_URL }}
+          NEW_SERVICE_ROLE_KEY: ${{ secrets.NEW_SERVICE_ROLE_KEY }}
+        run: |
+          npm ci
+          node scripts/copiar-storage.mjs
