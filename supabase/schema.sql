@@ -417,3 +417,45 @@ drop policy if exists "admin escreve posts" on public.posts;
 create policy "admin escreve posts"
   on public.posts for all to authenticated
   using (public.e_admin()) with check (public.e_admin());
+
+-- =============================================================
+--  Migração (26/10/2026): venda de ingresso — SPEC-003.
+-- =============================================================
+-- Rodar este bloco liga a venda no banco; o resto mora nas Edge Functions
+-- `criar-pedido` e `webhook-ingresso` (supabase/functions/).
+
+-- Preço em CENTAVOS. null = edição sem venda. Quem muda é admin: a
+-- política "admin escreve eventos" (seção 6) já cobre a coluna nova — a
+-- proteção do preço é a RLS, não a tela (A12/S11).
+alter table public.events add column if not exists ticket_price_cents integer
+  check (ticket_price_cents is null or ticket_price_cents > 0);
+
+create table if not exists public.tickets (
+  id              uuid        primary key default gen_random_uuid(),
+  user_id         uuid        not null references auth.users(id) on delete cascade,
+  event_id        text        not null references public.events(id) on delete restrict,
+  -- nosso id do pedido, uuid v4 (A7). `unique` é a idempotência: webhook
+  -- reenviado ou webhook + retorno juntos não viram dois ingressos (D4/S3b)
+  order_nsu       text        not null unique,
+  transaction_nsu text,
+  status          text        not null default 'pendente'
+                  check (status in ('pendente', 'pago', 'cancelado')),
+  -- o que FOI COBRADO neste pedido. Conferido contra o `amount` do
+  -- payment_check; mudar o preço depois não mexe aqui (D7.3)
+  valor_centavos  integer     not null check (valor_centavos > 0),
+  receipt_url     text,
+  criado_em       timestamptz not null default now(),
+  pago_em         timestamptz
+);
+
+create index if not exists tickets_user_event on public.tickets (user_id, event_id);
+
+alter table public.tickets enable row level security;
+
+-- Cada uma lê só a própria linha (A5/A6/S5/S6). Admin lê tudo — é a lista
+-- de presença. NÃO existe política de insert/update/delete: quem escreve é
+-- só a Edge Function, com service_role (S7/S8).
+drop policy if exists "cada uma le seus ingressos" on public.tickets;
+create policy "cada uma le seus ingressos"
+  on public.tickets for select to authenticated
+  using (user_id = auth.uid() or public.e_admin());

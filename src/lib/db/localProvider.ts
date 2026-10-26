@@ -52,4 +52,10 @@ export const localProvider: DataProvider = {
   savePlan: async () => {
     throw new Error('Sem Supabase configurado: o plano é salvo só neste aparelho.');
   },
+  // Venda é servidor por definição (SPEC-003 D2): sem backend, não há venda.
+  comprarIngresso: async () => {
+    throw new Error('A venda online ainda não está ligada neste app.');
+  },
+  getIngresso: async () => null,
+  confirmarIngresso: async () => {},
 };

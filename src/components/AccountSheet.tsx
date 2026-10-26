@@ -20,6 +20,8 @@ interface AccountSheetProps {
   signInWithGoogle: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   updateProfile: (patch: ProfileEdits) => Promise<{ error: string | null }>;
+  /** por que a conta foi pedida agora — substitui o subtítulo genérico */
+  motivo?: string | null;
   onClose: () => void;
 }
 
@@ -34,6 +36,7 @@ export function AccountSheet({
   signInWithGoogle,
   signOut,
   updateProfile,
+  motivo,
   onClose,
 }: AccountSheetProps) {
   const [mode, setMode] = useState<Mode>('entrar');
@@ -97,7 +100,11 @@ export function AccountSheet({
             )}
             <h2 className="modal-title">{profile?.full_name || 'Sua conta'}</h2>
             <p className="modal-theme">{user.email}</p>
-            <button className="btn btn-primary full" style={{ marginTop: 20 }} onClick={() => setEditingProfile(true)}>
+            <button
+              className="btn btn-primary full"
+              style={{ marginTop: 20 }}
+              onClick={() => setEditingProfile(true)}
+            >
               Editar perfil
             </button>
             <button
@@ -141,8 +148,8 @@ export function AccountSheet({
           </div>
           <h2 className="modal-title">Confira seu e-mail</h2>
           <p className="modal-theme">
-            Mandamos um link de confirmação para <b>{email}</b>. Toque nele para ativar sua conta
-            e depois volte aqui para entrar.
+            Mandamos um link de confirmação para <b>{email}</b>. Toque nele para ativar sua conta e
+            depois volte aqui para entrar.
           </p>
           <button className="btn btn-primary full" style={{ marginTop: 16 }} onClick={onClose}>
             Entendi
@@ -167,25 +174,39 @@ export function AccountSheet({
         </button>
         <h2 className="modal-title">{mode === 'entrar' ? 'Entrar' : 'Criar conta'}</h2>
         <p className="modal-theme">
-          {mode === 'entrar'
-            ? 'Entre para curtir, confirmar presença e escolher seu plano.'
-            : 'Crie sua conta para fazer parte da comunidade.'}
+          {motivo
+            ? motivo
+            : mode === 'entrar'
+              ? 'Entre para curtir, confirmar presença e escolher seu plano.'
+              : 'Crie sua conta para fazer parte da comunidade.'}
         </p>
         <div className="edit-fields">
           {mode === 'cadastrar' && (
             <label className="field">
               <span>Nome</span>
-              <input value={name} onChange={(e) => setName(e.target.value)} required />
+              <input
+                autoComplete="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </label>
           )}
           <label className="field">
             <span>E-mail</span>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </label>
           <label className="field">
             <span>Senha</span>
             <input
               type="password"
+              autoComplete={mode === 'entrar' ? 'current-password' : 'new-password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               minLength={6}
@@ -193,7 +214,11 @@ export function AccountSheet({
             />
           </label>
         </div>
-        {error && <p className="auth-error">{error}</p>}
+        {error && (
+          <p className="auth-error" role="alert">
+            {error}
+          </p>
+        )}
         <button type="submit" className="btn btn-primary full" disabled={submitting}>
           {submitting ? 'Só um instante...' : mode === 'entrar' ? 'Entrar' : 'Criar conta'}
         </button>

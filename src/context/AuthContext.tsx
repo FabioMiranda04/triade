@@ -34,8 +34,10 @@ interface AuthContextValue {
    * true se já há usuária logada (ou se o app roda sem Supabase — nesse
    * caso não há como logar, então a ação segue livre, como sempre foi).
    * false abre o pop-up de conta e bloqueia a ação chamadora.
+   * `motivo` troca o subtítulo do pop-up: pedir conta sem dizer por quê
+   * perde gente (SPEC-003 D5 — "seu ingresso fica salvo no app").
    */
-  requireAuth: () => boolean;
+  requireAuth: (motivo?: string) => boolean;
 }
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -57,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [motivo, setMotivo] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) {
@@ -107,16 +110,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [user]);
 
-  const signUp = useCallback(async (email: string, password: string, fullName: string): Promise<SignUpResult> => {
-    if (!supabase) return { error: 'Conta indisponível sem o Supabase configurado.', needsConfirmation: false };
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    });
-    if (error) return { error: translateAuthError(error.message), needsConfirmation: false };
-    return { error: null, needsConfirmation: !data.session };
-  }, []);
+  const signUp = useCallback(
+    async (email: string, password: string, fullName: string): Promise<SignUpResult> => {
+      if (!supabase)
+        return {
+          error: 'Conta indisponível sem o Supabase configurado.',
+          needsConfirmation: false,
+        };
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      if (error) return { error: translateAuthError(error.message), needsConfirmation: false };
+      return { error: null, needsConfirmation: !data.session };
+    },
+    [],
+  );
 
   const signIn = useCallback(async (email: string, password: string): Promise<SignResult> => {
     if (!supabase) return { error: 'Conta indisponível sem o Supabase configurado.' };
@@ -153,13 +163,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user],
   );
 
-  const openAccount = useCallback(() => setSheetOpen(true), []);
-
-  const requireAuth = useCallback((): boolean => {
-    if (db.name !== 'supabase' || user) return true;
+  const openAccount = useCallback(() => {
+    setMotivo(null);
     setSheetOpen(true);
-    return false;
-  }, [user]);
+  }, []);
+
+  const requireAuth = useCallback(
+    (porque?: string): boolean => {
+      if (db.name !== 'supabase' || user) return true;
+      setMotivo(porque ?? null);
+      setSheetOpen(true);
+      return false;
+    },
+    [user],
+  );
 
   return (
     <AuthContext.Provider
@@ -186,6 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           signInWithGoogle={signInWithGoogle}
           signOut={signOut}
           updateProfile={updateProfile}
+          motivo={motivo}
           onClose={() => setSheetOpen(false)}
         />
       )}

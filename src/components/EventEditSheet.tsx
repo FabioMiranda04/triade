@@ -6,6 +6,7 @@ import type { FotoEmEdicao } from '@/components/GaleriaEditor';
 import { db } from '@/lib/db';
 import { usePodeEditar } from '@/hooks/usePodeEditar';
 import { createEvent, saveEventEdit } from '@/lib/db/localContent';
+import { centavosParaCampo, reaisParaCentavos } from '@/lib/ingresso';
 import type { EventStatus, TriadeEvent } from '@/types';
 
 interface EventEditSheetProps {
@@ -39,12 +40,12 @@ export function EventEditSheet({ event, onClose, onSaved }: EventEditSheetProps)
   const [speaker, setSpeaker] = useState(event?.speaker ?? '');
   const [theme, setTheme] = useState(event?.theme ?? '');
   const [spots, setSpots] = useState(event?.spots ?? 65);
+  const [preco, setPreco] = useState(centavosParaCampo(event?.ticketPriceCents));
   const [recapText, setRecapText] = useState(event?.recapText ?? '');
   const [fotos, setFotos] = useState<FotoEmEdicao[]>(event?.recapMedia ?? []);
 
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
-
 
   // o id define a pasta do Storage, então precisa existir antes do upload —
   // num evento novo ele é criado aqui e reaproveitado no salvamento
@@ -72,6 +73,7 @@ export function EventEditSheet({ event, onClose, onSaved }: EventEditSheetProps)
       speaker,
       theme,
       spots,
+      ticketPriceCents: reaisParaCentavos(preco),
       recapText: recapText || undefined,
       recapMedia: recapMedia.length > 0 ? recapMedia : undefined,
     };
@@ -145,6 +147,25 @@ export function EventEditSheet({ event, onClose, onSaved }: EventEditSheetProps)
           required
         />
       </label>
+
+      {/* SPEC-003 D7 — só quem grava no banco vê: preço no overlay local
+          não cobraria nada (quem cobra lê o Supabase). A RLS é a proteção
+          de verdade; esconder aqui é só não oferecer o que não funciona. */}
+      {podeEditar && status === 'em breve' && (
+        <label className="field">
+          <span>Ingresso (R$)</span>
+          <input
+            inputMode="decimal"
+            placeholder="ex: 97,00"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            aria-describedby="preco-ajuda"
+          />
+          <small id="preco-ajuda" className="field-ajuda">
+            Vazio = edição sem venda pelo app.
+          </small>
+        </label>
+      )}
 
       {/* A retrospectiva só faz sentido depois que a edição aconteceu —
           num evento "em breve" os dois campos seriam ruído. */}

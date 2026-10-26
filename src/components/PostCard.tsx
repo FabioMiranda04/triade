@@ -51,10 +51,35 @@ interface PostCardProps {
   chamariz?: boolean;
 }
 
-export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, vendendo }: PostCardProps) {
+export function PostCard({
+  post,
+  onOpenEvent,
+  onEdit,
+  destaqueNovo,
+  chamariz,
+  vendendo,
+}: PostCardProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { liked, saved, curtidas, toggleLike, likeOnly, toggleSave } = useEngagement(post.id);
+  /* Antes o botão só mostrava "Link copiado" sem copiar nada. Agora: folha
+     de compartilhar nativa no celular; sem ela (desktop), copia de verdade. */
+  async function compartilhar() {
+    const url = window.location.origin;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Tríade Conecta', text: post.caption, url });
+        return;
+      }
+      await navigator.clipboard.writeText(`${post.caption}\n${url}`);
+      showToast('Link copiado para compartilhar');
+    } catch (falha) {
+      // fechar a folha de compartilhar não é erro
+      if (!(falha instanceof DOMException && falha.name === 'AbortError')) {
+        showToast('Não deu para compartilhar agora');
+      }
+    }
+  }
   const [bursting, setBursting] = useState(false);
   const burstTimer = useRef<number | undefined>(undefined);
 
@@ -85,22 +110,19 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, ve
           <div className="n">{post.author}</div>
           <div className="t">{post.subtitle}</div>
         </div>
-        {onEdit ? (
-          <Kebab label="Opções do post" actions={[{ label: 'Editar', icon: 'edit', onClick: onEdit }]} />
-        ) : (
-          <button
-            className="act-btn"
-            aria-label="Mais opções"
-            onClick={() => showToast('Em breve: mais opções do post')}
-          >
-            <Icon name="more" size={18} />
-          </button>
+        {onEdit && (
+          <Kebab
+            label="Opções do post"
+            actions={[{ label: 'Editar', icon: 'edit', onClick: onEdit }]}
+          />
         )}
       </div>
 
       <div
         className={`post-media${post.mediaUrl ? ' com-foto' : ''}`}
-        style={!post.mediaUrl && post.mediaGradient ? { background: post.mediaGradient } : undefined}
+        style={
+          !post.mediaUrl && post.mediaGradient ? { background: post.mediaGradient } : undefined
+        }
         onPointerUp={handleDoubleTap}
         onDoubleClick={likeOnly}
         role="img"
@@ -134,11 +156,7 @@ export function PostCard({ post, onOpenEvent, onEdit, destaqueNovo, chamariz, ve
             >
               <Icon name={liked ? 'heartFill' : 'heart'} />
             </button>
-            <button
-              className="act-btn"
-              aria-label="Compartilhar"
-              onClick={() => showToast('Link copiado para compartilhar')}
-            >
+            <button className="act-btn" aria-label="Compartilhar" onClick={compartilhar}>
               <Icon name="share" />
             </button>
             <span className="grow" />

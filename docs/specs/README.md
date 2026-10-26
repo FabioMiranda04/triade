@@ -65,4 +65,4 @@ também à **decisão**, não só ao **dado**.
 |---|---|---|
 | [SPEC-001](./SPEC-001-convite-de-membro.md) | quando o convite de membro aparece | implementada |
 | [SPEC-002](./SPEC-002-pagamento.md) | assinatura recorrente | fase 0 implementada, esperando os links |
-| [SPEC-003](./SPEC-003-ingressos.md) | venda de ingresso por edição | rascunho — **é a prioridade** |
+| [SPEC-003](./SPEC-003-ingressos.md) | venda de ingresso por edição | implementada — venda desligada até a ativação |

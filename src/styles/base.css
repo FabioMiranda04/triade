@@ -55,6 +55,8 @@ body {
        `animation-fill-mode: backwards` fica INVISÍVEL pelo tempo do
        delay, que a guarda não zerava */
     animation-delay: 0.001ms !important;
+    /* a rolagem suave da `.app-main` também é movimento */
+    scroll-behavior: auto !important;
   }
 }
 img {

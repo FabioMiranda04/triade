@@ -446,6 +446,11 @@ Detalhes em `ARQUITETURA.md`, `SUPABASE.md` e `DESIGN-SYSTEM.md`.
   enquanto forem, escolher plano só grava a escolha, como antes. Colar os
   links do painel da InfinitePay é o que liga a cobrança; não precisa
   mexer em código.
+- **Venda de ingresso (SPEC-003): código pronto, venda desligada.** Falta
+  rodar o SQL, configurar `INFINITEPAY_HANDLE` e publicar as duas Edge
+  Functions — passo a passo em "Ativação" no topo da spec. Sem preço no
+  evento, a tela é a de antes (RSVP). Lista de presença para as sócias
+  ainda não tem tela (a RLS já deixa admin ler `tickets`).
 - Sem painel administrativo (a edição inline atual não substitui isso —
   ver item acima).
 - Sem testes automatizados.

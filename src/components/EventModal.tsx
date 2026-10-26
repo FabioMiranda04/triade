@@ -3,7 +3,9 @@ import { Icon } from '@/components/Icon';
 import { Mark } from '@/components/Brand';
 import { ModalOverlay } from '@/components/ModalOverlay';
 import { founders } from '@/data/seed';
+import { useIngresso } from '@/hooks/useIngresso';
 import { firstName, formatEventDateRange, statusClass } from '@/lib/format';
+import { formatCentavos } from '@/lib/ingresso';
 import { buildTicketMessage, buildWhatsAppLink } from '@/lib/whatsapp';
 import type { TriadeEvent } from '@/types';
 
@@ -64,9 +66,7 @@ export function EventModal({ event, onClose, passoInicial = 'details' }: EventMo
               )}
             </div>
             {event.status === 'em breve' && (
-              <button className="btn btn-primary full" onClick={() => setStep('contact')}>
-                Quero participar
-              </button>
+              <AcaoDoModal event={event} onContato={() => setStep('contact')} />
             )}
           </div>
         ) : (
@@ -102,5 +102,56 @@ export function EventModal({ event, onClose, passoInicial = 'details' }: EventMo
         )}
       </div>
     </ModalOverlay>
+  );
+}
+
+/**
+ * SPEC-003 — com ingresso à venda, comprar é o principal; falar com as
+ * sócias continua ali, como segunda opção, para quem tem dúvida antes.
+ */
+function AcaoDoModal({ event, onContato }: { event: TriadeEvent; onContato: () => void }) {
+  const { ingresso, acao, comprar, comprando } = useIngresso(event);
+
+  if (acao === 'ver-ingresso' && ingresso) {
+    return ingresso.receiptUrl ? (
+      <a
+        className="btn btn-glass full"
+        href={ingresso.receiptUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="check" size={16} /> Ingresso garantido · ver comprovante
+      </a>
+    ) : (
+      <p className="btn btn-glass full" role="status">
+        <Icon name="check" size={16} /> Ingresso garantido
+      </p>
+    );
+  }
+
+  if ((acao === 'comprar' || acao === 'entrar-para-comprar') && event.ticketPriceCents) {
+    return (
+      <div className="modal-acoes">
+        <button
+          className="btn btn-primary full"
+          onClick={comprar}
+          disabled={comprando}
+          aria-busy={comprando}
+        >
+          {comprando
+            ? 'Abrindo pagamento…'
+            : `Comprar ingresso · ${formatCentavos(event.ticketPriceCents)}`}
+        </button>
+        <button className="btn btn-glass full" onClick={onContato}>
+          Tenho dúvidas — falar com a gente
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button className="btn btn-primary full" onClick={onContato}>
+      Quero participar
+    </button>
   );
 }

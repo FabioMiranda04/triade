@@ -1,4 +1,4 @@
-import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { Ingresso, Plan, Post, Speaker, TriadeEvent } from '@/types';
 
 /**
  * Contrato da camada de dados.
@@ -66,4 +66,18 @@ export interface DataProvider {
 
   /** Grava o plano no banco (insert ou update pelo `id`). */
   savePlan(plano: Plan): Promise<void>;
+
+  /* SPEC-003 — venda de ingresso. Quem cobra e quem diz "pago" é o
+     servidor (Edge Functions em `supabase/functions/`), nunca a tela. */
+
+  /** Cria o pedido no servidor e devolve a URL do checkout. Exige login (D5). */
+  comprarIngresso(eventId: string): Promise<string>;
+  /** Ingresso PAGO da usuária logada para a edição. `null` = não tem. */
+  getIngresso(eventId: string): Promise<Ingresso | null>;
+  /**
+   * D9 — volta do checkout: repassa ao servidor os parâmetros que a
+   * InfinitePay pôs na URL. Eles só dizem QUAL pedido conferir; quem
+   * decide se está pago é o `payment_check`, do lado do servidor.
+   */
+  confirmarIngresso(params: Record<string, string>): Promise<void>;
 }

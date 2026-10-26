@@ -1,6 +1,6 @@
 import { requireSupabase } from '@/lib/supabase';
 import { seed } from '@/data/seed';
-import type { Plan, Post, Speaker, TriadeEvent } from '@/types';
+import type { Ingresso, Plan, Post, Speaker, TriadeEvent } from '@/types';
 import type { EventRow, PlanRow, PostRow, SpeakerRow } from '@/types/database';
 import type { DataProvider } from './types';
 import { engagement } from './prefs';
@@ -34,6 +34,7 @@ function mapEvent(row: EventRow): TriadeEvent {
     spots: row.spots || undefined,
     recapText: row.recap_text ?? undefined,
     recapMedia: row.recap_media && row.recap_media.length > 0 ? row.recap_media : undefined,
+    ticketPriceCents: row.ticket_price_cents ?? null,
   };
 }
 
@@ -314,8 +315,49 @@ async function saveEvent(evento: TriadeEvent): Promise<void> {
     spots: evento.spots ?? null,
     recap_text: evento.recapText ?? null,
     recap_media: evento.recapMedia ?? [],
+    ticket_price_cents: evento.ticketPriceCents ?? null,
   });
   if (error) throw new Error(`Falha ao salvar o evento: ${error.message}`);
+}
+
+/* SPEC-003 — o corpo leva SÓ o `eventId`: o preço sai do banco, no
+   servidor (D2). O JWT da sessão vai junto sozinho pelo `invoke`. */
+async function comprarIngresso(eventId: string): Promise<string> {
+  const { data, error } = await requireSupabase().functions.invoke<{ url?: string; erro?: string }>(
+    'criar-pedido',
+    { body: { eventId } },
+  );
+  if (data?.url) return data.url;
+  // erro de negócio (esgotado, já tem ingresso) vem no corpo, com status 4xx
+  let motivo = data?.erro;
+  if (!motivo && error && 'context' in error && error.context instanceof Response) {
+    motivo = ((await error.context.json().catch(() => null)) as { erro?: string } | null)?.erro;
+  }
+  throw new Error(motivo ?? 'Não deu para abrir o pagamento. Tente de novo em instantes.');
+}
+
+async function getIngresso(eventId: string): Promise<Ingresso | null> {
+  const uid = await getUserId();
+  if (!uid) return null;
+  const { data } = await requireSupabase()
+    .from('tickets')
+    .select('event_id, valor_centavos, pago_em, receipt_url')
+    .eq('event_id', eventId)
+    .eq('status', 'pago')
+    .order('pago_em', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data || !data.pago_em) return null;
+  return {
+    eventId: data.event_id,
+    valorCentavos: data.valor_centavos,
+    pagoEm: data.pago_em,
+    receiptUrl: data.receipt_url,
+  };
+}
+
+async function confirmarIngresso(params: Record<string, string>): Promise<void> {
+  await requireSupabase().functions.invoke('webhook-ingresso', { body: params });
 }
 
 export const supabaseProvider: DataProvider = {
@@ -390,6 +432,10 @@ export const supabaseProvider: DataProvider = {
   savePost,
   saveSpeaker,
   savePlan,
+
+  comprarIngresso,
+  getIngresso,
+  confirmarIngresso,
 };
 
 

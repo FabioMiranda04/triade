@@ -151,8 +151,15 @@ falhou, algo ficou pela metade de propósito, ou o usuário pediu para
 segurar. Esperar "pode subir?" a cada entrega é ruído — a autorização é
 permanente e está aqui.
 
-**R18 — Skills `caveman` e `ponytail` ativas** (em `.claude/skills/`,
-versionadas ∵ o contêiner é efêmero). Onde cada uma paga:
+**R18 — Skills ativas** (em `.claude/skills/`, versionadas ∵ o contêiner
+é efêmero; origem em `skills-lock.json`, reinstalar com
+`npx skills experimental_install`): `caveman`, `ponytail`, `superpowers`
+(`brainstorming`, `writing-plans`, `executing-plans`,
+`systematic-debugging`, `verification-before-completion`),
+`ui-ux-pro-max` (checklist de UX/a11y — `references/quick-reference.md`)
+e `impeccable` (passada de acabamento de front). As de UI **somam** à R14,
+não a substituem: manual de marca e `DESIGN-SYSTEM.md` mandam. Onde cada
+uma paga:
 - **`ponytail` antes de escrever código** — a solução mais preguiçosa que
   resolve: sem dependência nova, sem abstração especulativa, sem campo
   "que talvez precise depois". Esta economiza de verdade, e não por
@@ -183,6 +190,13 @@ Motivo: mudar a regra passa a ser mexer numa função, não reler a tela
 inteira. Caso concreto: SPEC-001 tirou "quando o convite aparece" de dentro
 do `BoasVindas.tsx` e pôs em `src/lib/convite.ts` — o pagamento (SPEC-002)
 entra trocando **uma** função, `ehMembroPagante`.
+
+**R20 — For unfamiliar features, don't write from scratch—first search
+GitHub for open-source projects, compare approaches, then get started.**
+Funcionalidade que o repo nunca teve (integração, pagamento, lib de
+domínio) → antes do editor, procure 2–3 implementações abertas no GitHub,
+compare abordagens e registre na spec (R19) o que foi copiado/rejeitado e
+por quê. Caso concreto: "Pesquisa de campo" da SPEC-003.
 
 ## 6. Deploy
 

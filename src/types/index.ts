@@ -30,6 +30,17 @@ export interface TriadeEvent {
   recapText?: string;
   /** galeria de fotos/vídeos da retrospectiva — só eventos "realizado" costumam ter */
   recapMedia?: EventRecapMedia[];
+  /** SPEC-003 — preço do ingresso em CENTAVOS. `null`/ausente = edição sem venda. */
+  ticketPriceCents?: number | null;
+}
+
+/** SPEC-003 — ingresso PAGO da usuária logada. Pendente não vira `Ingresso`. */
+export interface Ingresso {
+  eventId: string;
+  valorCentavos: number;
+  pagoEm: string;
+  /** comprovante da InfinitePay; pode faltar */
+  receiptUrl: string | null;
 }
 
 export interface Speaker {

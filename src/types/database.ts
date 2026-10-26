@@ -34,6 +34,8 @@ export type EventRow = {
   spots: number | null;
   recap_text: string | null;
   recap_media: EventRecapMedia[] | null;
+  /** SPEC-003 — centavos; null = sem venda */
+  ticket_price_cents: number | null;
   sort_order: number;
   published: boolean;
 }
@@ -118,6 +120,20 @@ export type PlanSelectionRow = {
   updated_at: string;
 }
 
+/** SPEC-003 — só a Edge Function escreve; o cliente só lê a própria linha (RLS). */
+export type TicketRow = {
+  id: string;
+  user_id: string;
+  event_id: string;
+  order_nsu: string;
+  transaction_nsu: string | null;
+  status: 'pendente' | 'pago' | 'cancelado';
+  valor_centavos: number;
+  receipt_url: string | null;
+  criado_em: string;
+  pago_em: string | null;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -167,6 +183,12 @@ export interface Database {
         Row: PostEngagementRow;
         Insert: Partial<PostEngagementRow> & Pick<PostEngagementRow, 'user_id' | 'post_id' | 'kind'>;
         Update: Partial<PostEngagementRow>;
+        Relationships: [];
+      };
+      tickets: {
+        Row: TicketRow;
+        Insert: never;
+        Update: never;
         Relationships: [];
       };
       plan_selections: {

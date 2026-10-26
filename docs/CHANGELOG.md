@@ -11,6 +11,36 @@ desenvolvimento dentro do mesmo módulo.
 
 ---
 
+## v4.3.0 — venda de ingresso dentro do app + passada de UX
+**Sessão 25 — 26/10/2026**
+
+### Ingresso (SPEC-003), sem intermediário de bilheteria
+O dinheiro cai direto na conta InfinitePay da Tríade; pedido, preço e
+ingresso vivem no nosso Supabase. Preço editado pelas sócias no próprio
+evento. Duas Edge Functions: `criar-pedido` (preço lido do banco, nunca
+do navegador) e `webhook-ingresso` (só o `payment_check` escreve "pago";
+serve ao webhook e à volta do checkout). Regra pura em `lib/ingresso.ts`.
+Com preço, o card mostra "Comprar ingresso · R$ X" e o RSVP vira link
+secundário; o pop-up do feed ganha o mesmo botão. Ativação: topo da spec.
+
+### UX (checklist do ui-ux-pro-max)
+- zoom liberado (`maximum-scale=1` saiu); a busca de edições foi para
+  16px, que era o motivo do bloqueio (zoom do iOS ao focar);
+- "Compartilhar" dizia "link copiado" sem copiar: agora usa a folha
+  nativa, ou copia de verdade no desktop;
+- botão "Mais opções" que só dizia "em breve" saiu do post;
+- login: `autocomplete` nos campos (gerenciador de senha funciona) e
+  erro anunciado ao leitor de tela; o pop-up diz **por que** pede conta;
+- rolagem suave desligada sob `prefers-reduced-motion`;
+- `.modal-theme` usa token em vez de rgba solto (R4).
+
+### Ferramentas
+Skills novas em `.claude/skills/`: superpowers (5), ui-ux-pro-max,
+impeccable. R20 no `CLAUDE.md`: pesquisar no GitHub antes de escrever do
+zero uma funcionalidade desconhecida.
+
+---
+
 ## v4.2.0 — o app passa a poder cobrar
 **Sessão 24 — 05/10/2026**
 

@@ -400,6 +400,27 @@
 }
 .ev-card .meta span { display: flex; align-items: center; gap: 3px; }
 .ev-rsvp { margin: -4px 0 12px; }
+/* SPEC-003 D6 — com ingresso à venda, o RSVP vira ação secundária: texto,
+   não botão cheio, para não disputar com "Comprar" (um CTA por tela).
+   44px de altura = alvo de toque, mesmo parecendo só uma linha. */
+.ev-rsvp-sec {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: -8px 0 8px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--fs-xs);
+  color: var(--ink-70);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ev-rsvp-sec:active { color: var(--ink); }
+p.btn.ev-rsvp { cursor: default; }
+.modal-acoes { display: grid; gap: 10px; }
 .empty-state { color: var(--ink-70); font-size: var(--fs-sm); }
 
 /* card grande do próximo evento (tela Eventos, modo Lista) */
@@ -516,7 +537,7 @@
   border: 0;
   background: none;
   font: inherit;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md); /* <16px = iOS dá zoom ao focar */
   color: var(--ink);
 }
 .ev-search input::placeholder { color: var(--ink-45); }
@@ -981,7 +1002,7 @@ button.cal-cell.junta-esq {
   margin-bottom: 12px;
 }
 .modal-title { font-size: var(--fs-2xl); margin-top: 8px; }
-.modal-theme { font-size: var(--fs-sm); color: rgba(244, 238, 227, 0.75); margin-top: 6px; }
+.modal-theme { font-size: var(--fs-sm); color: var(--on-dark-70); margin-top: 6px; }
 .modal-meta {
   display: flex;
   flex-direction: column;
@@ -1379,6 +1400,7 @@ button.cal-cell.junta-esq {
 .ge-dica { font-weight: 400; font-size: var(--fs-3xs); color: var(--on-dark-70); }
 .ge-aviso { margin: 0; font-size: var(--fs-2xs); color: var(--on-dark-70); line-height: var(--lh-normal); }
 .field { display: flex; flex-direction: column; gap: 6px; }
+.field-ajuda { font-size: var(--fs-2xs); color: var(--on-dark-70); }
 .field span {
   font-size: var(--fs-3xs);
   font-weight: 800;

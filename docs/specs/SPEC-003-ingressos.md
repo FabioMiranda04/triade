@@ -1,7 +1,39 @@
 # SPEC-003 — Venda de ingresso por edição
 
-**Status:** rascunho — contrato da API conferido na documentação da
-InfinitePay em 05/10/2026, implementação não começou.
+**Status:** implementada em 26/10/2026, **venda desligada** até a
+ativação (abaixo) e a bateria S1–S14 passarem. Contrato da API conferido
+na documentação da InfinitePay em 05/10/2026.
+
+### Ativação (o que falta, tudo fora do código)
+
+1. SQL Editor do Supabase: rodar o bloco "venda de ingresso" do fim de
+   `supabase/schema.sql` (cria `tickets` e `events.ticket_price_cents`);
+2. secrets das funções: `supabase secrets set INFINITEPAY_HANDLE=<InfiniteTag sem $>`
+   (`APP_URL=https://<domínio>` opcional — só é usado se o navegador não mandar `Origin`);
+3. deploy: `supabase functions deploy criar-pedido` e
+   `supabase functions deploy webhook-ingresso --no-verify-jwt`
+   (a InfinitePay não manda JWT no webhook);
+4. sócia admin abre a edição → Editar → "Ingresso (R$)". Vazio = sem venda;
+5. protocolo de teste sem sandbox (fim desta spec) **antes** de anunciar.
+
+### Onde cada decisão mora no código
+
+| Decisão | Arquivo |
+|---|---|
+| regra do botão (pura) | `src/lib/ingresso.ts` — `estaVendendo`, `acaoDoEvento` |
+| busca + compra | `src/hooks/useIngresso.ts` (usado por `EventCard` e `EventModal`) |
+| D2/D4/D5/D8 — pedido | `supabase/functions/criar-pedido/index.ts` |
+| D3/D9/A8/A11 — finalizador | `supabase/functions/webhook-ingresso/index.ts` (webhook **e** retorno do app, mesmo código) |
+| D9 — retorno | `src/screens/Eventos.tsx` lê `order_nsu` da URL e repassa |
+| D7 — preço | `EventEditSheet.tsx`, campo só para admin; RLS em `schema.sql` |
+
+**Desvios conscientes do contrato:** `acaoDoEvento` não devolve
+`'esgotado'` — saber quantos foram vendidos é a contagem que a S6 proíbe
+o cliente de fazer; quem recusa por esgotado é a `criar-pedido`, e a tela
+mostra o motivo. O provider ganhou `confirmarIngresso(params)`, que a D9
+pedia mas o contrato não listava. No webhook, o `payment_check` roda
+**antes** de olhar o banco: assim pedido inexistente e real gastam o mesmo
+tempo (S4).
 **Revisão de segurança:** 05/10/2026 — modelo de ameaça (A1–A12) e bateria
 de autossabotagem (S1–S14) na seção *Segurança*. Falhar em qualquer S
 bloqueia o lançamento da venda.

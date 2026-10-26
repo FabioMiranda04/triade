@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { EventCalendar } from '@/components/EventCalendar';
 import { EventCard } from '@/components/EventCard';
 import { EventEditSheet } from '@/components/EventEditSheet';
@@ -26,7 +27,10 @@ const MODES: { value: Mode; label: string }[] = [
 
 /** Normaliza texto pra busca sem sensibilidade a acento/caixa (ex: "café" e "cafe" combinam). */
 function normalize(value: string): string {
-  return value.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return value
+    .toLocaleLowerCase('pt-BR')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
 /** Tela Eventos — próximo evento em destaque, retrospectiva das edições anteriores e calendário. */
@@ -46,6 +50,31 @@ export default function Eventos() {
     [],
     version,
   );
+
+  // SPEC-003 D9 — volta do checkout. A InfinitePay devolve para cá com
+  // `order_nsu`, `transaction_nsu` e `slug` na URL. Repassamos ao servidor,
+  // que confere no `payment_check` — a URL só diz QUAL pedido olhar. Duas
+  // tentativas porque a confirmação deles leva alguns segundos.
+  const [params, setParams] = useSearchParams();
+  useEffect(() => {
+    if (!params.get('order_nsu')) return;
+    const retorno = Object.fromEntries(params);
+    setParams({}, { replace: true });
+    showToast('Confirmando seu pagamento…');
+    let vivo = true;
+    const conferir = () =>
+      db
+        .confirmarIngresso(retorno)
+        .catch(() => {})
+        .then(() => vivo && setVersion((v) => v + 1));
+    conferir();
+    const segunda = setTimeout(conferir, 4000);
+    return () => {
+      vivo = false;
+      clearTimeout(segunda);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- roda uma vez, na chegada
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -79,7 +108,9 @@ export default function Eventos() {
     const q = normalize(query.trim());
     if (!q) return pastEvents;
     return pastEvents.filter((e) =>
-      normalize(`${e.title} ${e.theme} ${e.speaker} ${formatEventDateRange(e.date, e.endDate)}`).includes(q),
+      normalize(
+        `${e.title} ${e.theme} ${e.speaker} ${formatEventDateRange(e.date, e.endDate)}`,
+      ).includes(q),
     );
   }, [pastEvents, query]);
 
@@ -134,7 +165,8 @@ export default function Eventos() {
 
   return (
     <section className="panel">
-      <SectionHead eyebrow="Agenda Tríade"
+      <SectionHead
+        eyebrow="Agenda Tríade"
         title="Eventos"
         description="Encontros presenciais mensais de 5h, com especialista convidada."
       />
@@ -173,6 +205,7 @@ export default function Eventos() {
             <>
               {nextEvent ? (
                 <EventCard
+                  key={`${nextEvent.id}-${version}`}
                   event={nextEvent}
                   variant="featured"
                   going={isGoing(nextEvent.id)}
@@ -246,7 +279,9 @@ export default function Eventos() {
                     </div>
                   ))}
 
-                  {visibleCount < filteredPast.length && <div ref={sentinelRef} className="scroll-sentinel" />}
+                  {visibleCount < filteredPast.length && (
+                    <div ref={sentinelRef} className="scroll-sentinel" />
+                  )}
                 </>
               )}
             </>
